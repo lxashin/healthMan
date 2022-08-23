@@ -1,0 +1,1 @@
+<view class="u-count-down data-v-072523e7"><block wx:if="{{$slots.default}}"><slot></slot></block><block wx:else><text class="u-count-down__text data-v-072523e7">{{formattedTime}}</text></block></view>

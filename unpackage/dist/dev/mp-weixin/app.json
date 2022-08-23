@@ -1,0 +1,52 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/gongzi/gongzi",
+    "pages/bailan/bailan",
+    "pages/my/my",
+    "compoments/textarea",
+    "compoments/setUp"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#000",
+    "borderStyle": "black",
+    "backgroundColor": "#fad556",
+    "fontSize": "34rpx",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/image/yu1.png",
+        "selectedIconPath": "static/image/yu.png",
+        "text": "摸鱼"
+      },
+      {
+        "pagePath": "pages/gongzi/gongzi",
+        "iconPath": "static/image/gz.png",
+        "selectedIconPath": "static/image/gz1.png",
+        "text": "扣税"
+      },
+      {
+        "pagePath": "pages/bailan/bailan",
+        "iconPath": "static/image/flag.png",
+        "selectedIconPath": "static/image/flag1.png",
+        "text": "摆烂"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "iconPath": "static/image/wode1.png",
+        "selectedIconPath": "static/image/wode.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {},
+  "sitemapLocation": "sitemap.json"
+}

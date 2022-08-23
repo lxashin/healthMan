@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "u-datetime-picker": "/node-modules/uview-ui/components/u-datetime-picker/u-datetime-picker",
+    "u-toast": "/node-modules/uview-ui/components/u-toast/u-toast"
+  },
+  "component": true
+}

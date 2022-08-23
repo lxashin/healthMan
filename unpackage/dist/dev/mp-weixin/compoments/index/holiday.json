@@ -1,0 +1,9 @@
+{
+  "component": true,
+  "usingComponents": {
+    "week": "/compoments/holiday/week",
+    "salary": "/compoments/holiday/salary",
+    "birthday": "/compoments/holiday/birthday",
+    "festival": "/compoments/holiday/festival"
+  }
+}

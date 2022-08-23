@@ -1,0 +1,1 @@
+<view class="container"><editor class="richInputContent" id="editor" placeholder="开始输入..." value="{{value}}" data-event-opts="{{[['input',[['__set_model',['','value','$event',[]]],['getEditorContent',['$event']]]],['blur',[['onEditorReady',['$event']]]]]}}" bindinput="__e" bindblur="__e"></editor></view>

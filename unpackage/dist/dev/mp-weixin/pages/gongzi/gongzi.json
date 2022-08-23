@@ -1,0 +1,14 @@
+{
+  "navigationBarTitleText": "工资计算器",
+  "navigationBarBackgroundColor": "#fad556",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u--form": "/node-modules/uview-ui/components/u--form/u--form",
+    "u-form-item": "/node-modules/uview-ui/components/u-form-item/u-form-item",
+    "u--input": "/node-modules/uview-ui/components/u--input/u--input",
+    "u-switch": "/node-modules/uview-ui/components/u-switch/u-switch",
+    "u-icon": "/node-modules/uview-ui/components/u-icon/u-icon",
+    "u-action-sheet": "/node-modules/uview-ui/components/u-action-sheet/u-action-sheet",
+    "city-picker": "/compoments/wangding-pickerAddress/wangding-pickerAddress"
+  }
+}

@@ -1,0 +1,1 @@
+<view><view class="bailan"><image src="../../static/image/beiwanglu.png" mode="widthFix"></image><view class="text">写下此刻心情吧</view><view data-event-opts="{{[['tap',[['goWrite',['$event']]]]]}}" class="pen" bindtap="__e"><image src="../../static/image/pencil.png" mode="widthFix"></image></view></view></view>
