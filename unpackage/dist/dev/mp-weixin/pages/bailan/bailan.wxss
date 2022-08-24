@@ -24,24 +24,125 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.bgc {
+  background-color: #f2f2f2;
+}
 .bailan {
   position: relative;
-  margin: 300rpx 220rpx;
 }
-.bailan image {
+.bailan .noArticle {
+  margin-top: 40%;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.bailan .noArticle image {
   width: 300rpx;
 }
-.bailan .text {
+.bailan .noArticle .text {
   font-size: 40rpx;
   color: #999;
 }
 .bailan .pen {
-  position: absolute;
-  top: -240rpx;
-  right: -180rpx;
+  position: fixed;
+  bottom: 180rpx;
+  right: 270rpx;
   width: 160rpx;
 }
 .bailan .pen image {
   width: 80%;
+}
+.bailan .search {
+  background-color: #fff;
+  margin-bottom: 10rpx;
+}
+.bailan .search .oldSearch {
+  display: flex;
+  width: 300rpx;
+  margin-top: 20rpx;
+}
+.bailan .search .oldSearch .u-icon {
+  position: absolute;
+  right: 40rpx;
+  top: -6rpx;
+}
+.bailan .search .newSearch {
+  display: flex;
+  width: 100%;
+  height: 100rpx;
+  background-color: #fad556;
+}
+.bailan .search .newSearch .btn {
+  width: 100rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+}
+.bailan .show_article {
+  margin-top: 30rpx;
+  margin-bottom: 30rpx;
+}
+.bailan .show_article .article {
+  display: flex;
+  width: 90%;
+  margin-left: 5%;
+  height: 200rpx;
+  background-color: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0rpx 0 10rpx 10rpx #ccc;
+}
+.bailan .show_article .article .calendar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  flex: 1;
+  border-right: 2rpx solid #ccc;
+}
+.bailan .show_article .article .calendar .day {
+  font-size: 50rpx;
+  font-weight: 600;
+  margin-bottom: 10rpx;
+}
+.bailan .show_article .article .container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 5;
+  margin-left: 20rpx;
+}
+.bailan .show_article .article .container .title {
+  flex: 1;
+  font-size: 40rpx;
+  font-weight: 600;
+}
+.bailan .show_article .article .container .content {
+  flex: 3;
+  height: 50rpx;
+  line-height: 48rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.bailan .show_article .article .container .tool {
+  display: flex;
+  flex: 1;
+  margin-bottom: 10rpx;
+}
+.bailan .show_article .article .container .tool .time {
+  font-size: 36rpx;
+  color: #707070;
+}
+.bailan .show_article .article .container .tool .edit {
+  position: absolute;
+  right: 140rpx;
+}
+.bailan .show_article .article .container .tool .list {
+  position: absolute;
+  right: 70rpx;
 }
 

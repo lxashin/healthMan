@@ -1,0 +1,1 @@
+<view class="detail data-v-5fc8d041"><view class="title data-v-5fc8d041">{{''+article.title+''}}</view><text class="time data-v-5fc8d041">{{article.time}}</text><view class="content data-v-5fc8d041">{{''+article.content+''}}</view></view>

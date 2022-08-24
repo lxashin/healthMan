@@ -4,8 +4,10 @@
     "pages/gongzi/gongzi",
     "pages/bailan/bailan",
     "pages/my/my",
-    "compoments/textarea",
-    "compoments/setUp"
+    "compoments/bailan/textarea",
+    "compoments/index/setUp",
+    "compoments/bailan/calendar",
+    "compoments/bailan/detailArticle"
   ],
   "subPackages": [],
   "window": {
@@ -47,6 +49,5 @@
       }
     ]
   },
-  "usingComponents": {},
-  "sitemapLocation": "sitemap.json"
+  "usingComponents": {}
 }

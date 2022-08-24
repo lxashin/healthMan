@@ -2,5 +2,8 @@
   "navigationBarTitleText": "一起摆烂",
   "navigationBarBackgroundColor": "#fad556",
   "enablePullDownRefresh": false,
-  "usingComponents": {}
+  "usingComponents": {
+    "u-search": "/node-modules/uview-ui/components/u-search/u-search",
+    "u-icon": "/node-modules/uview-ui/components/u-icon/u-icon"
+  }
 }

@@ -128,7 +128,7 @@
 		methods: {
 			setUp(){
 				uni.navigateTo({
-					url:'../../compoments/setUp'
+					url:'../../compoments/index/setUp'
 				})
 			},
 			

@@ -24,6 +24,24 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.container .tool {
+  width: 90%;
+  height: 100rpx;
+  margin-left: 5%;
+  display: flex;
+  justify-content: space-between;
+}
+.container .title {
+  margin-top: 10rpx;
+  margin-left: 10rpx;
+  margin-bottom: 10rpx;
+}
+.container .title input {
+  border-bottom: 2rpx solid #ccc;
+}
+.container .content {
+  margin-left: 10rpx;
+}
 #editor {
   width: 100%;
   height: 300px;
