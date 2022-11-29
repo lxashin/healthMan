@@ -102,6 +102,9 @@ try {
     },
     uIcon: function() {
       return Promise.all(/*! import() | node-modules/uview-ui/components/u-icon/u-icon */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-icon/u-icon")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-icon/u-icon.vue */ 213))
+    },
+    uModal: function() {
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-modal/u-modal */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-modal/u-modal")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-modal/u-modal.vue */ 304))
     }
   }
 } catch (e) {
@@ -236,14 +239,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 var _default =
 {
   data: function data() {
     return {
       article: [] || false,
       keyword: '',
-      showSearch: true };
-
+      showSearch: true,
+      showDel: false,
+      title: "是否永久删除便签",
+      id: '' //接受要删除的id
+    };
   },
   methods: {
     goWrite: function goWrite() {
@@ -259,6 +269,7 @@ var _default =
       this.showSearch = true;
       this.getArticle();
     },
+
     search: function search() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var res;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
                   uniCloud.callFunction({
                     name: 'Article',
@@ -288,38 +299,60 @@ var _default =
         url: '../../compoments/bailan/detailArticle?article=' + encodeURIComponent(JSON.stringify(item)) });
 
     },
+    // 修改编辑文章
+    edit: function edit(item) {
+      uni.navigateTo({
+        url: '../../compoments/bailan/textarea?title=' + encodeURIComponent(JSON.stringify(item.title)) + '&content=' + encodeURIComponent(JSON.stringify(item.content)) + '&id=' + encodeURIComponent(JSON.stringify(item._id)) });
+
+    },
+    // 删除文章
+    deleteArticle: function deleteArticle(id) {
+      this.id = id;
+      this.showDel = true;
+    },
+    // 确认删除
+    confirmDel: function confirmDel() {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:_context2.next = 2;return (
+                  _this2.delArticle(_this2.id));case 2:_context2.next = 4;return (
+                  _this2.getArticle());case 4:
+                _this2.showDel = false;case 5:case "end":return _context2.stop();}}}, _callee2);}))();
+    },
+    // 取消删除
+    cancelDel: function cancelDel() {
+      this.showDel = false;
+    },
+
     // 获取文章
-    getArticle: function getArticle() {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var res;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:_context2.next = 2;return (
+    getArticle: function getArticle() {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {var res;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:_context3.next = 2;return (
                   uniCloud.callFunction({
                     name: 'Article',
                     data: {
-                      action: 'get' } }));case 2:res = _context2.sent;
+                      action: 'get' } }));case 2:res = _context3.sent;
 
 
 
                 // console.log(JSON.stringify(res.result.data))
-                _this2.article = JSON.parse(JSON.stringify(res.result.data));case 4:case "end":return _context2.stop();}}}, _callee2);}))();
+                _this3.article = res.result.data;case 4:case "end":return _context3.stop();}}}, _callee3);}))();
 
 
     },
     // 获取某一条文章
-    getOneArticle: function getOneArticle(id) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {var res;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:_context3.next = 2;return (
+    getOneArticle: function getOneArticle(id) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {var res;return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:_context4.next = 2;return (
                   uniCloud.callFunction({
                     name: 'Article',
                     data: {
                       action: 'getOne',
-                      id: id } }));case 2:res = _context3.sent;
+                      id: id } }));case 2:res = _context4.sent;
 
 
-                console.log(res);case 4:case "end":return _context3.stop();}}}, _callee3);}))();
+                console.log(res);case 4:case "end":return _context4.stop();}}}, _callee4);}))();
     },
     // 删除文章
-    delArticle: function delArticle(id) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {var res;return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:_context4.next = 2;return (
+    delArticle: function delArticle(id) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee5() {var res;return _regenerator.default.wrap(function _callee5$(_context5) {while (1) {switch (_context5.prev = _context5.next) {case 0:_context5.next = 2;return (
                   uniCloud.callFunction({
                     name: 'Article',
                     data: {
                       action: 'delete',
-                      id: id } }));case 2:res = _context4.sent;
+                      id: id } }));case 2:res = _context5.sent;
 
 
                 console.log(res);
@@ -328,23 +361,19 @@ var _default =
                     title: '删除成功',
                     icon: 'none' });
 
-                }case 5:case "end":return _context4.stop();}}}, _callee4);}))();
+                }case 5:case "end":return _context5.stop();}}}, _callee5);}))();
     } },
 
   created: function created() {
 
   },
-  mounted: function mounted() {
-    this.getArticle();
 
-  },
-  computed: {
-    day: function day() {
-      this.article.forEach(function (item) {
-        console.log(item.time.substr(item.time.length - 2));
-        return item.time.substr(item.time.length - 2);
-      });
-    } } };exports.default = _default;
+  mounted: function mounted() {var _this4 = this;
+    this.getArticle();
+    setTimeout(function () {
+      console.log(_this4.article);
+    }, 1000);
+  } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js */ 160)["default"]))
 
 /***/ }),

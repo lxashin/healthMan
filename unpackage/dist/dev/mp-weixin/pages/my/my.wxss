@@ -50,4 +50,35 @@
   color: #999;
   font-size: 28rpx;
 }
+.feedback {
+  border-bottom: 2rpx solid #ebebec;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.feedback .u-icon {
+  font-size: 50rpx;
+  margin-left: 30rpx;
+}
+.feedback .btn {
+  text-align: start;
+  line-height: 100rpx;
+  width: 100%;
+  height: 100rpx;
+  background-color: #fff;
+  font-size: 15px;
+}
+.feedback button::after {
+  border: none;
+}
+.u-cell .u-icon {
+  margin-right: 10px;
+}
+.logout {
+  display: flex;
+  justify-content: center;
+  font-size: 36rpx;
+  color: #fb8787;
+  margin: 30rpx;
+}
 

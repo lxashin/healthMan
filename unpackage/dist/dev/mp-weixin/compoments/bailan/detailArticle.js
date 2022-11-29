@@ -155,8 +155,11 @@ var _default =
 
 
   onLoad: function onLoad(option) {
-    this.article = JSON.parse(decodeURIComponent(option.article));
-    // console.log(JSON.parse(decodeURIComponent(option.article)))
+    if (option.article) {
+      this.article = JSON.parse(decodeURIComponent(option.article));
+      // console.log(JSON.parse(decodeURIComponent(option.article)))
+    }
+
   } };exports.default = _default;
 
 /***/ }),

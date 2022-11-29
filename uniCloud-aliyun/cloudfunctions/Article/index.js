@@ -13,7 +13,7 @@ exports.main = async (event, context) => {
 		return await article.get()
 	}else if(action=='add'){
 		const {information} = event
-		res = await article.add({'title':information.title,'content':information.content})
+		res = await article.add({'title':information.title,'content':information.content,"date":information.date,"time":information.time})
 	}else if(action=='delete'){
 		// doc查询为字段
 		const {id} = event
@@ -25,7 +25,9 @@ exports.main = async (event, context) => {
 		const {form} = event
 		res = article.where({_id:form.id}).update({
 			title:form.title,
-			content:form.content
+			content:form.content,
+			date:form.date,
+			time:form.time
 		})
 	}else if(action=='searchArticle'){
 		const {keyword} = event

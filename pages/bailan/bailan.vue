@@ -19,17 +19,17 @@
 				</view>
 			</view>
 			
-			<view class="show_article" @click="goDetail(item)" v-for="item in article" :key="item.id">
+			<view class="show_article" v-for="item in article" :key="item._id">
 				<view class="article">
-					<view class="calendar">
+					<view class="calendar" @click="goDetail(item)">
 						<text class="day">{{item.date.substring(item.date.length-2)}}</text>
 						<text class="month">{{item.date.substring(6,7)}}月</text>
 					</view>
 					<view class="container">
-						<view class="title">
+						<view class="title" @click="goDetail(item)">
 							{{item.title}}
 						</view>
-						<view class="content">
+						<view class="content" @click="goDetail(item)">
 							{{item.content}}
 						</view>
 						<view class="tool">
@@ -37,10 +37,13 @@
 								{{item.time}}
 							</view>
 							<view class="edit">
-								<u-icon name="edit-pen" size="24"></u-icon>
+								<u-icon name="edit-pen" size="24" @click="edit(item)"></u-icon>
 							</view>
 							<view class="list">
-								<u-icon name="list" size="24"></u-icon>
+								<u-icon name="trash" size="24" @click="deleteArticle(item._id)"></u-icon>
+								<view >
+										<u-modal :show="showDel" :title='title' showCancelButton @confirm="confirmDel" @cancel="cancelDel"></u-modal>
+									</view>
 							</view>
 						</view>
 					</view>
@@ -50,6 +53,7 @@
 			<view class="pen" @click="goWrite">
 				<image src="../../static/image/pencil.png" mode="widthFix"></image>
 			</view>
+			
 		</view>
 		
 	</view>
@@ -62,7 +66,10 @@
 			return {
 				article:[]||{},
 				keyword:'',
-				showSearch:true
+				showSearch:true,
+				showDel:false,
+				title:"是否永久删除便签",
+				id:'' //接受要删除的id
 			}
 		},
 		methods:{
@@ -79,6 +86,7 @@
 				this.showSearch = true
 				this.getArticle()
 			},
+			
 			async search(){
 				const res = await uniCloud.callFunction({
 					name:'Article',
@@ -108,6 +116,28 @@
 					url:'../../compoments/bailan/detailArticle?article='+encodeURIComponent(JSON.stringify(item))
 				})
 			},
+			// 修改编辑文章
+			edit(item){
+				uni.navigateTo({
+					url:'../../compoments/bailan/textarea?title='+encodeURIComponent(JSON.stringify(item.title))+'&content='+encodeURIComponent(JSON.stringify(item.content))+'&id='+encodeURIComponent(JSON.stringify(item._id))
+				})
+			},
+			// 删除文章
+			deleteArticle(id){
+				this.id = id
+				this.showDel = true
+			},
+			// 确认删除
+			async confirmDel(){
+				await this.delArticle(this.id)
+				await this.getArticle()
+				this.showDel = false
+			},
+			// 取消删除
+			cancelDel(){
+				this.showDel = false
+			},
+			
 			// 获取文章
 			async getArticle(){
 				const res = await uniCloud.callFunction({
@@ -118,7 +148,7 @@
 					}
 				})
 				// console.log(JSON.stringify(res.result.data))
-				this.article = JSON.parse(JSON.stringify(res.result.data))
+				this.article = res.result.data
 				
 				
 			},
@@ -154,18 +184,14 @@
 		created() {
 			
 		},
+		
 		mounted() {
 			this.getArticle()
-			
+			setTimeout(()=>{
+				console.log(this.article)
+			},1000)
 		},
-		computed:{
-			day(){
-				this.article.forEach((item)=>{
-					console.log(item.time.substr(item.time.length-2))
-					return item.time.substr(item.time.length-2)
-				})
-			}
-		}
+		
 	}
 </script>
 

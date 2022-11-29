@@ -6,12 +6,12 @@
 		<view class="container">
 			<!-- 无备忘录 -->
 			<view class="noneArticle" v-if="!article.length">
-				--2022-08-23无备忘录--
+				--{{date}}无备忘录--
 			</view>
 			
 			<view v-else>
 				<view class="date">
-						2022-08-23
+						{{date}}
 					</view>
 					
 				<!-- article卡片 -->	

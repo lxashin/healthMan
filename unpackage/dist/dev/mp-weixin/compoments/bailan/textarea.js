@@ -155,7 +155,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uniCloud, uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 36));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} //
+/* WEBPACK VAR INJECTION */(function(uni, uniCloud) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 36));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} //
 //
 //
 //
@@ -177,72 +177,107 @@ var _default =
   data: function data() {
     return {
       title: '',
-      content: '' };
+      content: '',
+      id: '' // 用来判断是否为修改文章，如果有id则是修改文章，没有则是发表文章
+    };
+
+  },
+  onLoad: function onLoad(option) {
+    if (option.title || option.content) {
+      this.title = JSON.parse(decodeURIComponent(option.title));
+      this.content = JSON.parse(decodeURIComponent(option.content));
+      this.id = JSON.parse(decodeURIComponent(option.id));
+      console.log(this.id);
+    }
 
 
   },
   methods: {
-    onEditorReady: function onEditorReady() {
-      console.log(this.value);
+    onEditorReady: function onEditorReady() {var _this = this;
+      // 初始化文本内容
+      uni.createSelectorQuery().select('#editor').context(function (res) {
+        var contentVal_1 = _this.content;
+        //将内容写入编辑器
+        _this.editorCtx = res.context;
+        var EContent = {
+          html: contentVal_1 };
+
+        _this.editorCtx.setContents(EContent); //设置富文本编辑器的内容
+      }).exec();
     },
 
-    getEditorContent: function getEditorContent() {
-      console.log(111);
+    getEditorContent: function getEditorContent(e) {
+      this.content = e.detail.text;
+      // console.log(this.content)
     },
+    // 保存便签
+    commit: function commit() {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var result, _result;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:if (!
+                _this2.id) {_context.next = 7;break;}_context.next = 3;return (
 
+                  _this2.updateArticle(_this2.id, _this2.title, _this2.content));case 3:result = _context.sent;
+                uni.switchTab({
+                  url: '../../pages/bailan/bailan' });
+
+                // location.reload()
+                _context.next = 11;break;case 7:_context.next = 9;return (
+
+
+                  _this2.addArticle(_this2.title, _this2.content));case 9:_result = _context.sent;
+                uni.switchTab({
+                  url: '../../pages/bailan/bailan' });
+
+                // location.reload()
+              case 11:case "end":return _context.stop();}}}, _callee);}))();
+
+
+
+    },
+    // 获取当前年月日
+    getNowDate: function getNowDate() {
+      var time = new Date();
+      var y = time.getFullYear();
+      var m = time.getMonth() + 1 < 10 ? '0' + (time.getMonth() + 1) : time.getMonth() + 1;
+      var d = time.getDate() < 10 ? '0' + time.getDate() : time.getDate();
+      return y + '-' + m + '-' + d;
+    },
+    // 获取当前时分秒
+    getNowTime: function getNowTime() {
+      var date = new Date();
+      var hour = date.getHours() >= 10 ? date.getHours() : '0' + date.getHours();
+      var minute = date.getMinutes() >= 10 ? date.getMinutes() : '0' + date.getMinutes();
+      var second = date.getSeconds() >= 10 ? date.getSeconds() : '0' + date.getSeconds();
+      return "".concat(hour, ":").concat(minute, ":").concat(second);
+    },
     // 获取文章
-    getArticle: function getArticle() {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var res;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
+
+    getArticle: function getArticle() {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var res;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:_context2.next = 2;return (
                   uniCloud.callFunction({
                     name: 'Article',
                     data: {
-                      action: 'get' } }));case 2:res = _context.sent;
+                      action: 'get' } }));case 2:res = _context2.sent;
 
 
-
-                console.log(res);case 4:case "end":return _context.stop();}}}, _callee);}))();
-    },
-    // 获取某一条文章
-    getOneArticle: function getOneArticle(id) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var res;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:_context2.next = 2;return (
-                  uniCloud.callFunction({
-                    name: 'Article',
-                    data: {
-                      action: 'getOne',
-                      id: id } }));case 2:res = _context2.sent;
-
-
-                console.log(res);case 4:case "end":return _context2.stop();}}}, _callee2);}))();
+                console.log(111);case 4:case "end":return _context2.stop();}}}, _callee2);}))();
     },
     // 添加文章
-    addArticle: function addArticle(title, content) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {var res;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:_context3.next = 2;return (
+    addArticle: function addArticle(title, content) {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {var res;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:_context3.next = 2;return (
                   uniCloud.callFunction({
                     name: 'Article',
                     data: {
                       action: 'add',
                       information: {
                         title: title,
-                        content: content } } }));case 2:res = _context3.sent;case 3:case "end":return _context3.stop();}}}, _callee3);}))();
+                        content: content,
+                        date: _this3.getNowDate(),
+                        time: _this3.getNowTime() } } }));case 2:res = _context3.sent;return _context3.abrupt("return",
 
 
 
+                res.result.inserted);case 4:case "end":return _context3.stop();}}}, _callee3);}))();
     },
-    // 删除文章
-    delArticle: function delArticle(id) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {var res;return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:_context4.next = 2;return (
-                  uniCloud.callFunction({
-                    name: 'Article',
-                    data: {
-                      action: 'delete',
-                      id: id } }));case 2:res = _context4.sent;
 
-
-                if (res.result.deleted) {
-                  uni.showToast({
-                    title: '删除成功',
-                    icon: 'none' });
-
-                }case 4:case "end":return _context4.stop();}}}, _callee4);}))();
-    },
     // 更新文章
-    updateArticle: function updateArticle(id, title, content) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee5() {var res;return _regenerator.default.wrap(function _callee5$(_context5) {while (1) {switch (_context5.prev = _context5.next) {case 0:_context5.next = 2;return (
+    updateArticle: function updateArticle(id, title, content) {var _this4 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {var res;return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:_context4.next = 2;return (
                   uniCloud.callFunction({
                     name: 'Article',
                     data: {
@@ -250,23 +285,18 @@ var _default =
                       form: {
                         id: id,
                         title: title,
-                        content: content } } }));case 2:res = _context5.sent;case 3:case "end":return _context5.stop();}}}, _callee5);}))();
+                        content: content,
+                        date: _this4.getNowDate(),
+                        time: _this4.getNowTime() } } }));case 2:res = _context4.sent;case 3:case "end":return _context4.stop();}}}, _callee4);}))();
 
 
 
     } },
 
-  mounted: function mounted() {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee6() {var res;return _regenerator.default.wrap(function _callee6$(_context6) {while (1) {switch (_context6.prev = _context6.next) {case 0:_context6.next = 2;return (
-                uniCloud.callFunction({
-                  name: 'Article',
-                  data: {
-                    action: 'get' } }));case 2:res = _context6.sent;
+  mounted: function mounted() {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee5() {return _regenerator.default.wrap(function _callee5$(_context5) {while (1) {switch (_context5.prev = _context5.next) {case 0:case "end":return _context5.stop();}}}, _callee5);}))();
 
-
-
-              console.log(res);case 4:case "end":return _context6.stop();}}}, _callee6);}))();
   } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js */ 160)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js */ 160)["default"]))
 
 /***/ }),
 

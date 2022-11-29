@@ -211,6 +211,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 {
   components: {
     Project: Project,
@@ -227,9 +228,9 @@ __webpack_require__.r(__webpack_exports__);
       money: 0,
       restTime: "",
       interval: '',
-      timeData: {} };
-
-
+      timeData: {},
+      showEye: true // 切换眼睛图标
+    };
 
   },
   onLoad: function onLoad() {
@@ -330,6 +331,11 @@ __webpack_require__.r(__webpack_exports__);
       }
       // second = ((Date.now()-this.detailTime(startTime))/1000).toFixed(2)>0?((Date.now()-this.detailTime(startTime))/1000).toFixed(2):0
       this.money = isNaN(secondSalary * second) ? 0 : (secondSalary * second).toFixed(2); //判断是否为NAN
+    },
+
+    //切换可观看金额
+    checkout: function checkout() {
+      this.showEye = !this.showEye;
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

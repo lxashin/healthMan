@@ -7,7 +7,12 @@
     "compoments/bailan/textarea",
     "compoments/index/setUp",
     "compoments/bailan/calendar",
-    "compoments/bailan/detailArticle"
+    "compoments/bailan/detailArticle",
+    "compoments/person/importantNews",
+    "compoments/person/about",
+    "compoments/person/user-agreement",
+    "compoments/person/privacy",
+    "compoments/person/update"
   ],
   "subPackages": [],
   "window": {
@@ -21,7 +26,6 @@
     "selectedColor": "#000",
     "borderStyle": "black",
     "backgroundColor": "#fad556",
-    "fontSize": "34rpx",
     "list": [
       {
         "pagePath": "pages/index/index",

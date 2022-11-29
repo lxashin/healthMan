@@ -6,8 +6,9 @@
 		</view>
 		<view class="money-content">
 			<view class="money">
-				<view style="font-weight: 600;padding-top: 10rpx;padding-left: 16rpx;display: flex;">今日搬砖已赚到 <u-icon name="eye" size='20' style="padding-left:10rpx"></u-icon> </view>
-				<text style="font-size: 60rpx;font-weight: 700;padding-top: 40rpx;padding-left: 20rpx;"> {{money}} 元</text>
+				<view style="font-weight: 600;padding-top: 10rpx;padding-left: 16rpx;display: flex;">今日搬砖已赚到 <u-icon v-if="showEye" name="eye-fill" size='20' style="padding-left:10rpx" @click="checkout"></u-icon> <u-icon v-else name="eye-off" size='20' style="padding-left:10rpx" @click="checkout"></u-icon></view>
+				<text v-if="showEye" style="font-size: 60rpx;font-weight: 700;padding-top: 40rpx;padding-left: 20rpx;"> {{money}} 元</text>
+				<text v-else style="font-size: 60rpx;font-weight: 700;padding-top: 40rpx;padding-left: 20rpx;"> **** 元</text>
 				<view class="btn">
 					<u-button text="设置" color="linear-gradient(to right, rgb(66, 83, 216), rgb(213, 51, 186))" size='mini' @click="setUp"></u-button>
 				</view>
@@ -62,7 +63,7 @@
 				restTime:"",
 				interval:'',
 				timeData:{},
-				
+				showEye:true // 切换眼睛图标
 				
 			}
 		},
@@ -166,6 +167,10 @@
 				this.money = isNaN(secondSalary*second)?0:(secondSalary*second).toFixed(2) //判断是否为NAN
 			},
 			
+			//切换可观看金额
+			checkout(){
+				this.showEye = !this.showEye
+			}
 			
 			
 		},

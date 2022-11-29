@@ -81,6 +81,56 @@
 		        "enablePullDownRefresh": false
 		    }
 		    
+		},
+		{
+		    "path" : "compoments/person/importantNews",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "重要公告",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "compoments/person/about",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "关于我们",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "compoments/person/user-agreement",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "用户协议",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "compoments/person/privacy",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "隐私政策",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "compoments/person/update",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "更新日志",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
 		}
 		
 	],
@@ -96,7 +146,7 @@
 		"selectedColor": "#000",
 		"borderStyle": "black",
 		"backgroundColor": "#fad556",
-		"fontSize": "34rpx",
+		// "fontSize": "34rpx",
 		// "height": "80rpx",
 		"list": [
 			{

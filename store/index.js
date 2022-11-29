@@ -28,6 +28,7 @@ const store = new Vuex.Store({
 		salaryDay:0, // 距离发工资的天数
 		birthday:0,   //距离生日的天数
 		festivalDay:0, // 距离节假日剩余的天数
+		loginCode:'' // 登录后的code
 	},
 	mutations:{
 		setTime(state,data){
@@ -89,6 +90,10 @@ const store = new Vuex.Store({
 		setFestivalDay(state,data){
 			state.festivalDay = data
 			uni.setStorageSync('festivalDay',data)
+		},
+		getLoginCode(state,data){
+			state.loginCode = data
+			uni.setStorageSync('loginCode',data)
 		}
 	
 	},

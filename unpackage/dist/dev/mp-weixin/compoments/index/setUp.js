@@ -104,7 +104,7 @@ try {
       return Promise.all(/*! import() | node-modules/uview-ui/components/u-form-item/u-form-item */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-form-item/u-form-item")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-form-item/u-form-item.vue */ 260))
     },
     uDatetimePicker: function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-datetime-picker/u-datetime-picker */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-datetime-picker/u-datetime-picker")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-datetime-picker/u-datetime-picker.vue */ 336))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-datetime-picker/u-datetime-picker */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-datetime-picker/u-datetime-picker")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-datetime-picker/u-datetime-picker.vue */ 344))
     }
   }
 } catch (e) {
