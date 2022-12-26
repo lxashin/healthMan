@@ -98,16 +98,16 @@ var components
 try {
   components = {
     uCountDown: function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-count-down/u-count-down */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-count-down/u-count-down")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-count-down/u-count-down.vue */ 204))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-count-down/u-count-down */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-count-down/u-count-down")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-count-down/u-count-down.vue */ 244))
     },
     uIcon: function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-icon/u-icon */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-icon/u-icon")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-icon/u-icon.vue */ 213))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-icon/u-icon */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-icon/u-icon")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-icon/u-icon.vue */ 253))
     },
     uButton: function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-button/u-button */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-button/u-button")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-button/u-button.vue */ 222))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-button/u-button */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-button/u-button")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-button/u-button.vue */ 262))
     },
     uSwiper: function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-swiper/u-swiper */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-swiper/u-swiper")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-swiper/u-swiper.vue */ 232))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-swiper/u-swiper */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-swiper/u-swiper")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-swiper/u-swiper.vue */ 272))
     }
   }
 } catch (e) {
@@ -164,7 +164,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var Project = function Project() {Promise.all(/*! require.ensure | compoments/index/project */[__webpack_require__.e("common/vendor"), __webpack_require__.e("compoments/index/project")]).then((function () {return resolve(__webpack_require__(/*! ../../compoments/index/project.vue */ 240));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var Holiday = function Holiday() {__webpack_require__.e(/*! require.ensure | compoments/index/holiday */ "compoments/index/holiday").then((function () {return resolve(__webpack_require__(/*! ../../compoments/index/holiday.vue */ 247));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var Project = function Project() {Promise.all(/*! require.ensure | compoments/index/project */[__webpack_require__.e("common/vendor"), __webpack_require__.e("compoments/index/project")]).then((function () {return resolve(__webpack_require__(/*! ../../compoments/index/project.vue */ 280));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var Holiday = function Holiday() {__webpack_require__.e(/*! require.ensure | compoments/index/holiday */ "compoments/index/holiday").then((function () {return resolve(__webpack_require__(/*! ../../compoments/index/holiday.vue */ 287));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
 
 
 

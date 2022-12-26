@@ -98,19 +98,19 @@ var components
 try {
   components = {
     uAvatar: function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-avatar/u-avatar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-avatar/u-avatar")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-avatar/u-avatar.vue */ 312))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-avatar/u-avatar */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-avatar/u-avatar")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-avatar/u-avatar.vue */ 352))
     },
     uGap: function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-gap/u-gap */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-gap/u-gap")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-gap/u-gap.vue */ 320))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-gap/u-gap */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-gap/u-gap")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-gap/u-gap.vue */ 360))
     },
     uCellGroup: function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-cell-group/u-cell-group */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-cell-group/u-cell-group")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-cell-group/u-cell-group.vue */ 328))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-cell-group/u-cell-group */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-cell-group/u-cell-group")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-cell-group/u-cell-group.vue */ 368))
     },
     uCell: function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-cell/u-cell */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-cell/u-cell")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-cell/u-cell.vue */ 336))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-cell/u-cell */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-cell/u-cell")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-cell/u-cell.vue */ 376))
     },
     uIcon: function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-icon/u-icon */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-icon/u-icon")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-icon/u-icon.vue */ 213))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-icon/u-icon */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-icon/u-icon")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-icon/u-icon.vue */ 253))
     }
   }
 } catch (e) {

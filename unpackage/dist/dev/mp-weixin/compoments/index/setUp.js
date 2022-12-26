@@ -98,13 +98,13 @@ var components
 try {
   components = {
     "u-Form": function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u--form/u--form */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u--form/u--form")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u--form/u--form.vue */ 254))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u--form/u--form */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u--form/u--form")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u--form/u--form.vue */ 294))
     },
     uFormItem: function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-form-item/u-form-item */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-form-item/u-form-item")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-form-item/u-form-item.vue */ 260))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-form-item/u-form-item */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-form-item/u-form-item")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-form-item/u-form-item.vue */ 300))
     },
     uDatetimePicker: function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-datetime-picker/u-datetime-picker */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-datetime-picker/u-datetime-picker")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-datetime-picker/u-datetime-picker.vue */ 344))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-datetime-picker/u-datetime-picker */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-datetime-picker/u-datetime-picker")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-datetime-picker/u-datetime-picker.vue */ 384))
     }
   }
 } catch (e) {

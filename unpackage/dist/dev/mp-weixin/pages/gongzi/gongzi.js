@@ -98,22 +98,22 @@ var components
 try {
   components = {
     "u-Form": function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u--form/u--form */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u--form/u--form")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u--form/u--form.vue */ 254))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u--form/u--form */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u--form/u--form")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u--form/u--form.vue */ 294))
     },
     uFormItem: function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-form-item/u-form-item */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-form-item/u-form-item")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-form-item/u-form-item.vue */ 260))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-form-item/u-form-item */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-form-item/u-form-item")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-form-item/u-form-item.vue */ 300))
     },
     "u-Input": function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u--input/u--input */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u--input/u--input")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u--input/u--input.vue */ 268))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u--input/u--input */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u--input/u--input")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u--input/u--input.vue */ 308))
     },
     uSwitch: function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-switch/u-switch */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-switch/u-switch")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-switch/u-switch.vue */ 274))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-switch/u-switch */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-switch/u-switch")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-switch/u-switch.vue */ 314))
     },
     uIcon: function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-icon/u-icon */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-icon/u-icon")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-icon/u-icon.vue */ 213))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-icon/u-icon */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-icon/u-icon")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-icon/u-icon.vue */ 253))
     },
     uActionSheet: function() {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-action-sheet/u-action-sheet */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-action-sheet/u-action-sheet")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-action-sheet/u-action-sheet.vue */ 282))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-action-sheet/u-action-sheet */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-action-sheet/u-action-sheet")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-action-sheet/u-action-sheet.vue */ 322))
     }
   }
 } catch (e) {
@@ -187,7 +187,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var CityPicker = function CityPicker() {Promise.all(/*! require.ensure | compoments/wangding-pickerAddress/wangding-pickerAddress */[__webpack_require__.e("common/vendor"), __webpack_require__.e("compoments/wangding-pickerAddress/wangding-pickerAddress")]).then((function () {return resolve(__webpack_require__(/*! @/compoments/wangding-pickerAddress/wangding-pickerAddress.vue */ 290));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var CityPicker = function CityPicker() {Promise.all(/*! require.ensure | compoments/wangding-pickerAddress/wangding-pickerAddress */[__webpack_require__.e("common/vendor"), __webpack_require__.e("compoments/wangding-pickerAddress/wangding-pickerAddress")]).then((function () {return resolve(__webpack_require__(/*! @/compoments/wangding-pickerAddress/wangding-pickerAddress.vue */ 330));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
 
 
 

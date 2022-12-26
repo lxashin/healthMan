@@ -21,18 +21,9 @@
 		<!-- 摸鱼项目合集 -->
 		<Project></Project>
 	
-	<!-- 弹幕，加油 -->
+	<!-- 健康模块 -->
 	<view class="programs">
-		<view class="title">
-			<text class="title1">加油打工人！</text>
-			<text class="title2">工作再忙也不要忘记休息休息哦</text>
-			</view>
-			<u-swiper
-			            :list="list3"
-			            indicator
-			            indicatorMode="line"
-			            circular
-			    ></u-swiper>
+		<Health></Health>
 		
 	</view>
 	
@@ -46,10 +37,12 @@
 	
 	import Project from '../../compoments/index/project.vue'
 	import Holiday from '../../compoments/index/holiday.vue'
+	import Health from '../../compoments/index/healthy.vue'
 	export default {
 		components:{
 			Project,
-			Holiday
+			Holiday,
+			Health
 		},
 		
 		data() {
