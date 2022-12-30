@@ -43,6 +43,26 @@
 		    
 		},
 		{
+		    "path" : "pages/community/index",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "交流社区",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "pages/help/index",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "公益互助",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
 		    "path" : "compoments/bailan/textarea",
 		    "style" :                                                                                    
 		    {
@@ -156,16 +176,16 @@
 			"text": "摸鱼"
 		}, 
 		{
-			"pagePath": "pages/gongzi/gongzi",
+			"pagePath": "pages/community/index",
 			"iconPath": "static/image/gz.png",
 			"selectedIconPath": "static/image/gz1.png",
-			"text": "扣税"
+			"text": "社区"
 		},
 		{
-			"pagePath": "pages/bailan/bailan",
+			"pagePath": "pages/help/index",
 			"iconPath": "static/image/flag.png",
 			"selectedIconPath": "static/image/flag1.png",
-			"text": "摆烂"
+			"text": "求助"
 		},
 		{
 			"pagePath": "pages/my/my",

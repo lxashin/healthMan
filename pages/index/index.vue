@@ -19,7 +19,7 @@
 		</view>
 		
 		<!-- 摸鱼项目合集 -->
-		<Project></Project>
+		<!-- <Project></Project> -->
 	
 	<!-- 健康模块 -->
 	<view class="programs">

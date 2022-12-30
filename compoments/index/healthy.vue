@@ -74,7 +74,8 @@
 			display: flex;
 			flex-direction: column;
 			width: 25%;
-			margin-bottom: 10px;
+			margin-bottom: 15px;
+			margin-top: 10px;
 			.icon{
 				width: 50px;
 				height: 50px;
