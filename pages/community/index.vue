@@ -17,7 +17,7 @@
 			            color: '#606266',
 			            transform: 'scale(1)'
 			        }"
-			        itemStyle="padding-left: 80px; padding-right: 80px; height: 34px;"
+			        itemStyle="padding-left: 160rpx; padding-right: 160rpx; height: 68rpx;"
 					@click="select"
 			    >
 			    </u-tabs>
@@ -99,23 +99,23 @@
 
 <style lang="scss" scoped>
 	.tabs{
-		margin-top: 30px;
+		margin-top: 60rpx;
 	}
 	.main{
-		margin-top: 20px;
+		margin-top: 40rpx;
 		.u-page{
-			margin-bottom: 30px;
+			margin-bottom: 60rpx;
 			.icon{
 				display: flex;
 				justify-content: flex-end;
-				padding: 10px;
+				padding: 20rpx;
 				.u-icon{
-					margin-left: 10px;
+					margin-left: 20rpx;
 				}
 				text{
 					color: #8d8d8d;
-					font-size: 16px;
-					padding-left: 5px
+					font-size: 32rpx;
+					padding-left: 10rpx
 				}
 			}
 		}
@@ -126,12 +126,12 @@
 	
 	        &__avatar {
 	             background-color: $u-bg-color;
-	             padding: 5px;
-	             border-radius: 3px;
+	             padding: 10rpx;
+	             border-radius: 6rpx;
 	         }
 	    
 	        &__content {
-	             margin-left: 10px;
+	             margin-left: 20rpx;
 	             flex: 1;
 	         }
 	    }

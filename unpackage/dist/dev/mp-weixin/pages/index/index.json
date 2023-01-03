@@ -5,8 +5,8 @@
     "u-count-down": "/node-modules/uview-ui/components/u-count-down/u-count-down",
     "u-icon": "/node-modules/uview-ui/components/u-icon/u-icon",
     "u-button": "/node-modules/uview-ui/components/u-button/u-button",
-    "u-swiper": "/node-modules/uview-ui/components/u-swiper/u-swiper",
     "project": "/compoments/index/project",
-    "holiday": "/compoments/index/holiday"
+    "holiday": "/compoments/index/holiday",
+    "health": "/compoments/index/healthy"
   }
 }

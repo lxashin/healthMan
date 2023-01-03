@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "交流社区",
+  "navigationBarBackgroundColor": "#fad556",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-search": "/node-modules/uview-ui/components/u-search/u-search",
+    "u-tabs": "/node-modules/uview-ui/components/u-tabs/u-tabs",
+    "u--text": "/node-modules/uview-ui/components/u--text/u--text",
+    "u-album": "/node-modules/uview-ui/components/u-album/u-album",
+    "u-icon": "/node-modules/uview-ui/components/u-icon/u-icon"
+  }
+}

@@ -175,7 +175,6 @@
 <style lang="scss">
 	.content{
 		width: 100%;
-		height: 2000rpx;
 		background-color: '#fad556';
 		.off{
 			display: flex;
@@ -202,7 +201,7 @@
 		}
 		
 		.money-content{
-			 box-shadow: 10px 10px 5px #888888;
+			 box-shadow: 20rpx 20rpx 10rpx #888888;
 			margin-left: 15px;
 			width: 90%;
 			height: 300rpx;

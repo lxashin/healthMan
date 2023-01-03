@@ -1,0 +1,1 @@
+<view class="healthy_page"><block wx:for="{{project}}" wx:for-item="item" wx:for-index="__i0__" wx:key="id"><view class="health_item"><view class="icon"><view class="{{['t-icon',item.icon]}}"></view></view><view class="content">{{''+item.content+''}}</view></view></block></view>

@@ -1,0 +1,16 @@
+{
+  "navigationBarTitleText": "公益互助",
+  "navigationBarBackgroundColor": "#fad556",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-notice-bar": "/node-modules/uview-ui/components/u-notice-bar/u-notice-bar",
+    "u-tabs": "/node-modules/uview-ui/components/u-tabs/u-tabs",
+    "u-icon": "/node-modules/uview-ui/components/u-icon/u-icon",
+    "u-button": "/node-modules/uview-ui/components/u-button/u-button",
+    "u-line": "/node-modules/uview-ui/components/u-line/u-line",
+    "u-overlay": "/node-modules/uview-ui/components/u-overlay/u-overlay",
+    "u-checkbox-group": "/node-modules/uview-ui/components/u-checkbox-group/u-checkbox-group",
+    "u-checkbox": "/node-modules/uview-ui/components/u-checkbox/u-checkbox",
+    "u-popup": "/node-modules/uview-ui/components/u-popup/u-popup"
+  }
+}

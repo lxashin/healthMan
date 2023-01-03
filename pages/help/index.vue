@@ -39,8 +39,8 @@
 				            color: '#606266',
 				            transform: 'scale(1)'
 				        }"
-				        itemStyle="padding-left: 50px; padding-right: 50px; height: 50px;"
-						@click="select"
+				        itemStyle="padding-left: 100rpx; padding-right: 100rpx; height: 100rpx;"
+						@click="selectHelp"
 				    >
 				    </u-tabs>
 			</view>
@@ -50,11 +50,12 @@
 			<view @click="showGoodsType=true"><text>所需物品</text> <u-icon name="arrow-down" size="12"></u-icon></view>
 			<view @click="showResolveStatu=true">{{statu===0?'解决状态':statu===1?'未解决':'已解决'}} <u-icon name="arrow-down" size="12"></u-icon></view>
 		</view>
-		<view class="infomation">
+		<!-- 求助信息 -->
+		<view class="infomation" v-if="help===0">
 			<view class="info_item">
 				<view class="header">
 					<p>需要 <text>退烧药</text></p>
-					<u-icon name="more-dot-fill"></u-icon>
+					<u-icon name="more-dot-fill" @click="showShare=true"></u-icon>
 				</view>
 				<view class="container">
 					<view class="timeAndDistance">
@@ -64,7 +65,7 @@
 					<view class="location">
 						<view>位置</view>
 						<view class="address">
-							【沙河街道】 广东省南山区白石街55号南山区白石洲水水水水水水水水水水水水水水水水水水水
+							【沙河街道】 广东省南山区白石街55号南山区白石洲
 						</view>
 					</view>
 					<view class="description">
@@ -104,7 +105,7 @@
 						<view class="location">
 							<view>位置</view>
 							<view class="address">
-								【沙河街道】 广东省南山区白石街55号南山区白石洲水水水水水水水水水水水水水水水水水水水
+								【沙河街道】 广东省南山区白石街55号南山区白石洲
 							</view>
 						</view>
 						<view class="description">
@@ -144,7 +145,7 @@
 						<view class="location">
 							<view>位置</view>
 							<view class="address">
-								【沙河街道】 广东省南山区白石街55号南山区白石洲水水水水水水水水水水水水水水水水水水水
+								【沙河街道】 广东省南山区白石街55号南山区白石洲
 							</view>
 						</view>
 						<view class="description">
@@ -172,8 +173,51 @@
 				</view>
 			
 		</view>
-		
-		
+		<!-- 帮助信息 -->
+		<view class="infomation" v-if="help===1">
+			<view class="info_item">
+				<view class="header">
+					<p>提供 <text class="green">退烧药</text></p>
+					<u-icon name="more-dot-fill" @click="showShare=true"></u-icon>
+				</view>
+				<view class="container">
+					<view class="timeAndDistance">
+						<text class="time">2022-12-29 08:11 发布</text>
+						<text class="distance">距离：1公里</text>
+					</view>
+					<view class="location">
+						<view>位置</view>
+						<view class="address">
+							【沙河街道】 广东省南山区白石街55号南山区白石洲
+						</view>
+					</view>
+					<view class="origin">
+						<view>
+							来源
+						</view>
+						<view>
+							药店
+						</view>
+					</view>
+					<view class="description">
+						<view>
+							描述
+						</view>
+						
+							<view class="content">
+								有多余的需要的请联系
+							</view>
+						
+						
+					</view>
+				</view>
+				<view class="provideHelp">
+					<u-button text="我需要帮助" color="linear-gradient(to right, rgb(66, 83, 216), rgb(213, 51, 186))"></u-button>
+				</view>
+				<u-line></u-line>
+			</view>
+			
+		</view>
 		</view>
 		<!-- 点击排序显示的遮罩层弹框 -->
 		<u-overlay :show="showSort" @click="showSort = false">
@@ -220,7 +264,7 @@
 					            @change="medicineChange"
 					        >
 					            <u-checkbox
-					                :customStyle="{marginBottom: '8px'}"
+					                :customStyle="{marginBottom: '16rpx'}"
 					                v-for="(item, index) in goodsList.medicineList"
 					                :key="index"
 					                :label="item.name"
@@ -288,7 +332,15 @@
 				</view>
 			</view>
 		</u-overlay>
-	
+	<u-popup :show="showShare" :round="10" mode="bottom" @close="showShare=false">
+			<view class="container">
+	            <view>转发</view>
+				<u-line color="#2979ff"></u-line>
+				<view>举报</view>
+				<u-line dashed></u-line>
+				<view @click="showShare=false">取消</view>
+			</view>
+		</u-popup>
 	
 	</view>
 </template>
@@ -302,6 +354,7 @@
 					{name:'求助信息'},
 					{name:'帮助信息'}
 				],
+				help:0, // 0:求助信息 1:帮助信息
 				personList:['老人','孕妇','儿童','残障人士'],
 				showSort:false,
 				showPersonType:false,
@@ -358,6 +411,7 @@
 						            ],
 				},
 			statu:0, // 0:全部 1:未解决 2:已解决
+			showShare:false, // 点击... 显示分享或举报按钮
 			}
 		},
 		methods:{
@@ -366,6 +420,9 @@
 			},
 			open(){
 				this.show = true
+			},
+			selectHelp(item){
+				this.help = item.index
 			},
 			selectPerson(index){
 				this.showPersonType = true
@@ -423,12 +480,12 @@
 		.header{
 			display: flex;
 			justify-content: space-around;
-			margin-top: 10px;
-			margin-bottom: 10px;
+			margin-top: 20rpx;
+			margin-bottom: 20rpx;
 			.needMedicine{
 				display: flex;
 				image{
-					width: 60px
+					width: 120rpx
 				};
 				.title{
 					display: flex;
@@ -436,12 +493,12 @@
 					align-items: center;
 					flex-direction: column;
 					text:nth-child(1){
-						font-size: 18px;
+						font-size: 36rpx;
 						color: #000;
 						font-weight: 700;
 					}
 					text:nth-child(2){
-						font-size: 10px;
+						font-size: 20rpx;
 						color: #b4b4b4;
 					}
 				}
@@ -516,6 +573,7 @@
 			.info_item{
 				background-color: rgb(246, 247, 248);
 				margin: 40rpx;
+				
 				.header{
 					display: flex;
 					justify-content: space-between;
@@ -526,6 +584,9 @@
 							font-weight: 500;
 							color: red;
 							padding-left: 10rpx;
+						}
+						.green{
+							color: rgb(0,188,133);
 						}
 					}
 				}
@@ -540,6 +601,17 @@
 					.location{
 						display: flex;
 						margin: 20rpx 0;
+						view:nth-child(1){
+							flex: 1;
+							color: rgb(153, 153, 153);
+						}
+						view:nth-child(2){
+							flex: 6;
+						}
+					}
+					.origin{
+						display: flex;
+						margin-bottom: 20rpx;
 						view:nth-child(1){
 							flex: 1;
 							color: rgb(153, 153, 153);
@@ -579,9 +651,9 @@
 					}
 				}
 				.provideHelp{
+					margin: 100rpx 100rpx 40rpx;
 					.u-button{
 						width: 500rpx;
-						margin: 100rpx 100rpx 40rpx;
 					}
 				}
 			}
@@ -595,7 +667,7 @@
 					display: flex;
 					justify-content: space-around;
 					align-items: center;
-					margin-top: 10rpx;
+					margin-top: -90rpx;
 					width: 90%;
 					height: 160rpx;
 					background-color: #fff;
@@ -607,9 +679,9 @@
 						justify-content: center;
 						align-items: center;
 						width: 40%;
-						height: 34px;
+						height: 68rpx;
 						color: #000;
-						border: 1px solid #ccc;
+						border: 2rpx solid #ccc;
 					}
 					.time{
 						background-color: #fff;
@@ -638,7 +710,7 @@
 				flex-direction: column;
 				justify-content: space-around;
 				align-items: center;
-				margin-top: 10rpx;
+				margin-top: -90rpx;
 				width: 90%;
 				height: 160rpx;
 				background-color: #fff;
@@ -654,7 +726,7 @@
 						display: flex;
 						justify-content: center;
 						align-items: center;
-						width: 70px;
+						width: 140rpx;
 						height: 68rpx;
 						color: #000;
 						border: 2rpx solid #ccc;
@@ -729,7 +801,7 @@
 				display: flex;
 				justify-content: space-around;
 				align-items: center;
-				margin-top: 10rpx;
+				margin-top: -90rpx;
 				width: 90%;
 				height: 160rpx;
 				background-color: #fff;
@@ -741,12 +813,12 @@
 					justify-content: center;
 					align-items: center;
 					width: 30%;
-					height: 34px;
+					height: 68rpx;
 					color: #000;
-					border: 1px solid #ccc;
+					border: 2rpx solid #ccc;
 				}
 				.active{
-					border: 1px solid #fad556;
+					border: 2rpx solid #fad556;
 					background: #fad556;
 				}
 			}
@@ -761,13 +833,26 @@
 	
 	        &__avatar {
 	             background-color: $u-bg-color;
-	             padding: 5px;
-	             border-radius: 3px;
+	             padding: 10rpx;
+	             border-radius: 6rpx;
 	         }
 	    
 	        &__content {
-	             margin-left: 10px;
+	             margin-left: 20rpx;
 	             flex: 1;
 	         }
 	    }
+		.u-popup{
+			.container{
+				display: flex;
+				flex-direction: column;
+				height: 400rpx;
+				view{
+					flex: 1;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+				}
+			}
+		}
 </style>

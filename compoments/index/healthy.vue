@@ -74,21 +74,21 @@
 			display: flex;
 			flex-direction: column;
 			width: 25%;
-			margin-bottom: 15px;
-			margin-top: 10px;
+			margin-bottom: 30rpx;
+			margin-top: 20rpx;
 			.icon{
-				width: 50px;
-				height: 50px;
+				width: 100rpx;
+				height: 100rpx;
 				border-radius: 50%;
 				display: flex;
 				.t-icon{
-					width: 50px;
-					height: 50px;
+					width: 100rpx;
+					height: 100rpx;
 				}
 			}
 			.content{
-				margin-top: 10px;
-				font-size: 15px;
+				margin-top: 20rpx;
+				font-size: 30rpx;
 				font-weight: 700;
 				
 			}
