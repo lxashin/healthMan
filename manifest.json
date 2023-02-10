@@ -52,12 +52,20 @@
     "mp-weixin" : {
         "appid" : "wxb72cab21544da68d",
         "setting" : {
-            "urlCheck" : true,
+            "urlCheck" : false,
             "minified" : true,
             "es6" : true,
             "postcss" : true
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+        "permission" : {
+            "scope.userLocation" : {
+                "desc" : "将获取您的位置信息"
+            }
+        },
+		"requiredPrivateInfos":[
+			"getLocation"
+		]
     },
     "mp-alipay" : {
         "usingComponents" : true
@@ -71,5 +79,14 @@
     "uniStatistics" : {
         "enable" : false
     },
-    "vueVersion" : "2"
+    "vueVersion" : "2",
+    "h5" : {
+        "sdkConfigs" : {
+            "maps" : {
+                "qqmap" : {
+                    "key" : "X5QBZ-S4UN4-RFNUS-DJW7Q-6SFMF-R2BDG"
+                }
+            }
+        }
+    }
 }

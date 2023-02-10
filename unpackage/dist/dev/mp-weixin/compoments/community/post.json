@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "发表动态",
+  "navigationBarBackgroundColor": "#fad556",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-upload": "/node-modules/uview-ui/components/u-upload/u-upload",
+    "u-button": "/node-modules/uview-ui/components/u-button/u-button"
+  }
+}

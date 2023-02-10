@@ -1,0 +1,16 @@
+<view class="article data-v-67f260f1"><view data-event-opts="{{[['tap',[['goDetail',['$event']]]]]}}" class="article_item data-v-67f260f1" bindtap="__e"><image src="../../static/image/avatar.jpg" mode="heightFix" class="data-v-67f260f1"></image><view class="container data-v-67f260f1"><view class="title data-v-67f260f1">文章标题文章标题文章标题文章标题文章标题文章标题文章标题</view><view class="content data-v-67f260f1">文章内容
+				文章内容
+				文章内容
+				文章内容
+				文章内容
+				文章内容</view><view class="time data-v-67f260f1">2022-12-26 03:30:06</view></view></view><view data-event-opts="{{[['tap',[['goDetail',['$event']]]]]}}" class="article_item data-v-67f260f1" bindtap="__e"><image src="../../static/image/avatar.jpg" mode="heightFix" class="data-v-67f260f1"></image><view class="container data-v-67f260f1"><view class="title data-v-67f260f1">文章标题文章标题文章标题文章标题文章标题文章标题文章标题</view><view class="content data-v-67f260f1">文章内容
+				文章内容
+				文章内容
+				文章内容
+				文章内容
+				文章内容</view><view class="time data-v-67f260f1">2022-12-26 03:30:06</view></view></view><view data-event-opts="{{[['tap',[['goDetail',['$event']]]]]}}" class="article_item data-v-67f260f1" bindtap="__e"><image src="../../static/image/avatar.jpg" mode="heightFix" class="data-v-67f260f1"></image><view class="container data-v-67f260f1"><view class="title data-v-67f260f1">文章标题文章标题文章标题文章标题文章标题文章标题文章标题</view><view class="content data-v-67f260f1">文章内容
+				文章内容
+				文章内容
+				文章内容
+				文章内容
+				文章内容</view><view class="time data-v-67f260f1">2022-12-26 03:30:06</view></view></view></view>

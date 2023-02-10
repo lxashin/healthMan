@@ -1,12 +1,15 @@
 {
-  "navigationBarTitleText": "搬砖达人",
+  "navigationBarTitleText": "员工健康",
   "navigationBarBackgroundColor": "#fad556",
   "usingComponents": {
     "u-count-down": "/node-modules/uview-ui/components/u-count-down/u-count-down",
     "u-icon": "/node-modules/uview-ui/components/u-icon/u-icon",
     "u-button": "/node-modules/uview-ui/components/u-button/u-button",
+    "u-tabs": "/node-modules/uview-ui/components/u-tabs/u-tabs",
     "project": "/compoments/index/project",
     "holiday": "/compoments/index/holiday",
-    "health": "/compoments/index/healthy"
+    "health": "/compoments/index/healthy",
+    "article": "/compoments/article/article",
+    "about": "/compoments/index/about"
   }
 }

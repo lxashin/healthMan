@@ -21,7 +21,7 @@
 			<u-cell title="重要公告" isLink @click="go">
 				<u-icon slot="icon" size="28" name="chat" color='#fad556'></u-icon>
 			</u-cell>
-			<u-cell title="草稿箱" isLink url="/pages/componentsB/badge/badge">
+			<u-cell title="评测记录" isLink url="/pages/componentsB/badge/badge">
 				<u-icon slot="icon" size="28" name="file-text" color='#fad556'></u-icon>
 			</u-cell>
 			<u-gap height="12" bgColor="#f2f2f2"></u-gap>
@@ -32,7 +32,7 @@
 				<u-icon size="28" name="share-square" color='#fad556'></u-icon>
 				<button open-type="share" class="btn">推荐给好友</button>
 			</view>
-			<u-cell title="其他应用" isLink url="/pages/componentsB/badge/badge">
+			<u-cell title="文章收藏" isLink url="/pages/componentsB/badge/badge">
 				<u-icon slot="icon" size="28" name="plus-square-fill" color='#fad556'></u-icon>
 			</u-cell>
 			<u-gap height="12" bgColor="#f2f2f2"></u-gap>

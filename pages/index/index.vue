@@ -6,7 +6,7 @@
 		</view>
 		<view class="money-content">
 			<view class="money">
-				<view style="font-weight: 600;padding-top: 10rpx;padding-left: 16rpx;display: flex;">今日搬砖已赚到 <u-icon v-if="showEye" name="eye-fill" size='20' style="padding-left:10rpx" @click="checkout"></u-icon> <u-icon v-else name="eye-off" size='20' style="padding-left:10rpx" @click="checkout"></u-icon></view>
+				<view style="font-weight: 600;padding-top: 10rpx;padding-left: 16rpx;display: flex;">今日工作已赚到 <u-icon v-if="showEye" name="eye-fill" size='20' style="padding-left:10rpx" @click="checkout"></u-icon> <u-icon v-else name="eye-off" size='20' style="padding-left:10rpx" @click="checkout"></u-icon></view>
 				<text v-if="showEye" style="font-size: 60rpx;font-weight: 700;padding-top: 40rpx;padding-left: 20rpx;"> {{money}} 元</text>
 				<text v-else style="font-size: 60rpx;font-weight: 700;padding-top: 40rpx;padding-left: 20rpx;"> **** 元</text>
 				<view class="btn">
@@ -24,11 +24,22 @@
 	<!-- 健康模块 -->
 	<view class="programs">
 		<Health></Health>
-		
 	</view>
 	
-	<!-- 距离节假日天数 -->
-	<Holiday></Holiday>
+	<!-- 健康知识 -->
+	<view class="health_knowledge">
+		<view class="title">
+			健康知识
+		</view>
+		<u-tabs :list="list" :is-scroll="false" :current="current" @change="change" lineColor="#fad556"
+			        :activeStyle="{
+			            color: '#303133',
+			            fontWeight: 'bold',
+			            transform: 'scale(1.05)'
+			        }" lineWidth="30"></u-tabs>
+	</view>
+	<Article></Article>
+	<About></About>
 	</view>
 
 </template>
@@ -38,20 +49,29 @@
 	import Project from '../../compoments/index/project.vue'
 	import Holiday from '../../compoments/index/holiday.vue'
 	import Health from '../../compoments/index/healthy.vue'
+	import Article from '../../compoments/article/article.vue'
+	import About from '../../compoments/index/about.vue'
 	export default {
 		components:{
 			Project,
 			Holiday,
-			Health
+			Health,
+			Article,
+			About
 		},
 		
 		data() {
 			return {
-				 list3: [
-				            'https://cdn.uviewui.com/uview/swiper/swiper3.png',
-				            'https://cdn.uviewui.com/uview/swiper/swiper2.png',
-				            'https://cdn.uviewui.com/uview/swiper/swiper1.png',
-				        ],
+				 list:[
+					 {name:"全部"},
+					 {name:"女性健康"},
+					 {name:"心脑血管"},
+					 {name:"加油儿女"},
+					 {name:"防癌抗癌"},
+					 {name:"心理健康"},
+					 {name:"专家辟谣"},
+					 {name:"饮食营养"},
+				 ],
 				money:0,	
 				restTime:"",
 				interval:'',
@@ -229,9 +249,6 @@
 			}
 		}
 		
-		// 第二模块 卡片组件
-		
-		// 第三模块 轮播图
 		.programs{
 			box-shadow: 10rpx 10rpx 10rpx #888;
 			margin-top: 40rpx;
@@ -254,7 +271,15 @@
 			}
 		}
 	
-	// 第四模块 节假日
+	// 健康知识
+	.health_knowledge{
+		margin-bottom: 20rpx;
+		.title{
+			font-size: 40rpx;
+			font-weight: 700;
+			margin-left: 30rpx;
+		}
+	}
 	
 	}
 

@@ -1,0 +1,27 @@
+<view class="article data-v-4895bb8f"><view class="title data-v-4895bb8f">文章标题</view><view class="time data-v-4895bb8f">2023-12-02</view><u-line vue-id="6bbb9152-1" color="#ccc" class="data-v-4895bb8f" bind:__l="__l"></u-line><view class="content data-v-4895bb8f">1、第一段点明要写的事物。
+		
+		2、举例说明像竹子一样的人。
+		
+		3、举例说明像梅花一样的人。
+		
+		4、举例说明像蜜蜂一样的人。
+		
+		5、举例说明像路灯一样的人。
+		
+		二、文章：
+		
+		生活中有许多事物有着美好的品质，就像我们生活中受人敬仰爱戴的人一样。比如，竹子的品质就是不屈不挠；梅花的品质就是不畏险阻；蜜蜂的品质就是默默无闻；路灯的品质就是无私奉献。
+		
+		竹子的突出特点就是气节，不屈不挠“戊戌六君子”中，为变法流血的谭嗣同就是这样一个人。面对整个社会，他并未失望，他们开始了变法，虽未完成，但他相信，终会有后继之人来完成者。这未竟之业，救国于水火之中。他本可以逃的，却选择了留下，年仅33岁的谭嗣同选择了用鲜血唤醒国人。
+		
+		梅花的特点是铁骨铮铮，傲雪盛开，刘胡兰就是这样一个人。刘胡兰被抓住后逼供，胁迫她出场坦白。审讯中，国民党千方百计，软硬兼施，想诱使其供出同党，并相许给她土地。刘胡兰百般不从，从容就义。就像梅花一样，芬芳又绚丽，开在凌冽的寒冬。
+		
+		蜜蜂象征辛勤劳动的人。就比如说在街头扫地的环卫工人们，她们都很辛苦，任劳任怨地为我们打扫着身边的环境。即使有人走过来往地上扔一个纸团，她们也一声不吭的把那团纸用长长的夹子夹起来，放进垃圾桶。没有多少人会在乎她们，帮助她们一起拾垃圾，顶多会跟她们擦肩而过。她们就是这样的无私。
+		
+		看着路灯，不禁让人想到了老师，老师跟路灯一样帮助着我们。当我们遇到难题时，老师总会用清晰明了的解题思路让我们豁然开朗；当我们思路出现错误时，老师及时帮我们纠正错误，使我们恍然大悟。老师就像路灯一样，指引着我们前进；老师也像路灯一样，无私奉献、不求回报。</view><view class="zan data-v-4895bb8f"><u-icon vue-id="6bbb9152-2" name="thumb-up" size="24" class="data-v-4895bb8f" bind:__l="__l"></u-icon><text class="data-v-4895bb8f">0</text></view><view class="comment_list data-v-4895bb8f"><view class="comment_title data-v-4895bb8f">评论列表（0）</view><view data-event-opts="{{[['tap',[['e0',['$event']]]]]}}" class="write_comment data-v-4895bb8f" bindtap="__e"><u-icon vue-id="6bbb9152-3" name="edit-pen" size="28" class="data-v-4895bb8f" bind:__l="__l"></u-icon><text class="data-v-4895bb8f">写评论</text></view></view><u-line vue-id="6bbb9152-4" color="#ccc" class="data-v-4895bb8f" bind:__l="__l"></u-line><view class="comment data-v-4895bb8f"><view class="comment_item data-v-4895bb8f"><view class="avatar data-v-4895bb8f"><image src="../../static/image/avatar.jpg" mode="widthFix" class="data-v-4895bb8f"></image></view><view class="container data-v-4895bb8f"><view class="name data-v-4895bb8f">ashin</view><view class="time data-v-4895bb8f">2022-12-26 03:30:06<u-icon vue-id="6bbb9152-5" name="chat" size="22" data-event-opts="{{[['^click',[['open']]]]}}" bind:click="__e" class="data-v-4895bb8f" bind:__l="__l"></u-icon></view><view class="content data-v-4895bb8f">评论内容
+					评论内容
+					评论内容</view></view></view><u-line vue-id="6bbb9152-6" color="#ccc" class="data-v-4895bb8f" bind:__l="__l"></u-line><view class="comment_item data-v-4895bb8f"><view class="avatar data-v-4895bb8f"><image src="../../static/image/avatar.jpg" mode="heightFix" class="data-v-4895bb8f"></image></view><view class="container data-v-4895bb8f"><view class="name data-v-4895bb8f">ashin</view><view class="time data-v-4895bb8f">2022-12-26 03:30:06<u-icon vue-id="6bbb9152-7" name="chat" size="22" data-event-opts="{{[['^click',[['open']]]]}}" bind:click="__e" class="data-v-4895bb8f" bind:__l="__l"></u-icon></view><view class="content data-v-4895bb8f">评论内容
+					评论内容
+					评论内容</view></view></view><u-line vue-id="6bbb9152-8" color="#ccc" class="data-v-4895bb8f" bind:__l="__l"></u-line><view class="comment_item data-v-4895bb8f"><view class="avatar data-v-4895bb8f"><image src="../../static/image/avatar.jpg" mode="heightFix" class="data-v-4895bb8f"></image></view><view class="container data-v-4895bb8f"><view class="name data-v-4895bb8f">ashin</view><view class="time data-v-4895bb8f">2022-12-26 03:30:06<u-icon vue-id="6bbb9152-9" name="chat" size="22" data-event-opts="{{[['^click',[['open']]]]}}" bind:click="__e" class="data-v-4895bb8f" bind:__l="__l"></u-icon></view><view class="content data-v-4895bb8f">评论内容
+					评论内容
+					评论内容</view></view></view></view><u-modal vue-id="6bbb9152-10" show="{{show}}" title-style="{{({color:'red'})}}" confirmText="提交" confirmColor="rgb(45,195,182)" showCancelButton="{{true}}" cancelText="关闭" data-event-opts="{{[['^confirm',[['confirm']]],['^cancel',[['cancel']]]]}}" bind:confirm="__e" bind:cancel="__e" class="data-v-4895bb8f" bind:__l="__l" vue-slots="{{['default']}}"><view class="content data-v-4895bb8f"><editor class="richInputContent data-v-4895bb8f" id="editor" placeholder="请输入您的评论" data-event-opts="{{[['input',[['getEditorContent',['$event']]]],['ready',[['onEditorReady',['$event']]]]]}}" bindinput="__e" bindready="__e"></editor></view></u-modal><u-popup vue-id="6bbb9152-11" show="{{setPopup}}" mode="bottom" safeAreaInsetBottom="{{true}}" data-event-opts="{{[['^close',[['close']]],['^open',[['open']]]]}}" bind:close="__e" bind:open="__e" class="data-v-4895bb8f" bind:__l="__l" vue-slots="{{['default']}}"><view class="pop data-v-4895bb8f"><input type="text" focus="{{setFocus}}" placeholder="请输入内容..." data-event-opts="{{[['input',[['__set_model',['','reply','$event',[]]]]]]}}" value="{{reply}}" bindinput="__e" class="data-v-4895bb8f"/><button type="default" data-event-opts="{{[['tap',[['send',['$event']]]]]}}" bindtap="__e" class="data-v-4895bb8f">发送</button></view></u-popup></view>

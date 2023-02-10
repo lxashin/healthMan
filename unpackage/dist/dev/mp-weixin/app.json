@@ -9,6 +9,9 @@
     "compoments/bailan/textarea",
     "compoments/index/setUp",
     "compoments/bailan/calendar",
+    "compoments/article/article_detail",
+    "compoments/community/post",
+    "compoments/index/about",
     "compoments/bailan/detailArticle",
     "compoments/person/importantNews",
     "compoments/person/about",
@@ -55,5 +58,13 @@
       }
     ]
   },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "将获取您的位置信息"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation"
+  ],
   "usingComponents": {}
 }

@@ -26,7 +26,7 @@
 					{
 						id:1,
 						icon:'t-icon-xinlijiankang',
-						content:'心里检测'
+						content:'心理检测'
 					},
 					{
 						id:2,

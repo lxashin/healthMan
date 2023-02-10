@@ -52,20 +52,22 @@
 		</view>
 		<!-- 求助信息 -->
 		<view class="infomation" v-if="help===0">
-			<view class="info_item">
+			<view class="info_item" v-for="item in helpList" :key="item.id">
 				<view class="header">
-					<p>需要 <text>退烧药</text></p>
+					
+					<p>需要<text>{{item.medicine}}</text></p>
 					<u-icon name="more-dot-fill" @click="showShare=true"></u-icon>
 				</view>
 				<view class="container">
 					<view class="timeAndDistance">
-						<text class="time">2022-12-29 08:11 发布</text>
-						<text class="distance">距离：1公里</text>
+						<text class="time">{{item.createTime}} 发布</text>
+						<text class="distance">距离：{{getDistance(item.latitude,item.longitude)}}公里</text>
 					</view>
 					<view class="location">
 						<view>位置</view>
 						<view class="address">
-							【沙河街道】 广东省南山区白石街55号南山区白石洲
+							<!-- {{locationAtlatitude(item.latitude,item.longitude)}} -->
+							{{address}}
 						</view>
 					</view>
 					<view class="description">
@@ -74,13 +76,10 @@
 						</view>
 						<view>
 							<view class="btn">
-								<u-button type="info" shape="circle" size="small" text="有痰"></u-button>
-								<u-button type="info" shape="circle" size="small" text="发烧"></u-button>
-								<u-button type="info" shape="circle" size="small" text="咳嗽"></u-button>
-								
+								<u-button type="info" shape="circle" size="small" v-for="lab,index in item.label" :key="index">{{lab}}</u-button>
 							</view>
 							<view class="content">
-								我与孩子都生病了，一直咳嗽，需要药我与孩子都生病了，一直咳嗽，需要药我与孩子都生病了，一直咳嗽，需要药
+								{{item.describption}}
 							</view>
 						</view>
 						
@@ -92,87 +91,6 @@
 				<u-line></u-line>
 			</view>
 			
-			<view class="info_item">
-					<view class="header">
-						<p>需要 <text>退烧药</text></p>
-						<u-icon name="more-dot-fill"></u-icon>
-					</view>
-					<view class="container">
-						<view class="timeAndDistance">
-							<text class="time">2022-12-29 08:11 发布</text>
-							<text class="distance">距离：1公里</text>
-						</view>
-						<view class="location">
-							<view>位置</view>
-							<view class="address">
-								【沙河街道】 广东省南山区白石街55号南山区白石洲
-							</view>
-						</view>
-						<view class="description">
-							<view>
-								描述
-							</view>
-							<view>
-								<view class="btn">
-									<u-button type="info" shape="circle" size="small" text="有痰"></u-button>
-									<u-button type="info" shape="circle" size="small" text="发烧"></u-button>
-									<u-button type="info" shape="circle" size="small" text="咳嗽"></u-button>
-									
-								</view>
-								<view class="content">
-									我与孩子都生病了，一直咳嗽，需要药我与孩子都生病了，一直咳嗽，需要药我与孩子都生病了，一直咳嗽，需要药
-								</view>
-							</view>
-							
-						</view>
-					</view>
-					<view class="provideHelp">
-						<u-button text="我可以提供帮助" color="linear-gradient(to right, rgb(66, 83, 216), rgb(213, 51, 186))"></u-button>
-					</view>
-					<u-line></u-line>
-				</view>
-			
-			<view class="info_item">
-					<view class="header">
-						<p>需要 <text>退烧药</text></p>
-						<u-icon name="more-dot-fill"></u-icon>
-					</view>
-					<view class="container">
-						<view class="timeAndDistance">
-							<text class="time">2022-12-29 08:11 发布</text>
-							<text class="distance">距离：1公里</text>
-						</view>
-						<view class="location">
-							<view>位置</view>
-							<view class="address">
-								【沙河街道】 广东省南山区白石街55号南山区白石洲
-							</view>
-						</view>
-						<view class="description">
-							<view>
-								描述
-							</view>
-							<view>
-								<view class="btn">
-									<u-button type="info" shape="circle" size="small" text="有痰"></u-button>
-									<u-button type="info" shape="circle" size="small" text="发烧"></u-button>
-									<u-button type="info" shape="circle" size="small" text="咳嗽"></u-button>
-									
-								</view>
-								<view class="content">
-									我与孩子都生病了，一直咳嗽，需要药我与孩子都生病了，一直咳嗽，需要药我与孩子都生病了，一直咳嗽，需要药
-								</view>
-							</view>
-							
-						</view>
-					</view>
-					<view class="provideHelp">
-						<u-button text="我可以提供帮助" color="linear-gradient(to right, rgb(66, 83, 216), rgb(213, 51, 186))"></u-button>
-					</view>
-					<u-line></u-line>
-				</view>
-			
-		</view>
 		<!-- 帮助信息 -->
 		<view class="infomation" v-if="help===1">
 			<view class="info_item">
@@ -188,7 +106,7 @@
 					<view class="location">
 						<view>位置</view>
 						<view class="address">
-							【沙河街道】 广东省南山区白石街55号南山区白石洲
+							<!-- {{locationAtlatitude(item.latitude,item.longitude)}} -->
 						</view>
 					</view>
 					<view class="origin">
@@ -219,6 +137,7 @@
 			
 		</view>
 		</view>
+	</view>
 		<!-- 点击排序显示的遮罩层弹框 -->
 		<u-overlay :show="showSort" @click="showSort = false">
 			<view class="wrap">
@@ -346,6 +265,11 @@
 </template>
 
 <script>
+	import qqmapsdk from '../../qqmap-wx-jssdk.js'
+	const QQMapWX = new qqmapsdk({
+		key: 'X5QBZ-S4UN4-RFNUS-DJW7Q-6SFMF-R2BDG'
+	});
+	
 	export default{
 		data(){
 			return {
@@ -410,11 +334,139 @@
 						                }
 						            ],
 				},
-			statu:0, // 0:全部 1:未解决 2:已解决
-			showShare:false, // 点击... 显示分享或举报按钮
+				statu:0, // 0:全部 1:未解决 2:已解决
+				showShare:false, // 点击... 显示分享或举报按钮
+				latitude:10,
+				longitude:10,
+				helpList:[],// 求助数据列表
+				distance:0, // 距离多少公里
+				address:'abc'
 			}
 		},
 		methods:{
+			// 获取自身位置
+			getLocation(){
+				uni.getLocation({
+					type: 'wgs84',
+					geocode: true,
+					success: (res) => {
+						this.latitude = res.latitude;
+						this.longitude = res.longitude;
+					},
+					fail: () => {
+						console.log("获取经纬度失败");
+					},
+					complete: () => {
+						// 解析地址
+						QQMapWX.reverseGeocoder({
+							location: {
+								latitude: this.latitude,
+								longitude: this.longitude
+							},
+							success: function(res) {
+								// 省
+								let province = res.result.ad_info.province;
+								// 市
+								let city = res.result.ad_info.city;
+							},
+							fail: function(res) {
+								console.log('错误',res)
+								uni.showToast({
+									title: '定位失败',
+									duration: 2000,
+									icon: "none"
+								})
+								console.log(res);
+							},
+						})
+					}
+				})
+			},
+			
+			// 根据经纬度获取地址
+			locationAtlatitude(lat,lon){
+				let that = this
+				uni.getLocation({
+					type: 'wgs84',
+					geocode: true,
+					success: (res) => {
+						this.latitude = res.latitude;
+						this.longitude = res.longitude;
+					},
+					fail: () => {
+						console.log("获取经纬度失败");
+					},
+					complete: () => {
+						// 解析地址
+						QQMapWX.reverseGeocoder({
+							location: {
+								latitude: lat,
+								longitude: lon
+							},
+							success: function(res) {
+								// 省
+								let province = res.result.ad_info.province;
+								// 市
+								let city = res.result.ad_info.city;
+								that.address = res.result.address
+							},
+							fail: function(res) {
+								console.log('错误',res)
+								uni.showToast({
+									title: '定位失败',
+									duration: 2000,
+									icon: "none"
+								})
+								console.log(res);
+							},
+						})
+					}
+				})
+			},
+			// 获取距离
+			getDistance(lat,lon) {
+				let distance
+			  uni.request({
+			    url: 'https://apis.map.qq.com/ws/distance/v1/matrix', //腾讯地图批量距离计算接口地址。
+			    method: 'GET',
+			    data: {
+			      mode: 'walking',
+			      from: lat+','+lon,
+			      to: '39.108951,117.279396',
+			      key: 'X5QBZ-S4UN4-RFNUS-DJW7Q-6SFMF-R2BDG' //获取key
+			    },
+			    success: (res) => {
+			      let hw = res.data.result.rows[0].elements[0].distance; //拿到距离(米)
+			      if (hw && hw !== -1) {
+			        if (hw < 1000) {
+			          hw = hw + 'm';
+			        }
+			        //转换成公里
+			        else {
+			          hw = (hw / 2 / 500).toFixed(2)
+			        }
+			      } else {
+			        hw = "距离太近或请刷新重试"
+			      }
+			      console.log(hw);
+				  this.distance = hw
+				  
+			    }
+			  });
+			  console.log(11111,this.distance)
+			  return this.distance
+			},
+			// 获取数据
+			getList(){
+				let that = this
+				uni.request({
+					url:'http://localhost:3000/help/allinfo',
+					method:'GET',
+					success:(res)=> {
+						that.helpList = res.data.data
+					}
+				})
+			},
 			close(){
 				this.show = false
 			},
@@ -457,6 +509,13 @@
 				console.log(this.medicineValue,this.stationery,this.COVIDGoods)
 			}
 		},
+		onShow() {
+			this.getList()
+		},
+		mounted() {
+			this.getLocation()
+			this.getDistance()
+		},
 		watch:{
 			PersonType(newVal,oldVal){
 				if(newVal.length==0){
@@ -469,7 +528,6 @@
 					
 				}
 			},
-			
 			
 		}
 	}

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "关于我们",
+  "navigationBarBackgroundColor": "#fad556",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-line": "/node-modules/uview-ui/components/u-line/u-line"
+  }
+}

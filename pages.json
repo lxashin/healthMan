@@ -6,7 +6,7 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "搬砖达人",
+				"navigationBarTitleText": "员工健康",
 				"navigationBarBackgroundColor":"#fad556"
 			}
 		},
@@ -21,6 +21,7 @@
 		    }
 		    
 		},
+		
 		{
 		    "path" : "pages/bailan/bailan",
 		    "style" :                                                                                    
@@ -87,6 +88,36 @@
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "按日历查看",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "compoments/article/article_detail",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "文章详情",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "compoments/community/post",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "发表动态",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "compoments/index/about",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "关于我们",
 		        "navigationBarBackgroundColor":"#fad556",
 		        "enablePullDownRefresh": false
 		    }
