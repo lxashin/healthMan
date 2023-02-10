@@ -8,6 +8,7 @@
     "u--text": "/node-modules/uview-ui/components/u--text/u--text",
     "u-album": "/node-modules/uview-ui/components/u-album/u-album",
     "u-icon": "/node-modules/uview-ui/components/u-icon/u-icon",
+    "u-line": "/node-modules/uview-ui/components/u-line/u-line",
     "u-popup": "/node-modules/uview-ui/components/u-popup/u-popup"
   }
 }
