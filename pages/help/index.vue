@@ -1,7 +1,7 @@
 <template>
 	<view class="helps">
 		<view class="header">
-			<view class="needMedicine">
+			<view class="needMedicine" @click="showForm=true">
 				<image src="/static/image/yao-2.png" mode="widthFix"></image>
 				<view class="title">
 					<text>我需要药</text>
@@ -260,8 +260,170 @@
 				<view @click="showShare=false">取消</view>
 			</view>
 		</u-popup>
-	
+	<u-popup :show="showForm" @close="closeForm" @open="openForm">
+	            <view class="form">
+					<u-tabs :list="list2"
+					 itemStyle="padding-left: 100rpx; padding-right: 100rpx; height: 100rpx;"
+					  @click="select"></u-tabs>
+					  
+					  <!-- 第一个表单 -->
+	                <u--form
+					v-if="flag==0"
+	                	labelPosition="top"
+						labelWidth="200"
+	                	:model="model"
+	                	:rules="rules"
+	                	ref="form1"
+						>
+	                			<u-form-item
+	                					label="所需物品"
+	                					prop="userInfo.name"
+	                					ref="item1"
+	                			>
+	                				<u--input
+	                						v-model="model.userInfo.name"
+											placeholder="填写所需物品"
+	                				></u--input>
+	                			</u-form-item>
+	                			<u-form-item
+	                					label="求助者所在位置"
+	                					prop="userInfo.address"
+	                					ref="item2"
+	                			>
+	                				<u--input
+	                						v-model="model.userInfo.address"
+											placeholder="填写所在位置"
+	                				></u--input>
+									</u-form-item>
+									
+	                				<u-form-item
+	                						label="求助者微信号"
+	                						prop="userInfo.wechat"
+	                						ref="item3"
+	                				>
+	                					<u--input
+	                							v-model="model.userInfo.wechat"
+												placeholder="您的微信号将被看到,便于联系到您"
+	                					></u--input>
+	                				</u-form-item>
+									
+									<u-form-item
+											label="求助者手机号"
+											prop="userInfo.phone"
+											ref="item4"
+									>
+										<u--input
+												v-model="model.userInfo.phone"
+												placeholder="点击填写手机号"
+										></u--input>
+									</u-form-item>
+									
+								<u-form-item
+										label="求助说明"
+										prop="userInfo.description"
+										ref="item5"
+								>
+									<u--textarea v-model="model.userInfo.description" placeholder="请简单描述你需要的帮助,如填写药品名称,可以让更多人主动帮助您" count ></u--textarea>
+								</u-form-item>
+								<view class="tip">
+									寻求帮助时请甄别信息真伪，防止被骗，你可以选择跑腿、闪送等传物方式降低被骗
+								</view>
+								<u-button type="success" text="提交"></u-button>
+	                		</u--form>
+							
+							<!-- 第二个表单 -->
+							<u--form
+								v-if="flag==1"
+								labelPosition="top"
+								labelWidth="200"
+								:model="model2"
+								:rules="rules2"
+								ref="form2"
+							>
+									<u-form-item
+										label="可以提供的物品"
+										prop="userInfo.name"
+										ref="item1"
+									>
+										<u--input
+											v-model="model2.userInfo.name"
+											placeholder="填写可以提供的物品"
+											></u--input>
+										</u-form-item>
+										
+									<u-form-item
+										label="物品来源"
+										prop="userInfo.checkboxValue"
+										ref="item2"
+										>
+											<u-checkbox-group
+											    	v-model="model2.userInfo.checkboxValue"
+											    	placement="row"
+											    	@change="checkboxChange"
+											    >
+											    	<u-checkbox
+											    		:customStyle="{marginBottom: '8px'}"
+											    		v-for="(item, index) in checkboxList"
+											    		:key="index"
+											    		:label="item.name"
+											    		:name="item.name"
+											    	>
+											    		</u-checkbox>
+											 </u-checkbox-group>
+											 
+									</u-form-item>
+																
+									<u-form-item
+										label="帮助者所在位置"
+										prop="userInfo.address"
+										ref="item3"
+									>
+										<u--input
+											v-model="model2.userInfo.address"
+											placeholder="请填写您的微信"
+										></u--input>
+									</u-form-item>
+																
+									<u-form-item
+										label="帮助者微信号"
+										prop="userInfo.wechat"
+										ref="item4"
+									>
+										<u--input
+											v-model="model2.userInfo.wechat"
+											placeholder="点击填写微信号"
+										></u--input>
+									</u-form-item>
+																
+									<u-form-item
+										label="帮助者手机号"
+										prop="userInfo.phone"
+										ref="item5"
+									>
+										<u--input
+											v-model="model2.userInfo.phone"
+											placeholder="点击填写手机号"
+										></u--input>
+									</u-form-item>
+																
+									<u-form-item
+											label="求助说明"
+											prop="userInfo.description"
+											ref="item5"
+									>
+										<u--textarea v-model="model.userInfo.description" placeholder="可以提供的帮助说明" count ></u--textarea>
+									</u-form-item>
+											<view class="tip">
+												提供帮助时请甄别信息真伪，防止被骗，你可以选择跑腿、闪送等传物方式降低被骗
+											</view>
+										<u-button type="success" text="提交"></u-button>
+						</u--form>
+										
+										
+				</view>	
+			</u-popup>
 	</view>
+	
 </template>
 
 <script>
@@ -277,6 +439,10 @@
 				list:[
 					{name:'求助信息'},
 					{name:'帮助信息'}
+				],
+				list2:[
+					{name:'我需要药'},
+					{name:'我有多的药'}
 				],
 				help:0, // 0:求助信息 1:帮助信息
 				personList:['老人','孕妇','儿童','残障人士'],
@@ -340,7 +506,118 @@
 				longitude:10,
 				helpList:[],// 求助数据列表
 				distance:0, // 距离多少公里
-				address:'abc'
+				address:'abc',
+				showForm:false, // 弹出填写需要药的表单
+				showSex: false,
+				model: {
+					userInfo: {
+						name: '',
+						address: '',
+						wechat:'',
+						phone:'',
+						desription:''
+						},
+					},
+				rules: {
+					'userInfo.name': {
+						type: 'string',
+						required: true,
+						message: '请填写物品',
+						trigger: ['blur', 'change']
+							},
+					'userInfo.address': {
+						type: 'string',
+						required: true,
+						message: '请填写位置',
+						trigger: ['blur', 'change']
+							},
+					'userInfo.wechat': {
+						type: 'string',
+						required: true,
+						message: '请填写微信号',
+						trigger: ['blur', 'change']
+							},
+					'userInfo.phone': {
+						type: 'string',
+						required: true,
+						message: '请填写手机号',
+						trigger: ['blur', 'change']
+							},
+					'userInfo.description': {
+						type: 'string',
+						required: true,
+						message: '请填写说明',
+						trigger: ['blur', 'change']
+							},
+						},
+						model2: {
+							userInfo: {
+								name: '',
+								address: '',
+								checkboxValue:[],
+								wechat:'',
+								phone:'',
+								desription:''
+								},
+							},
+						rules2: {
+							'userInfo.name': {
+								type: 'string',
+								required: true,
+								message: '请填写物品',
+								trigger: ['blur', 'change']
+									},
+							'userInfo.checkboxValue':{
+								type:'array',
+								min:1,
+								required:true,
+								message:'请选择物品来源',
+								trigger:['blur','change']
+							},
+							'userInfo.address': {
+								type: 'string',
+								required: true,
+								message: '请填写位置',
+								trigger: ['blur', 'change']
+									},
+							'userInfo.wechat': {
+								type: 'string',
+								required: true,
+								message: '请填写微信号',
+								trigger: ['blur', 'change']
+									},
+							'userInfo.phone': {
+								type: 'string',
+								required: true,
+								message: '请填写手机号',
+								trigger: ['blur', 'change']
+									},
+							'userInfo.description': {
+								type: 'string',
+								required: true,
+								message: '请填写说明',
+								trigger: ['blur', 'change']
+									},
+								},
+				flag:0, //切换表单
+				            // 基本案列数据
+				            checkboxList: [{
+				                    name: '淘宝',
+				                    disabled: false
+				                },
+				                {
+				                    name: '药店',
+				                    disabled: false
+				                },
+				                {
+				                    name: '医院',
+				                    disabled: false
+				                },
+								{
+								    name: '其他',
+								    disabled: false
+								}
+				            ],
 			}
 		},
 		methods:{
@@ -473,6 +750,12 @@
 			open(){
 				this.show = true
 			},
+			openform(){
+				this.showForm = true
+			},
+			closeForm(){
+				this.showForm = false
+			},
 			selectHelp(item){
 				this.help = item.index
 			},
@@ -486,6 +769,10 @@
 					this.PersonType.push(index)
 				}
 				console.log(this.PersonType)
+			},
+			// 切换表单
+			select(item){
+				this.flag = item.index
 			},
 			reset(){
 				this.PersonType = []
@@ -879,6 +1166,20 @@
 					border: 2rpx solid #fad556;
 					background: #fad556;
 				}
+			}
+		}
+		.form{
+			height: 1200rpx;
+			overflow: scroll;
+			margin-left: 30rpx;
+			width: 90%;
+			.tip{
+				font-size: 20rpx;
+				color: red;
+				margin:30rpx 0
+			}
+			.u-button{
+				margin-bottom: 20rpx
 			}
 		}
 	}

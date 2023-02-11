@@ -204,7 +204,7 @@
 			"pagePath": "pages/index/index",
 			"iconPath": "static/image/yu1.png",
 			"selectedIconPath": "static/image/yu.png",
-			"text": "摸鱼"
+			"text": "首页"
 		}, 
 		{
 			"pagePath": "pages/community/index",
