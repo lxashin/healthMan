@@ -64,6 +64,26 @@
 		    
 		},
 		{
+		    "path" : "pages/consult/consultfast",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "急速问诊",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "pages/consult/consultDep",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "选择科室",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
 		    "path" : "compoments/bailan/textarea",
 		    "style" :                                                                                    
 		    {
@@ -103,6 +123,7 @@
 		    }
 		    
 		},
+		
 		{
 		    "path" : "compoments/community/post",
 		    "style" :                                                                                    

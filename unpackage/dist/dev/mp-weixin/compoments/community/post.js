@@ -161,12 +161,27 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
 
-
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 57));
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 59));
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -183,24 +198,90 @@ exports.default = void 0;
 var _default = {
   data: function data() {
     return {
-      action: 'http://www.example.com/upload',
-      filesArr: []
+      imgList: []
     };
   },
   methods: {
+    // 删除图片
+    deletePic: function deletePic(event) {
+      this.imgList.splice(event.index, 1);
+      console.log(this.imgList);
+    },
+    // 新增图片
+    afterRead: function afterRead(event) {
+      var _this = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        var lists, imgListLen, i, result, item;
+        return _regenerator.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                // 当设置 multiple 为 true 时, file 为数组格式，否则为对象格式
+                lists = [].concat(event.file);
+                imgListLen = _this.imgList.length;
+                lists.map(function (item) {
+                  _this.imgList.push(_objectSpread(_objectSpread({}, item), {}, {
+                    status: 'uploading',
+                    message: '上传中'
+                  }));
+                });
+                console.log('imgList', _this.imgList);
+                i = 0;
+              case 5:
+                if (!(i < lists.length)) {
+                  _context.next = 15;
+                  break;
+                }
+                _context.next = 8;
+                return _this.uploadFilePromise(lists[i].url);
+              case 8:
+                result = _context.sent;
+                item = _this.imgList[imgListLen];
+                _this.imgList.splice(imgListLen, 1, Object.assign(item, {
+                  status: 'success',
+                  message: '',
+                  url: result
+                }));
+                imgListLen++;
+              case 12:
+                i++;
+                _context.next = 5;
+                break;
+              case 15:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
+    uploadFilePromise: function uploadFilePromise(url) {
+      return new Promise(function (resolve, reject) {
+        var a = uni.uploadFile({
+          url: 'http://localhost:3000/upload',
+          filePath: url,
+          name: 'file',
+          formData: {
+            user: 'test'
+          },
+          success: function success(res) {
+            setTimeout(function () {
+              resolve(JSON.parse(res.data).url);
+            }, 1000);
+          }
+        });
+      });
+    },
     submit: function submit() {
-      var files = [];
-      // 通过filter，筛选出上传进度为100的文件(因为某些上传失败的文件，进度值不为100，这个是可选的操作)
-      // files = this.$refs.uUpload.lists.filter(val => {
-      // 	return val.progress == 100;
-      // })
-      // 如果您不需要进行太多的处理，直接如下即可
-      files = this.$refs.uUpload.lists;
-      console.log(files);
+      console.log(this.imgList);
+    },
+    cancel: function cancel() {
+      uni.navigateBack();
     }
   }
 };
 exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
 

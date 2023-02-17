@@ -1,6 +1,6 @@
 <template>
 	<view class="healthy_page">
-		<view class="health_item" v-for="item in project" :key="item.id">
+		<view class="health_item" v-for="item in project" :key="item.id" @click="select(item)">
 			<view class="icon">
 				<view :class="['t-icon',item.icon]"></view>
 			</view>
@@ -31,7 +31,8 @@
 					{
 						id:2,
 						icon:'t-icon-yuan_wuzi',
-						content:'健康小屋'
+						content:'急速问诊',
+						url:'/pages/consult/consultfast'
 					},
 					{
 						id:3,
@@ -59,6 +60,15 @@
 						content:'专家讲座'
 					},
 				]
+			}
+		},
+		methods:{
+			select(item){
+				console.log(111)
+				let {url} = item
+				uni.navigateTo({
+					url
+				})
 			}
 		}
 	}

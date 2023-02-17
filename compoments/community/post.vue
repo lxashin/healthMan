@@ -1,12 +1,21 @@
 <template>
 	<view class="post">
 		<view class="main">
-			<editor class="richInputContent" id="editor" @input="getEditorContent" @ready="onEditorReady" placeholder="请输入您的动态"></editor>
-			<u-upload ref="uUpload" :action="action" :auto-upload="false" upload-text="选择图片"></u-upload>
+			<editor class="richInputContent" id="editor" @input="getEditorContent" placeholder="请输入您的动态"></editor>
+			<u-upload
+					:fileList="imgList"
+					@afterRead="afterRead"
+					@delete="deletePic"
+					name="1"
+					multiple
+					:maxCount="10"
+					upload-text="选择图片"
+					:previewFullImage="true"
+				></u-upload>
 		</view>
 		<view class="btn">
 			<u-button size="primary" @click="submit">提交</u-button>
-			<u-button size="info">取消</u-button>
+			<u-button size="info" @click="cancel">取消</u-button>
 		</view>
 	</view>
 </template>
@@ -15,20 +24,61 @@
 	export default{
 		data(){
 			return{
-				action: 'http://www.example.com/upload',
-				filesArr: []
+				imgList: []
 			}
 		},
 		methods:{
-			submit() {
-				let files = [];
-				// 通过filter，筛选出上传进度为100的文件(因为某些上传失败的文件，进度值不为100，这个是可选的操作)
-				// files = this.$refs.uUpload.lists.filter(val => {
-				// 	return val.progress == 100;
-				// })
-				// 如果您不需要进行太多的处理，直接如下即可
-				files = this.$refs.uUpload.lists;
-				console.log(files)
+			// 删除图片
+			deletePic(event) {
+				this.imgList.splice(event.index, 1)
+				console.log(this.imgList)
+			},
+			// 新增图片
+			async afterRead(event) {
+				// 当设置 multiple 为 true 时, file 为数组格式，否则为对象格式
+				let lists = [].concat(event.file)
+				let imgListLen = this.imgList.length
+				lists.map((item) => {
+					this.imgList.push({
+						...item,
+						status: 'uploading',
+						message: '上传中'
+					})
+				})
+				console.log('imgList',this.imgList)
+				for (let i = 0; i < lists.length; i++) {
+					const result = await this.uploadFilePromise(lists[i].url)
+					let item = this.imgList[imgListLen]
+					this.imgList.splice(imgListLen, 1, Object.assign(item, {
+						status: 'success',
+						message: '',
+						url: result
+					}))
+					imgListLen++
+				}
+			},
+			uploadFilePromise(url) {
+				return new Promise((resolve, reject) => {
+					let a = uni.uploadFile({
+						url: 'http://localhost:3000/upload',
+						filePath: url,
+						name: 'file',
+						formData: {
+							user: 'test'
+						},
+						success: (res) => {
+							setTimeout(() => {
+								resolve(JSON.parse(res.data).url)
+							}, 1000)
+						}
+					});
+				})
+			},
+			submit(){
+				console.log(this.imgList)
+			},
+			cancel(){
+				uni.navigateBack()
 			}
 		}
 	}

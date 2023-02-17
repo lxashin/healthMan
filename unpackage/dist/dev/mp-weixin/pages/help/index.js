@@ -161,7 +161,18 @@ var render = function () {
           }
         })
       : null
-  var l1 = _vm.__map(_vm.personList, function (item, index) {
+  var l1 =
+    _vm.help === 1
+      ? _vm.__map(_vm.helpList, function (item, __i1__) {
+          var $orig = _vm.__get_orig(item)
+          var m1 = _vm.getDistance(item.latitude, item.longitude)
+          return {
+            $orig: $orig,
+            m1: m1,
+          }
+        })
+      : null
+  var l2 = _vm.__map(_vm.personList, function (item, index) {
     var $orig = _vm.__get_orig(item)
     var g1 = _vm.PersonType.indexOf(index)
     return {
@@ -171,57 +182,63 @@ var render = function () {
   })
   if (!_vm._isMounted) {
     _vm.e0 = function ($event) {
-      _vm.showSort = true
+      _vm.showForm = true
     }
     _vm.e1 = function ($event) {
-      _vm.showPersonType = true
+      _vm.showForm = true
     }
     _vm.e2 = function ($event) {
-      _vm.showGoodsType = true
+      _vm.showSort = true
     }
     _vm.e3 = function ($event) {
-      _vm.showResolveStatu = true
+      _vm.showPersonType = true
     }
     _vm.e4 = function ($event) {
-      _vm.showShare = true
+      _vm.showGoodsType = true
     }
     _vm.e5 = function ($event) {
-      _vm.showShare = true
+      _vm.showResolveStatu = true
     }
     _vm.e6 = function ($event) {
-      _vm.showSort = false
+      _vm.showShare = true
     }
     _vm.e7 = function ($event) {
-      _vm.sort = 0
+      _vm.showShare = true
     }
     _vm.e8 = function ($event) {
-      _vm.sort = 1
+      _vm.showSort = false
     }
     _vm.e9 = function ($event) {
-      _vm.showPersonType = false
+      _vm.sort = 0
     }
     _vm.e10 = function ($event) {
-      _vm.showPersonType = false
+      _vm.sort = 1
     }
     _vm.e11 = function ($event) {
-      _vm.showGoodsType = false
+      _vm.showPersonType = false
     }
     _vm.e12 = function ($event) {
-      _vm.showResolveStatu = false
+      _vm.showPersonType = false
     }
     _vm.e13 = function ($event) {
-      _vm.statu = 0
+      _vm.showGoodsType = false
     }
     _vm.e14 = function ($event) {
-      _vm.statu = 1
+      _vm.showResolveStatu = false
     }
     _vm.e15 = function ($event) {
-      _vm.statu = 2
+      _vm.statu = 0
     }
     _vm.e16 = function ($event) {
-      _vm.showShare = false
+      _vm.statu = 1
     }
     _vm.e17 = function ($event) {
+      _vm.statu = 2
+    }
+    _vm.e18 = function ($event) {
+      _vm.showShare = false
+    }
+    _vm.e19 = function ($event) {
       _vm.showShare = false
     }
   }
@@ -232,6 +249,7 @@ var render = function () {
         g0: g0,
         l0: l0,
         l1: l1,
+        l2: l2,
       },
     }
   )
@@ -282,7 +300,15 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 var QQMapWX = new _qqmapWxJssdk.default({
   key: 'X5QBZ-S4UN4-RFNUS-DJW7Q-6SFMF-R2BDG'
 });
+var Form = function Form() {
+  __webpack_require__.e(/*! require.ensure | compoments/help/form */ "compoments/help/form").then((function () {
+    return resolve(__webpack_require__(/*! ../../compoments/help/form.vue */ 795));
+  }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
+};
 var _default = {
+  components: {
+    Form: Form
+  },
   data: function data() {
     return {
       notice_text: '公益服务禁止买卖',
@@ -291,7 +317,7 @@ var _default = {
       }, {
         name: '帮助信息'
       }],
-      help: 0,
+      help: 1,
       // 0:求助信息 1:帮助信息
       personList: ['老人', '孕妇', '儿童', '残障人士'],
       showSort: false,
@@ -358,9 +384,11 @@ var _default = {
       // 求助数据列表
       distance: 0,
       // 距离多少公里
-      address: 'abc'
+      address: 'abc',
+      showForm: false // 弹出填写需要药的表单
     };
   },
+
   methods: {
     // 获取自身位置
     getLocation: function getLocation() {
@@ -474,7 +502,6 @@ var _default = {
           _this3.distance = hw;
         }
       });
-      console.log(11111, this.distance);
       return this.distance;
     },
     // 获取数据
@@ -494,8 +521,15 @@ var _default = {
     open: function open() {
       this.show = true;
     },
+    openForm: function openForm() {
+      this.showForm = true;
+    },
+    closeForm: function closeForm() {
+      this.showForm = false;
+    },
     selectHelp: function selectHelp(item) {
       this.help = item.index;
+      console.log(this.help);
     },
     selectPerson: function selectPerson(index) {
       this.showPersonType = true;

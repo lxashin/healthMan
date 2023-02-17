@@ -114,7 +114,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(uni) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -149,7 +149,8 @@ var _default = {
       }, {
         id: 2,
         icon: 't-icon-yuan_wuzi',
-        content: '健康小屋'
+        content: '急速问诊',
+        url: '/pages/consult/consultfast'
       }, {
         id: 3,
         icon: 't-icon-yisheng',
@@ -172,9 +173,19 @@ var _default = {
         content: '专家讲座'
       }]
     };
+  },
+  methods: {
+    select: function select(item) {
+      console.log(111);
+      var url = item.url;
+      uni.navigateTo({
+        url: url
+      });
+    }
   }
 };
 exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
 

@@ -11,6 +11,7 @@
     "u-overlay": "/node-modules/uview-ui/components/u-overlay/u-overlay",
     "u-checkbox-group": "/node-modules/uview-ui/components/u-checkbox-group/u-checkbox-group",
     "u-checkbox": "/node-modules/uview-ui/components/u-checkbox/u-checkbox",
-    "u-popup": "/node-modules/uview-ui/components/u-popup/u-popup"
+    "u-popup": "/node-modules/uview-ui/components/u-popup/u-popup",
+    "form": "/compoments/help/form"
   }
 }
