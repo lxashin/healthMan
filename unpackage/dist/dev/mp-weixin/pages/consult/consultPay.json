@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "支付",
+  "navigationBarBackgroundColor": "#fad556",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-cell-group": "/node-modules/uview-ui/components/u-cell-group/u-cell-group",
+    "u-cell": "/node-modules/uview-ui/components/u-cell/u-cell",
+    "u-checkbox-group": "/node-modules/uview-ui/components/u-checkbox-group/u-checkbox-group",
+    "u-checkbox": "/node-modules/uview-ui/components/u-checkbox/u-checkbox",
+    "u-button": "/node-modules/uview-ui/components/u-button/u-button",
+    "pay-sheet": "/compoments/paySheet/index"
+  }
+}

@@ -1,0 +1,173 @@
+@charset "UTF-8";
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.patient-page.data-v-5a933adb {
+  padding: 92rpx 0 160rpx;
+}
+.patient-list.data-v-5a933adb {
+  padding: 30rpx;
+  margin-bottom: 60rpx;
+}
+.patient-item.data-v-5a933adb {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  background-color: #F6F7F9;
+  border-radius: 16rpx;
+  margin-bottom: 30rpx;
+  position: relative;
+  border: 1px solid #F6F7F9;
+  transition: all 0.3s;
+  overflow: hidden;
+}
+.patient-item .info.data-v-5a933adb {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+}
+.patient-item .info text.data-v-5a933adb {
+  color: #C3C3C5;
+  margin-right: 40rpx;
+  line-height: 60rpx;
+}
+.patient-item .info text.name.data-v-5a933adb {
+  font-size: 32rpx;
+  color: #121826;
+  width: 150rpx;
+  margin-right: 0;
+}
+.patient-item .info text.id.data-v-5a933adb {
+  font-size: 32rpx;
+  color: #3C3E42;
+  width: 360rpx;
+}
+.patient-item .icon.data-v-5a933adb {
+  color: #848484;
+  width: 40rpx;
+  text-align: center;
+}
+.patient-item .tag.data-v-5a933adb {
+  position: absolute;
+  right: 86rpx;
+  top: 42rpx;
+  width: 60rpx;
+  height: 32rpx;
+  font-size: 20rpx;
+  color: #fff;
+  background-color: #16C2A3;
+  border-radius: 4rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.patient-item.selected.data-v-5a933adb {
+  border-color: #16C2A3;
+  background-color: #EAF8F6;
+}
+.patient-item.selected .icon.data-v-5a933adb {
+  color: #16C2A3;
+}
+.patient-add.data-v-5a933adb {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #F6F7F9;
+  color: #16C2A3;
+  text-align: center;
+  padding: 30rpx 0;
+  border-radius: 16rpx;
+}
+.patient-add .u-icon.data-v-5a933adb {
+  font-size: 48rpx;
+}
+.patient-tip.data-v-5a933adb {
+  color: #848484;
+  padding: 24rpx 0;
+}
+.patient-page.data-v-5a933adb {
+  padding: 92rpx 0 160rpx;
+}
+.patient-change.data-v-5a933adb {
+  padding: 30rpx;
+}
+.patient-change > ._h3.data-v-5a933adb {
+  font-weight: normal;
+  margin-bottom: 10rpx;
+}
+.patient-change > view.data-v-5a933adb {
+  color: #6F6F6F;
+}
+.patient-next.data-v-5a933adb {
+  padding: 30rpx;
+  background-color: #fff;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 160rpx;
+  box-sizing: border-box;
+}
+.form.data-v-5a933adb {
+  width: 90%;
+  margin-left: 30rpx;
+}
+.add.data-v-5a933adb {
+  padding-top: 20rpx;
+  width: 750rpx;
+  height: 100%;
+}
+.add .title.data-v-5a933adb {
+  display: flex;
+  align-items: center;
+  padding-right: 20rpx;
+}
+.add .title .addpatient.data-v-5a933adb {
+  position: absolute;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  font-size: 40rpx;
+  font-weight: 700;
+}
+.u-form-item.data-v-5a933adb {
+  margin-top: 30rpx;
+}
+.save.data-v-5a933adb {
+  position: absolute;
+  bottom: 180rpx;
+  width: 80%;
+  margin-left: 65rpx;
+  border-radius: 50rpx;
+}
+.delete.data-v-5a933adb {
+  position: absolute;
+  bottom: 60rpx;
+  width: 80%;
+  margin-left: 65rpx;
+  border-radius: 50rpx;
+}
+

@@ -74,10 +74,40 @@
 		    
 		},
 		{
+		    "path" : "pages/my/user/patient",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "档案管理",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
 		    "path" : "pages/consult/consultDep",
 		    "style" :                                                                                    
 		    {
 		        "navigationBarTitleText": "选择科室",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "pages/consult/consultIllness",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "图文问诊",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
+		    "path" : "pages/consult/consultPay",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "支付",
 		        "navigationBarBackgroundColor":"#fad556",
 		        "enablePullDownRefresh": false
 		    }

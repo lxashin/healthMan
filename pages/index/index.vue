@@ -183,7 +183,8 @@
 			//切换可观看金额
 			checkout(){
 				this.showEye = !this.showEye
-			}
+			},
+			current(){},
 			
 			
 		},

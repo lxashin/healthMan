@@ -37,7 +37,7 @@
 			</u-cell>
 			<u-gap height="12" bgColor="#f2f2f2"></u-gap>
 			
-			<u-cell title="版本:V1.0.0" isLink url="/pages/componentsB/badge/badge">
+			<u-cell title="档案管理" isLink url="/pages/my/user/patient">
 				<u-icon slot="icon" size="28" name="info-circle" color='#fad556'></u-icon>
 			</u-cell>
 			

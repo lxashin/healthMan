@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "u-action-sheet": "/node-modules/uview-ui/components/u-action-sheet/u-action-sheet",
+    "u-line": "/node-modules/uview-ui/components/u-line/u-line",
+    "u-icon": "/node-modules/uview-ui/components/u-icon/u-icon",
+    "u-button": "/node-modules/uview-ui/components/u-button/u-button"
+  },
+  "component": true
+}

@@ -16,4 +16,10 @@
 	/*每个页面公共css */
 	@import "uview-ui/index.scss";
 	@import url('/static/iconfont-weapp-icon.css');
+	uni-modal{
+		z-index: 19999 !important;
+	}
+	uni-showToast{
+		z-index: 19999 !important;
+	}
 </style>

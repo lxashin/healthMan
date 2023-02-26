@@ -295,4 +295,10 @@
   -webkit-appearance: none;
   background: transparent;
 }
+uni-modal {
+  z-index: 19999 !important;
+}
+uni-showToast {
+  z-index: 19999 !important;
+}
 

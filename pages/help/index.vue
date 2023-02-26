@@ -435,45 +435,39 @@
 			// 获取距离
 			getDistance(lat,lon) {
 				let distance
-			  uni.request({
-			    url: 'https://apis.map.qq.com/ws/distance/v1/matrix', //腾讯地图批量距离计算接口地址。
-			    method: 'GET',
-			    data: {
+				this.$api.getLocation({
 			      mode: 'walking',
 			      from: lat+','+lon,
 			      to: '39.108951,117.279396',
 			      key: 'X5QBZ-S4UN4-RFNUS-DJW7Q-6SFMF-R2BDG' //获取key
-			    },
-			    success: (res) => {
-			      let hw = res.data.result.rows[0].elements[0].distance; //拿到距离(米)
-			      if (hw && hw !== -1) {
-			        if (hw < 1000) {
-			          hw = hw + 'm';
-			        }
-			        //转换成公里
-			        else {
-			          hw = (hw / 2 / 500).toFixed(2)
-			        }
-			      } else {
-			        hw = "距离太近或请刷新重试"
-			      }
-			      console.log(hw);
-				  this.distance = hw
-				  
-			    }
-			  });
-			  return this.distance
+			    }).then((res)=>{
+					console.log(res)
+					let hw = res.data.result.rows[0].elements[0].distance; //拿到距离(米)
+					if (hw && hw !== -1) {
+					  if (hw < 1000) {
+					    hw = hw + 'm';
+					  }
+					  //转换成公里
+					  else {
+					    hw = (hw / 2 / 500).toFixed(2)
+					  }
+					} else {
+					  hw = "距离太近或请刷新重试"
+					}
+					console.log(hw);
+					this.distance = hw
+					return this.distance
+				})
+			  
 			},
 			// 获取数据
 			getList(){
 				let that = this
-				uni.request({
-					url:'http://localhost:3000/help/allinfo',
-					method:'GET',
-					success:(res)=> {
-						that.helpList = res.data.data
-					}
+				this.$api.getHelpData().then(res=>{
+					console.log(res.data)
+					this.helpList = res.data
 				})
+				
 			},
 			close(){
 				this.show = false
