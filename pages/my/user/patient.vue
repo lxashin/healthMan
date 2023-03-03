@@ -234,10 +234,12 @@
 								uni.showToast({
 									title:'保存成功'
 								})
-								this.show = false
-								this.loadList()
-								this.patient = {}
-								this.patientId = ''
+								setTimeout(()=>{
+									this.show = false
+									this.loadList()
+									this.patient = {}
+									this.patientId = ''
+								},300)
 							}
 						}else{
 							const res = await this.$api.addPatient(this.patient)
@@ -246,10 +248,13 @@
 								uni.showToast({
 									title:res.msg
 								})
-								this.show = false
-								this.loadList()
-								this.patient = {}
-								this.patientId = ''
+								setTimeout(()=>{
+									this.show = false
+									this.loadList()
+									this.patient = {}
+									this.patientId = ''
+								},200)
+								
 							}
 						}
 						
@@ -266,22 +271,18 @@
 						content:'确定删除吗',
 						success: async (res) => {
 							if(res.confirm){
-								// uni.request({
-								// 	url:'http://localhost:3000/patient/remove',
-								// 	method:'DELETE',
-								// 	success: (res) => {
-								// 		console.log(res)
-								// 	}
-								// })
 								const res = await this.$api.removePatient({id:this.patientId})
 								console.log('res',res)
 								if(res.code==200){
 									uni.showToast({
 										title:'删除成功'
 									})
-									this.show = false
-									this.patient = {}
-									this.loadList()
+									setTimeout(()=>{
+										this.show = false
+										this.patient = {}
+										this.loadList()
+									},200)
+									
 								}
 							}
 						}

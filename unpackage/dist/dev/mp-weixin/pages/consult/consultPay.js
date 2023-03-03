@@ -171,7 +171,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(uni) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -195,8 +195,19 @@ var _default = {
     };
   },
   methods: {
+    checkBoxChange: function checkBoxChange(n) {
+      if (n.length) this.agree = true;else this.agree = false;
+      console.log(this.agree);
+    },
     pay: function pay() {
-      this.show = true;
+      if (this.agree == true) {
+        this.show = true;
+      } else {
+        uni.showToast({
+          title: '请勾选同意我已支付协议',
+          icon: 'none'
+        });
+      }
     },
     close: function close() {
       this.show = false;
@@ -204,6 +215,7 @@ var _default = {
   }
 };
 exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
 

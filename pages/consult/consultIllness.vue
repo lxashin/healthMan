@@ -174,6 +174,7 @@
 						icon:'error'
 					})
 				}else{
+					this.$store.commit('setIllness')
 					uni.navigateTo({
 						url:'/pages/my/user/patient'
 					})

@@ -10,7 +10,13 @@
 				"navigationBarBackgroundColor":"#fad556"
 			}
 		},
-		
+		{
+			"path": "pages/Login/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationBarBackgroundColor":"#fad556"
+			}
+		},
 		{
 		    "path" : "pages/gongzi/gongzi",
 		    "style" :                                                                                    

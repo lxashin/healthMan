@@ -154,12 +154,15 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
 
-
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 28));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 30));
 //
 //
 //
@@ -206,10 +209,41 @@ var _default = {
     close: function close() {
       this.$emit('close', false);
       this.paymentMethod = -1;
+    },
+    pay: function pay() {
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        return _regenerator.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                if (paymentMethod == -1) {
+                  uni.showToast({
+                    title: "请选择支付方式",
+                    icon: 'none'
+                  });
+                } else {
+                  uni.showLoading({
+                    title: '跳转支付中'
+                  });
+                  // const res = await this.$api.getConsultOrderPayUrl({
+                  // 	orderId:orderId,
+                  // 	paymentMethod: this.paymentMethod,
+                  // 	payCallback:"http://consult-patients.itheima.net"+this.payCallback
+                  // })
+                  // window.location.href = res.data.payUrl
+                }
+              case 1:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
     }
   }
 };
 exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
 

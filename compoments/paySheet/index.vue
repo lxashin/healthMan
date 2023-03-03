@@ -45,6 +45,24 @@
 			close() {
 				this.$emit('close',false)
 				this.paymentMethod = -1
+			},
+			async pay(){
+				if(paymentMethod==-1){
+					uni.showToast({
+						title:"请选择支付方式",
+						icon:'none'
+					})
+				}else{
+					uni.showLoading({
+						title:'跳转支付中'
+					})
+					// const res = await this.$api.getConsultOrderPayUrl({
+					// 	orderId:orderId,
+					// 	paymentMethod: this.paymentMethod,
+					// 	payCallback:"http://consult-patients.itheima.net"+this.payCallback
+					// })
+					// window.location.href = res.data.payUrl
+				}
 			}
 		}
 	}

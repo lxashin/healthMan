@@ -53,13 +53,6 @@
   font-size: 16px;
   color: #3C3E42;
 }
-.pay-price.data-v-a1bf2050 () .u-cell__body__content {
-  font-size: 16px;
-}
-.pay-price.data-v-a1bf2050 () .u-cell__value {
-  font-size: 16px;
-  color: #EB5757;
-}
 .pay-space.data-v-a1bf2050 {
   height: 12px;
   background-color: #F6F7F9;

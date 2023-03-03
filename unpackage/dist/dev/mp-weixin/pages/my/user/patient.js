@@ -460,10 +460,12 @@ var _default = {
                   uni.showToast({
                     title: '保存成功'
                   });
-                  _this3.show = false;
-                  _this3.loadList();
-                  _this3.patient = {};
-                  _this3.patientId = '';
+                  setTimeout(function () {
+                    _this3.show = false;
+                    _this3.loadList();
+                    _this3.patient = {};
+                    _this3.patientId = '';
+                  }, 300);
                 }
                 _context.next = 15;
                 break;
@@ -477,10 +479,12 @@ var _default = {
                   uni.showToast({
                     title: _res.msg
                   });
-                  _this3.show = false;
-                  _this3.loadList();
-                  _this3.patient = {};
-                  _this3.patientId = '';
+                  setTimeout(function () {
+                    _this3.show = false;
+                    _this3.loadList();
+                    _this3.patient = {};
+                    _this3.patientId = '';
+                  }, 200);
                 }
               case 15:
               case "end":
@@ -521,9 +525,11 @@ var _default = {
                         uni.showToast({
                           title: '删除成功'
                         });
-                        _this4.show = false;
-                        _this4.patient = {};
-                        _this4.loadList();
+                        setTimeout(function () {
+                          _this4.show = false;
+                          _this4.patient = {};
+                          _this4.loadList();
+                        }, 200);
                       }
                     case 6:
                     case "end":

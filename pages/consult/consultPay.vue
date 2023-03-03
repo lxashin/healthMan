@@ -26,7 +26,7 @@
 	      <u-cell title="病情描述" label="ssss"></u-cell>
 	    </u-cell-group>
 	    <view class="pay-schema">
-			<u-checkbox-group>
+			<u-checkbox-group @change="checkBoxChange">
 				<u-checkbox v-model="agree" shape="circle" label="我已同意"></u-checkbox> <text class="text">支付协议</text>
 			</u-checkbox-group>
 	      
@@ -62,8 +62,20 @@
 			}
 		},
 		methods:{
+			checkBoxChange(n){
+				if(n.length) this.agree = true
+				else this.agree = false
+				console.log(this.agree)
+			},
 			pay(){
-				this.show = true
+				if(this.agree==true){
+					this.show = true
+				}else{
+					uni.showToast({
+						title:'请勾选同意我已支付协议',
+						icon:'none'
+					})
+				}
 			},
 			close(){
 				this.show = false
@@ -104,15 +116,7 @@
   }
 }
 .pay-price {
-  ::v-deep() {
-      .u-cell__body__content {
-        font-size: 16px;
-      }
-      .u-cell__value {
-        font-size: 16px;
-        color: #EB5757;
-      }
-    }
+  
 }
 .pay-space {
   height: 12px;

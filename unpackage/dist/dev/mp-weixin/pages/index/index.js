@@ -175,6 +175,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 28));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 30));
 var _about = _interopRequireDefault(__webpack_require__(/*! ../../compoments/index/about.vue */ 175));
 var Project = function Project() {
   Promise.all(/*! require.ensure | compoments/index/project */[__webpack_require__.e("common/vendor"), __webpack_require__.e("compoments/index/project")]).then((function () {
@@ -227,12 +229,36 @@ var _default = {
       restTime: "",
       interval: '',
       timeData: {},
-      showEye: true // 切换眼睛图标
+      showEye: true,
+      // 切换眼睛图标
+      articleData: {}
     };
   },
-  onLoad: function onLoad() {},
-  onShow: function onShow() {
+  onLoad: function onLoad() {
     var _this = this;
+    return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+      var res;
+      return _regenerator.default.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return _this.$api.getAllArticle();
+            case 2:
+              res = _context.sent;
+              _this.articleData = res.articles;
+              _this.$store.commit('setArticles');
+              console.log(_this.articleData);
+            case 6:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
+  },
+  onShow: function onShow() {
+    var _this2 = this;
     this.timeData = uni.getStorageSync('timeData');
     var workStartTime = this.timeData.startTime;
     var closeTime = this.timeData.endTime;
@@ -264,7 +290,7 @@ var _default = {
 
     if (this.restTime != 0) {
       this.interval = setInterval(function () {
-        _this.getSalary();
+        _this2.getSalary();
       }, 1000);
     }
 
@@ -332,7 +358,9 @@ var _default = {
     checkout: function checkout() {
       this.showEye = !this.showEye;
     },
-    current: function current() {}
+    change: function change(item) {
+      console.log(item);
+    }
   }
 };
 exports.default = _default;

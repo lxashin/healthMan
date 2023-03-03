@@ -16880,6 +16880,12 @@ var _default = {
       "navigationBarBackgroundColor": "#fad556"
     }
   }, {
+    "path": "pages/Login/login",
+    "style": {
+      "navigationBarTitleText": "登录",
+      "navigationBarBackgroundColor": "#fad556"
+    }
+  }, {
     "path": "pages/gongzi/gongzi",
     "style": {
       "navigationBarTitleText": "工资计算器",
@@ -16971,7 +16977,7 @@ var _default = {
       "enablePullDownRefresh": false
     }
   }, {
-    "path": "compoments/article/article_detail",
+    "path": "compoments/article/article_detail/:id",
     "style": {
       "navigationBarTitleText": "文章详情",
       "navigationBarBackgroundColor": "#fad556",
@@ -17233,120 +17239,27 @@ function normalizeComponent (
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
+
 
 var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _mixin = __webpack_require__(/*! uview-ui/libs/mixin/mixin */ 46);
 var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
 var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 47));
+var _home = _interopRequireDefault(__webpack_require__(/*! ./home.js */ 887));
+var _patients = _interopRequireDefault(__webpack_require__(/*! ./patients.js */ 888));
+var _article = _interopRequireDefault(__webpack_require__(/*! ./article.js */ 889));
 _vue.default.use(_vuex.default);
-var store = new _vuex.default.Store({
-  state: {
-    time: {
-      startTime: '09:00',
-      endTime: '18:00',
-      startRest: '12:00',
-      endRest: '13:00',
-      salary: 10000,
-      workDay: 22
-    },
-    show: false,
-    moyuObj: {
-      lashi: 0.00,
-      waimai: 0.00,
-      hesuan: 0.00,
-      study: 0.00,
-      saunter: 0.00,
-      chat: 0.00
-    },
-    secondSalary: 0,
-    weekend: ['星期六', '星期日'],
-    restDay: 0,
-    // 距离休息日的天数
-    salaryDay: 0,
-    // 距离发工资的天数
-    birthday: 0,
-    //距离生日的天数
-    festivalDay: 0,
-    // 距离节假日剩余的天数
-    loginCode: '' // 登录后的code
-  },
-
-  mutations: {
-    setTime: function setTime(state, data) {
-      state.time = data;
-      uni.setStorageSync("timeData", {
-        startTime: data.startTime,
-        endTime: data.endTime,
-        startRest: data.startRest,
-        endRest: data.endRest,
-        salary: data.salary,
-        workDay: data.workDay,
-        // timeData:data,
-        success: function success() {
-          console.log('存储成功！');
-        }
-      });
-    },
-    updateShow: function updateShow(state, data) {
-      state.show = data;
-    },
-    lashi: function lashi(state, data) {
-      state.moyuObj.lashi = data;
-    },
-    chiwaimai: function chiwaimai(state, data) {
-      state.moyuObj.waimai = data;
-    },
-    hesuan: function hesuan(state, data) {
-      state.moyuObj.hesuan = data;
-    },
-    study: function study(state, data) {
-      state.moyuObj.study = data;
-    },
-    saunter: function saunter(state, data) {
-      state.moyuObj.saunter = data;
-    },
-    chat: function chat(state, data) {
-      state.moyuObj.chat = data;
-    },
-    setSecondSalary: function setSecondSalary(state, data) {
-      state.secondSalary = data;
-    },
-    setWeekend: function setWeekend(state, data) {
-      state.weekend = data;
-      uni.setStorageSync('weekend', data);
-    },
-    setRestDay: function setRestDay(state, data) {
-      state.restDay = data;
-      uni.setStorageSync('restDay', data);
-    },
-    setSalaryDay: function setSalaryDay(state, data) {
-      state.salaryDay = data;
-      uni.setStorageSync('salaryDay', data);
-    },
-    setBirthday: function setBirthday(state, data) {
-      state.birthday = data;
-      uni.setStorageSync('birthday', data);
-    },
-    setFestivalDay: function setFestivalDay(state, data) {
-      state.festivalDay = data;
-      uni.setStorageSync('festivalDay', data);
-    },
-    getLoginCode: function getLoginCode(state, data) {
-      state.loginCode = data;
-      uni.setStorageSync('loginCode', data);
-    }
-  },
-  actions: {},
-  getters: {}
+var _default = new _vuex.default.Store({
+  modules: {
+    Home: _home.default,
+    Patients: _patients.default,
+    Articles: _article.default
+  }
 });
-var _default = store;
 exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
 /* 46 */
@@ -46904,6 +46817,18 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _request = _interopRequireDefault(__webpack_require__(/*! ./request.js */ 876));
 var _default = {
+  // 登录接口
+  login: function login(params) {
+    return (0, _request.default)('/user/login', 'POST', params);
+  },
+  // 注册接口
+  register: function register(params) {
+    return (0, _request.default)('/user/register', 'POST', params);
+  },
+  // 发送验证码
+  sendMobileCode: function sendMobileCode(mobile) {
+    return (0, _request.default)('/user/sendcode', 'POST', mobile);
+  },
   // 获取科室列表
   getConsultList: function getConsultList() {
     return (0, _request.default)('/consult', 'GET');
@@ -46939,6 +46864,32 @@ var _default = {
   // 修改患者信息
   modifyPatient: function modifyPatient(params) {
     return (0, _request.default)('/patient/modify', 'PATCH', params);
+  },
+  // 生成预订单信息
+  getConsultOrderPre: function getConsultOrderPre(params) {
+    return (0, _request.default)('/patient/consult/order/pre', 'GET', params);
+  },
+  //生成订单
+  createConsultOrder: function createConsultOrder(params) {
+    return resuest('/patient/consult/order', 'POST', params);
+  },
+  // 获取支付地址  0 是微信  1 支付宝
+  getConsultOrderPayUrl: function getConsultOrderPayUrl(params) {
+    return (0, _request.default)('/patient/consult/pay', 'POST', params);
+  },
+  // 查询患者详情
+  getPatientDetail: function getPatientDetail(id) {
+    return (0, _request.default)("/patient/info/".concat(id));
+  },
+  // 获取订单详情接口
+  getConsultOrderDetail: function getConsultOrderDetail(orderId) {
+    return (0, _request.default)('/patient/consult/order/detail', 'GET', {
+      orderId: orderId
+    });
+  },
+  // 获取文章接口
+  getAllArticle: function getAllArticle() {
+    return (0, _request.default)('/article/findAllArticle', 'GET');
   }
 };
 exports.default = _default;
@@ -46991,6 +46942,247 @@ var _default = function _default(url, method, params, tokens) {
 };
 exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 877 */,
+/* 878 */,
+/* 879 */,
+/* 880 */,
+/* 881 */,
+/* 882 */,
+/* 883 */
+/*!********************************************!*\
+  !*** D:/banzhuandaren/static/image/qq.svg ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "static/img/qq.3d828a10.svg";
+
+/***/ }),
+/* 884 */,
+/* 885 */,
+/* 886 */,
+/* 887 */
+/*!**************************************!*\
+  !*** D:/banzhuandaren/store/home.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _mixin = __webpack_require__(/*! uview-ui/libs/mixin/mixin */ 46);
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
+var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 47));
+_vue.default.use(_vuex.default);
+var state = {
+  time: {
+    startTime: '09:00',
+    endTime: '18:00',
+    startRest: '12:00',
+    endRest: '13:00',
+    salary: 10000,
+    workDay: 22
+  },
+  show: false,
+  moyuObj: {
+    lashi: 0.00,
+    waimai: 0.00,
+    hesuan: 0.00,
+    study: 0.00,
+    saunter: 0.00,
+    chat: 0.00
+  },
+  secondSalary: 0,
+  weekend: ['星期六', '星期日'],
+  restDay: 0,
+  // 距离休息日的天数
+  salaryDay: 0,
+  // 距离发工资的天数
+  birthday: 0,
+  //距离生日的天数
+  festivalDay: 0,
+  // 距离节假日剩余的天数
+  loginCode: '' // 登录后的code
+};
+
+var mutations = {
+  setTime: function setTime(state, data) {
+    state.time = data;
+    uni.setStorageSync("timeData", {
+      startTime: data.startTime,
+      endTime: data.endTime,
+      startRest: data.startRest,
+      endRest: data.endRest,
+      salary: data.salary,
+      workDay: data.workDay,
+      // timeData:data,
+      success: function success() {
+        console.log('存储成功！');
+      }
+    });
+  },
+  updateShow: function updateShow(state, data) {
+    state.show = data;
+  },
+  lashi: function lashi(state, data) {
+    state.moyuObj.lashi = data;
+  },
+  chiwaimai: function chiwaimai(state, data) {
+    state.moyuObj.waimai = data;
+  },
+  hesuan: function hesuan(state, data) {
+    state.moyuObj.hesuan = data;
+  },
+  study: function study(state, data) {
+    state.moyuObj.study = data;
+  },
+  saunter: function saunter(state, data) {
+    state.moyuObj.saunter = data;
+  },
+  chat: function chat(state, data) {
+    state.moyuObj.chat = data;
+  },
+  setSecondSalary: function setSecondSalary(state, data) {
+    state.secondSalary = data;
+  },
+  setWeekend: function setWeekend(state, data) {
+    state.weekend = data;
+    uni.setStorageSync('weekend', data);
+  },
+  setRestDay: function setRestDay(state, data) {
+    state.restDay = data;
+    uni.setStorageSync('restDay', data);
+  },
+  setSalaryDay: function setSalaryDay(state, data) {
+    state.salaryDay = data;
+    uni.setStorageSync('salaryDay', data);
+  },
+  setBirthday: function setBirthday(state, data) {
+    state.birthday = data;
+    uni.setStorageSync('birthday', data);
+  },
+  setFestivalDay: function setFestivalDay(state, data) {
+    state.festivalDay = data;
+    uni.setStorageSync('festivalDay', data);
+  },
+  getLoginCode: function getLoginCode(state, data) {
+    state.loginCode = data;
+    uni.setStorageSync('loginCode', data);
+  }
+};
+var actions = {};
+var getters = {};
+var _default = {
+  state: state,
+  mutations: mutations,
+  actions: actions,
+  getters: getters
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 888 */
+/*!******************************************!*\
+  !*** D:/banzhuandaren/store/patients.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _mixin = __webpack_require__(/*! uview-ui/libs/mixin/mixin */ 46);
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
+var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 47));
+var state = {
+  consult: {} // 问诊记录
+};
+
+var mutations = {
+  // 设置病情描述
+  setIllness: function setIllness(state, data) {
+    state.consult.illnessDesc = data.illnessDesc;
+    state.consult.illnessTime = data.illnessTime;
+    state.consult.consultFlag = data.consultFlag;
+    state.consult.pictures = data.pictures;
+  },
+  // 设置问诊记录类型 1.找医生 2.快速问诊 3.开药问诊
+  setType: function setType(state, data) {
+    state.consult.type = data;
+  },
+  // 设置急速问诊类型
+  setIllnessType: function setIllnessType(state, data) {
+    state.consult.illnessType = data; // 0 或 1
+  },
+  // 设置患者
+  setPatient: function setPatient(state, id) {
+    state.consult.patientId = id;
+  },
+  // 设置优惠券
+  setCoupon: function setCoupon(state, id) {
+    state.consult.couponId = id;
+  },
+  // 清空记录
+  clear: function clear(state) {
+    state.consult = {};
+  }
+};
+var actions = {};
+var getters = {};
+var _default = {
+  state: state,
+  mutations: mutations,
+  actions: actions,
+  getters: getters
+};
+exports.default = _default;
+
+/***/ }),
+/* 889 */
+/*!*****************************************!*\
+  !*** D:/banzhuandaren/store/article.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _mixin = __webpack_require__(/*! uview-ui/libs/mixin/mixin */ 46);
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
+var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 47));
+var state = {
+  articles: {}
+};
+var mutations = {
+  setArticles: function setArticles(state, data) {
+    state.articles = data;
+  }
+};
+var _default = {
+  state: state,
+  mutations: mutations
+};
+exports.default = _default;
 
 /***/ })
 ]]);

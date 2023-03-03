@@ -2,7 +2,7 @@
 	<view class="content">
 		<view v-if="restTime>0" class="off">还有<view style="margin-top: -16rpx;font-size: 60rpx;"> <u-count-down :time="restTime" format="HH:mm:ss"></u-count-down> </view>就下班啦！</view>
 		<view class="off" v-else>
-			下班啦，赶紧跑路！！
+			下班啦，多运动哦！！
 		</view>
 		<view class="money-content">
 			<view class="money">
@@ -12,7 +12,7 @@
 				<view class="btn">
 					<u-button text="设置" color="linear-gradient(to right, rgb(66, 83, 216), rgb(213, 51, 186))" size='mini' @click="setUp"></u-button>
 				</view>
-				<image src="../../static/image/moyu.jpg" mode="widthFix"></image>
+				<image src="../../static/image/jiankangbaoxian.png" mode="widthFix"></image>
 				
 			</view>
 			
@@ -31,14 +31,14 @@
 		<view class="title">
 			健康知识
 		</view>
-		<u-tabs :list="list" :is-scroll="false" :current="current" @change="change" lineColor="#fad556"
+		<u-tabs :list="list" :is-scroll="false" @change="change" lineColor="#fad556"
 			        :activeStyle="{
 			            color: '#303133',
 			            fontWeight: 'bold',
 			            transform: 'scale(1.05)'
 			        }" lineWidth="30"></u-tabs>
 	</view>
-	<Article></Article>
+	<Article :articleData="articleData"></Article>
 	<About></About>
 	</view>
 
@@ -76,12 +76,15 @@
 				restTime:"",
 				interval:'',
 				timeData:{},
-				showEye:true // 切换眼睛图标
-				
+				showEye:true, // 切换眼睛图标
+				articleData:{}
 			}
 		},
-		onLoad() {
-			 
+		async onLoad() {
+			 const res = await this.$api.getAllArticle()
+			 this.articleData = res.articles
+			 this.$store.commit('setArticles')
+			 console.log(this.articleData)
 		},
 		
 		onShow() {
@@ -184,8 +187,12 @@
 			checkout(){
 				this.showEye = !this.showEye
 			},
-			current(){},
-			
+			async change(item){
+				console.log(item.name)
+				const res = await this.$api.getArticleByTag(item.name)
+				console.log(res)
+				// this.articleData = res
+			}
 			
 		},
 		
@@ -237,7 +244,7 @@
 				flex-direction: column;
 				image{
 					transform: translate(2);
-					width: 300rpx;
+					width: 260rpx;
 					position: absolute;
 					top: 8rpx;
 					right: 4rpx;

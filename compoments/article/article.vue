@@ -1,62 +1,20 @@
 <template>
 	<view class="article">
-		<view class="article_item" @click="goDetail">
-				<image src="../../static/image/avatar.jpg" mode="heightFix"></image>
+		<view class="article_item" @click="goDetail(item)" v-for="item in articleData" :key="item.id">
+				<image :src="item.avatar" mode="heightFix"></image>
 			<view class="container">
 				<view class="title">
-					文章标题文章标题文章标题文章标题文章标题文章标题文章标题
+					{{item.title}}
 				</view>
 				<view class="content">
-					文章内容
-					文章内容
-					文章内容
-					文章内容
-					文章内容
-					文章内容
+					{{getSimpleText(item.content)}}
 				</view>
 				<view class="time">
-					2022-12-26 03:30:06
+					{{item.createTime}}
 				</view>
 			</view>
 		</view>
-		<view class="article_item" @click="goDetail">
-				<image src="../../static/image/avatar.jpg" mode="heightFix"></image>
-			<view class="container">
-				<view class="title">
-					文章标题文章标题文章标题文章标题文章标题文章标题文章标题
-				</view>
-				<view class="content">
-					文章内容
-					文章内容
-					文章内容
-					文章内容
-					文章内容
-					文章内容
-				</view>
-				<view class="time">
-					2022-12-26 03:30:06
-				</view>
-			</view>
-		</view>
-		<view class="article_item" @click="goDetail">
-				<image src="../../static/image/avatar.jpg" mode="heightFix"></image>
-			<view class="container">
-				<view class="title">
-					文章标题文章标题文章标题文章标题文章标题文章标题文章标题
-				</view>
-				<view class="content">
-					文章内容
-					文章内容
-					文章内容
-					文章内容
-					文章内容
-					文章内容
-				</view>
-				<view class="time">
-					2022-12-26 03:30:06
-				</view>
-			</view>
-		</view>
+		
 	</view>
 	
 </template>
@@ -68,13 +26,29 @@
 				
 			}
 		},
+		props:['articleData'],
+		async onLoad() {
+			
+		},
+		onShow() {
+			console.log(1111,this.$store.state.articles)
+		},
 		methods:{
-			goDetail(){
+			goDetail(item){
 				uni.navigateTo({
-					url:'/compoments/article/article_detail',
+					url:`/compoments/article/article_detail?id=${item.id}`,
 				})
+			},
+			// 剔除富文本标签
+			getSimpleText(html){
+			    //匹配html标签的正则表达式，"g"是搜索匹配多个符合的内容
+			    var re1 = new RegExp("<.+?>","g");
+			    //执行替换成空字符
+			    var msg = html.replace(re1,'');
+			    return msg;
 			}
-		}
+		},
+		
 	}
 </script>
 
