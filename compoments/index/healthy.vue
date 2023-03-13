@@ -21,7 +21,8 @@
 					{
 						id:0,
 						icon:'t-icon-richangtijian',
-						content:'每日检测'
+						content:'每日检测',
+						url:'/pages/introduce/depression'
 					},
 					{
 						id:1,

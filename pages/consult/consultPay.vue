@@ -55,7 +55,7 @@
 		},
 		data(){
 			return {
-				payInfo:{},
+				payInfo:{}, // 预订单信息 {优惠券、积分抵扣、实付款等}
 				agree:false,
 				show:false,
 				title:"请选择支付方式",
@@ -79,6 +79,14 @@
 			},
 			close(){
 				this.show = false
+			},
+			// 生成预支付订单信息
+			async loadData(){
+				const res = await this.$api.getConsultOrderPre({
+					type:2,
+					illnessType:1
+				})
+				this.payInfo = res.data
 			}
 		}
 	}

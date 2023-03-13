@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "测评介绍",
+  "navigationBarBackgroundColor": "#fad556",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-icon": "/node-modules/uview-ui/components/u-icon/u-icon",
+    "u-button": "/node-modules/uview-ui/components/u-button/u-button"
+  }
+}

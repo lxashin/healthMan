@@ -109,7 +109,7 @@
 .content .money-content .money image {
   -webkit-transform: translate(2);
           transform: translate(2);
-  width: 300rpx;
+  width: 260rpx;
   position: absolute;
   top: 8rpx;
   right: 4rpx;

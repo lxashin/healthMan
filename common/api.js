@@ -83,7 +83,8 @@ export default {
 	},
 	// 根据tag标签获取文章
 	getArticleByTag(tag){
-		return request(`article/findtag?tag=${tag}`,'GET')
+		console.log(`article/findtag?tag=${tag}`)
+		return request(`/article/findtag?tag=${tag}`,'GET')
 	}
 	
 }

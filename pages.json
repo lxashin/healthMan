@@ -191,6 +191,16 @@
 		    
 		},
 		{
+		    "path" : "pages/introduce/depression",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "测评介绍",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
 		    "path" : "compoments/person/importantNews",
 		    "style" :                                                                                    
 		    {
@@ -231,10 +241,10 @@
 		    
 		},
 		{
-		    "path" : "compoments/person/update",
+		    "path" : "compoments/testing/index",
 		    "style" :                                                                                    
 		    {
-		        "navigationBarTitleText": "更新日志",
+		        "navigationBarTitleText": "健康测评",
 		        "navigationBarBackgroundColor":"#fad556",
 		        "enablePullDownRefresh": false
 		    }

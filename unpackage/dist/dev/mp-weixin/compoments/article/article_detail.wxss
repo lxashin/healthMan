@@ -38,7 +38,7 @@
 .article .time.data-v-4895bb8f {
   font-size: 22rpx;
   color: #7f7f7f;
-  margin-bottom: 10rpx;
+  margin: 20rpx 0;
 }
 .article .content.data-v-4895bb8f {
   font-size: 30rpx;
@@ -88,7 +88,6 @@
   margin: 30rpx 0;
 }
 .article .comment .comment_item .avatar.data-v-4895bb8f {
-  background: red;
   width: 100rpx;
   height: 100rpx;
   border-radius: 50%;

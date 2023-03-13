@@ -15,12 +15,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var objectKeys = ['qy', 'env', 'error', 'version', 'lanDebug', 'cloud', 'serviceMarket', 'router', 'worklet'];
+var singlePageDisableKey = ['lanDebug', 'router', 'worklet'];
 var target = typeof globalThis !== 'undefined' ? globalThis : function () {
   return this;
 }();
 var key = ['w', 'x'].join('');
 var oldWx = target[key];
+var launchOption = oldWx.getLaunchOptionsSync ? oldWx.getLaunchOptionsSync() : null;
 function isWxKey(key) {
+  if (launchOption && launchOption.scene === 1154 && singlePageDisableKey.includes(key)) {
+    return false;
+  }
   return objectKeys.indexOf(key) > -1 || typeof oldWx[key] === 'function';
 }
 function initWx() {
@@ -354,7 +359,7 @@ var promiseInterceptor = {
     });
   }
 };
-var SYNC_API_RE = /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting/;
+var SYNC_API_RE = /^\$|Window$|WindowStyle$|sendHostEvent|sendNativeEvent|restoreGlobal|requireGlobal|getCurrentSubNVue|getMenuButtonBoundingClientRect|^report|interceptors|Interceptor$|getSubNVueById|requireNativePlugin|upx2px|hideKeyboard|canIUse|^create|Sync$|Manager$|base64ToArrayBuffer|arrayBufferToBase64|getLocale|setLocale|invokePushCallback|getWindowInfo|getDeviceInfo|getAppBaseInfo|getSystemSetting|getAppAuthorizeSetting|initUTS|requireUTS|registerUTS/;
 var CONTEXT_API_RE = /^create|Manager$/;
 
 // Context例外情况
@@ -734,6 +739,8 @@ function populateParameters(result) {
     deviceOrientation = result.deviceOrientation;
   // const isQuickApp = "mp-weixin".indexOf('quickapp-webview') !== -1
 
+  var extraParam = {};
+
   // osName osVersion
   var osName = '';
   var osVersion = '';
@@ -772,8 +779,8 @@ function populateParameters(result) {
     appVersion: "1.0.0",
     appVersionCode: "100",
     appLanguage: getAppLanguage(hostLanguage),
-    uniCompileVersion: "3.6.18",
-    uniRuntimeVersion: "3.6.18",
+    uniCompileVersion: "3.7.3",
+    uniRuntimeVersion: "3.7.3",
     uniPlatform: undefined || "mp-weixin",
     deviceBrand: deviceBrand,
     deviceModel: model,
@@ -798,7 +805,7 @@ function populateParameters(result) {
     browserName: undefined,
     browserVersion: undefined
   };
-  Object.assign(result, parameters);
+  Object.assign(result, parameters, extraParam);
 }
 function getGetDeviceType(result, model) {
   var deviceType = result.deviceType || 'phone';
@@ -917,6 +924,17 @@ var getAppAuthorizeSetting = {
 
 // import navigateTo from 'uni-helpers/navigate-to'
 
+var compressImage = {
+  args: function args(fromArgs) {
+    // https://developers.weixin.qq.com/community/develop/doc/000c08940c865011298e0a43256800?highLine=compressHeight
+    if (fromArgs.compressedHeight && !fromArgs.compressHeight) {
+      fromArgs.compressHeight = fromArgs.compressedHeight;
+    }
+    if (fromArgs.compressedWidth && !fromArgs.compressWidth) {
+      fromArgs.compressWidth = fromArgs.compressedWidth;
+    }
+  }
+};
 var protocols = {
   redirectTo: redirectTo,
   // navigateTo,  // 由于在微信开发者工具的页面参数，会显示__id__参数，因此暂时关闭mp-weixin对于navigateTo的AOP
@@ -927,7 +945,8 @@ var protocols = {
   getAppBaseInfo: getAppBaseInfo,
   getDeviceInfo: getDeviceInfo,
   getWindowInfo: getWindowInfo,
-  getAppAuthorizeSetting: getAppAuthorizeSetting
+  getAppAuthorizeSetting: getAppAuthorizeSetting,
+  compressImage: compressImage
 };
 var todos = ['vibrate', 'preloadPage', 'unPreloadPage', 'loadSubPackage'];
 var canIUses = [];
@@ -1524,7 +1543,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"moyudashi","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"moyudashi","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -8878,7 +8897,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"moyudashi","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"moyudashi","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -8899,14 +8918,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"moyudashi","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"moyudashi","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"moyudashi","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"moyudashi","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -9002,7 +9021,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = this.$shouldDiffData === false ? data : diff(data, mpData);
     if (Object.keys(diffData).length) {
-      if (Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"moyudashi","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"moyudashi","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -9865,10 +9884,9 @@ function m(e) {
 var y = "development" === "development",
   _ = "mp-weixin",
   w = "true" === undefined || !0 === undefined,
-  v = m([]);
-var S;
-S = "h5" === _ ? "web" : "app-plus" === _ ? "app" : _;
-var k = m({
+  v = m([]),
+  S = "h5" === _ ? "web" : "app-plus" === _ ? "app" : _,
+  k = m({
     "address": [
         "127.0.0.1",
         "192.168.0.132"
@@ -9936,8 +9954,8 @@ var N = C("_globalUniCloudListener"),
   F = "needLogin",
   q = "refreshToken",
   K = "clientdb",
-  M = "cloudfunction",
-  j = "cloudobject";
+  j = "cloudfunction",
+  M = "cloudobject";
 function B(e) {
   return N[e] || (N[e] = []), N[e];
 }
@@ -10003,7 +10021,7 @@ function Y(e, t) {
           return U(R(t, "complete"), e);
         }).then(function () {
           return r && z(D, {
-            type: M,
+            type: j,
             content: e
           }), Promise.resolve(e);
         });
@@ -10012,7 +10030,7 @@ function Y(e, t) {
           return U(R(t, "complete"), e);
         }).then(function () {
           return z(D, {
-            type: M,
+            type: j,
             content: e
           }), Promise.reject(e);
         });
@@ -10020,12 +10038,12 @@ function Y(e, t) {
     if (!(o || a || c)) return l;
     l.then(function (e) {
       o && o(e), c && c(e), r && z(D, {
-        type: M,
+        type: j,
         content: e
       });
     }, function (e) {
       a && a(e), c && c(e), r && z(D, {
-        type: M,
+        type: j,
         content: e
       });
     });
@@ -10871,8 +10889,8 @@ var Ke;
 !function (e) {
   e.ANONYMOUS = "ANONYMOUS", e.WECHAT = "WECHAT", e.WECHAT_PUBLIC = "WECHAT-PUBLIC", e.WECHAT_OPEN = "WECHAT-OPEN", e.CUSTOM = "CUSTOM", e.EMAIL = "EMAIL", e.USERNAME = "USERNAME", e.NULL = "NULL";
 }(Ke || (Ke = {}));
-var Me = ["auth.getJwt", "auth.logout", "auth.signInWithTicket", "auth.signInAnonymously", "auth.signIn", "auth.fetchAccessTokenWithRefreshToken", "auth.signUpWithEmailAndPassword", "auth.activateEndUserMail", "auth.sendPasswordResetEmail", "auth.resetPasswordWithToken", "auth.isUsernameRegistered"],
-  je = {
+var je = ["auth.getJwt", "auth.logout", "auth.signInWithTicket", "auth.signInAnonymously", "auth.signIn", "auth.fetchAccessTokenWithRefreshToken", "auth.signUpWithEmailAndPassword", "auth.activateEndUserMail", "auth.sendPasswordResetEmail", "auth.resetPasswordWithToken", "auth.isUsernameRegistered"],
+  Me = {
     "X-SDK-Version": "1.3.5"
   };
 function Be(e, t, n) {
@@ -10901,7 +10919,7 @@ function $e() {
     data: {
       seqId: e
     },
-    headers: _objectSpread(_objectSpread({}, je), {}, {
+    headers: _objectSpread(_objectSpread({}, Me), {}, {
       "x-seqid": e
     })
   };
@@ -11178,7 +11196,7 @@ var We = /*#__PURE__*/function () {
                   env: this.config.env,
                   dataVersion: "2019-08-16"
                 }, t);
-                if (!(-1 === Me.indexOf(e))) {
+                if (!(-1 === je.indexOf(e))) {
                   _context9.next = 10;
                   break;
                 }
@@ -11277,7 +11295,7 @@ var We = /*#__PURE__*/function () {
                 });
               case 3:
                 n = _context10.sent;
-                if (!("ACCESS_TOKEN_EXPIRED" === n.data.code && -1 === Me.indexOf(e))) {
+                if (!("ACCESS_TOKEN_EXPIRED" === n.data.code && -1 === je.indexOf(e))) {
                   _context10.next = 13;
                   break;
                 }
@@ -13482,8 +13500,8 @@ var Dt,
     24: 12,
     32: 14
   },
-  Mt = [1, 2, 4, 8, 16, 32, 64, 128, 27, 54, 108, 216, 171, 77, 154, 47, 94, 188, 99, 198, 151, 53, 106, 212, 179, 125, 250, 239, 197, 145],
-  jt = [99, 124, 119, 123, 242, 107, 111, 197, 48, 1, 103, 43, 254, 215, 171, 118, 202, 130, 201, 125, 250, 89, 71, 240, 173, 212, 162, 175, 156, 164, 114, 192, 183, 253, 147, 38, 54, 63, 247, 204, 52, 165, 229, 241, 113, 216, 49, 21, 4, 199, 35, 195, 24, 150, 5, 154, 7, 18, 128, 226, 235, 39, 178, 117, 9, 131, 44, 26, 27, 110, 90, 160, 82, 59, 214, 179, 41, 227, 47, 132, 83, 209, 0, 237, 32, 252, 177, 91, 106, 203, 190, 57, 74, 76, 88, 207, 208, 239, 170, 251, 67, 77, 51, 133, 69, 249, 2, 127, 80, 60, 159, 168, 81, 163, 64, 143, 146, 157, 56, 245, 188, 182, 218, 33, 16, 255, 243, 210, 205, 12, 19, 236, 95, 151, 68, 23, 196, 167, 126, 61, 100, 93, 25, 115, 96, 129, 79, 220, 34, 42, 144, 136, 70, 238, 184, 20, 222, 94, 11, 219, 224, 50, 58, 10, 73, 6, 36, 92, 194, 211, 172, 98, 145, 149, 228, 121, 231, 200, 55, 109, 141, 213, 78, 169, 108, 86, 244, 234, 101, 122, 174, 8, 186, 120, 37, 46, 28, 166, 180, 198, 232, 221, 116, 31, 75, 189, 139, 138, 112, 62, 181, 102, 72, 3, 246, 14, 97, 53, 87, 185, 134, 193, 29, 158, 225, 248, 152, 17, 105, 217, 142, 148, 155, 30, 135, 233, 206, 85, 40, 223, 140, 161, 137, 13, 191, 230, 66, 104, 65, 153, 45, 15, 176, 84, 187, 22],
+  jt = [1, 2, 4, 8, 16, 32, 64, 128, 27, 54, 108, 216, 171, 77, 154, 47, 94, 188, 99, 198, 151, 53, 106, 212, 179, 125, 250, 239, 197, 145],
+  Mt = [99, 124, 119, 123, 242, 107, 111, 197, 48, 1, 103, 43, 254, 215, 171, 118, 202, 130, 201, 125, 250, 89, 71, 240, 173, 212, 162, 175, 156, 164, 114, 192, 183, 253, 147, 38, 54, 63, 247, 204, 52, 165, 229, 241, 113, 216, 49, 21, 4, 199, 35, 195, 24, 150, 5, 154, 7, 18, 128, 226, 235, 39, 178, 117, 9, 131, 44, 26, 27, 110, 90, 160, 82, 59, 214, 179, 41, 227, 47, 132, 83, 209, 0, 237, 32, 252, 177, 91, 106, 203, 190, 57, 74, 76, 88, 207, 208, 239, 170, 251, 67, 77, 51, 133, 69, 249, 2, 127, 80, 60, 159, 168, 81, 163, 64, 143, 146, 157, 56, 245, 188, 182, 218, 33, 16, 255, 243, 210, 205, 12, 19, 236, 95, 151, 68, 23, 196, 167, 126, 61, 100, 93, 25, 115, 96, 129, 79, 220, 34, 42, 144, 136, 70, 238, 184, 20, 222, 94, 11, 219, 224, 50, 58, 10, 73, 6, 36, 92, 194, 211, 172, 98, 145, 149, 228, 121, 231, 200, 55, 109, 141, 213, 78, 169, 108, 86, 244, 234, 101, 122, 174, 8, 186, 120, 37, 46, 28, 166, 180, 198, 232, 221, 116, 31, 75, 189, 139, 138, 112, 62, 181, 102, 72, 3, 246, 14, 97, 53, 87, 185, 134, 193, 29, 158, 225, 248, 152, 17, 105, 217, 142, 148, 155, 30, 135, 233, 206, 85, 40, 223, 140, 161, 137, 13, 191, 230, 66, 104, 65, 153, 45, 15, 176, 84, 187, 22],
   Bt = [82, 9, 106, 213, 48, 54, 165, 56, 191, 64, 163, 158, 129, 243, 215, 251, 124, 227, 57, 130, 155, 47, 255, 135, 52, 142, 67, 68, 196, 222, 233, 203, 84, 123, 148, 50, 166, 194, 35, 61, 238, 76, 149, 11, 66, 250, 195, 78, 8, 46, 161, 102, 40, 217, 36, 178, 118, 91, 162, 73, 109, 139, 209, 37, 114, 248, 246, 100, 134, 104, 152, 22, 212, 164, 92, 204, 93, 101, 182, 146, 108, 112, 72, 80, 253, 237, 185, 218, 94, 21, 70, 87, 167, 141, 157, 132, 144, 216, 171, 0, 140, 188, 211, 10, 247, 228, 88, 5, 184, 179, 69, 6, 208, 44, 30, 143, 202, 63, 15, 2, 193, 175, 189, 3, 1, 19, 138, 107, 58, 145, 17, 65, 79, 103, 220, 234, 151, 242, 207, 206, 240, 180, 230, 115, 150, 172, 116, 34, 231, 173, 53, 133, 226, 249, 55, 232, 28, 117, 223, 110, 71, 241, 26, 113, 29, 41, 197, 137, 111, 183, 98, 14, 170, 24, 190, 27, 252, 86, 62, 75, 198, 210, 121, 32, 154, 219, 192, 254, 120, 205, 90, 244, 31, 221, 168, 51, 136, 7, 199, 49, 177, 18, 16, 89, 39, 128, 236, 95, 96, 81, 127, 169, 25, 181, 74, 13, 45, 229, 122, 159, 147, 201, 156, 239, 160, 224, 59, 77, 174, 42, 245, 176, 200, 235, 187, 60, 131, 83, 153, 97, 23, 43, 4, 126, 186, 119, 214, 38, 225, 105, 20, 99, 85, 33, 12, 125],
   $t = [3328402341, 4168907908, 4000806809, 4135287693, 4294111757, 3597364157, 3731845041, 2445657428, 1613770832, 33620227, 3462883241, 1445669757, 3892248089, 3050821474, 1303096294, 3967186586, 2412431941, 528646813, 2311702848, 4202528135, 4026202645, 2992200171, 2387036105, 4226871307, 1101901292, 3017069671, 1604494077, 1169141738, 597466303, 1403299063, 3832705686, 2613100635, 1974974402, 3791519004, 1033081774, 1277568618, 1815492186, 2118074177, 4126668546, 2211236943, 1748251740, 1369810420, 3521504564, 4193382664, 3799085459, 2883115123, 1647391059, 706024767, 134480908, 2512897874, 1176707941, 2646852446, 806885416, 932615841, 168101135, 798661301, 235341577, 605164086, 461406363, 3756188221, 3454790438, 1311188841, 2142417613, 3933566367, 302582043, 495158174, 1479289972, 874125870, 907746093, 3698224818, 3025820398, 1537253627, 2756858614, 1983593293, 3084310113, 2108928974, 1378429307, 3722699582, 1580150641, 327451799, 2790478837, 3117535592, 0, 3253595436, 1075847264, 3825007647, 2041688520, 3059440621, 3563743934, 2378943302, 1740553945, 1916352843, 2487896798, 2555137236, 2958579944, 2244988746, 3151024235, 3320835882, 1336584933, 3992714006, 2252555205, 2588757463, 1714631509, 293963156, 2319795663, 3925473552, 67240454, 4269768577, 2689618160, 2017213508, 631218106, 1269344483, 2723238387, 1571005438, 2151694528, 93294474, 1066570413, 563977660, 1882732616, 4059428100, 1673313503, 2008463041, 2950355573, 1109467491, 537923632, 3858759450, 4260623118, 3218264685, 2177748300, 403442708, 638784309, 3287084079, 3193921505, 899127202, 2286175436, 773265209, 2479146071, 1437050866, 4236148354, 2050833735, 3362022572, 3126681063, 840505643, 3866325909, 3227541664, 427917720, 2655997905, 2749160575, 1143087718, 1412049534, 999329963, 193497219, 2353415882, 3354324521, 1807268051, 672404540, 2816401017, 3160301282, 369822493, 2916866934, 3688947771, 1681011286, 1949973070, 336202270, 2454276571, 201721354, 1210328172, 3093060836, 2680341085, 3184776046, 1135389935, 3294782118, 965841320, 831886756, 3554993207, 4068047243, 3588745010, 2345191491, 1849112409, 3664604599, 26054028, 2983581028, 2622377682, 1235855840, 3630984372, 2891339514, 4092916743, 3488279077, 3395642799, 4101667470, 1202630377, 268961816, 1874508501, 4034427016, 1243948399, 1546530418, 941366308, 1470539505, 1941222599, 2546386513, 3421038627, 2715671932, 3899946140, 1042226977, 2521517021, 1639824860, 227249030, 260737669, 3765465232, 2084453954, 1907733956, 3429263018, 2420656344, 100860677, 4160157185, 470683154, 3261161891, 1781871967, 2924959737, 1773779408, 394692241, 2579611992, 974986535, 664706745, 3655459128, 3958962195, 731420851, 571543859, 3530123707, 2849626480, 126783113, 865375399, 765172662, 1008606754, 361203602, 3387549984, 2278477385, 2857719295, 1344809080, 2782912378, 59542671, 1503764984, 160008576, 437062935, 1707065306, 3622233649, 2218934982, 3496503480, 2185314755, 697932208, 1512910199, 504303377, 2075177163, 2824099068, 1841019862, 739644986],
   Wt = [2781242211, 2230877308, 2582542199, 2381740923, 234877682, 3184946027, 2984144751, 1418839493, 1348481072, 50462977, 2848876391, 2102799147, 434634494, 1656084439, 3863849899, 2599188086, 1167051466, 2636087938, 1082771913, 2281340285, 368048890, 3954334041, 3381544775, 201060592, 3963727277, 1739838676, 4250903202, 3930435503, 3206782108, 4149453988, 2531553906, 1536934080, 3262494647, 484572669, 2923271059, 1783375398, 1517041206, 1098792767, 49674231, 1334037708, 1550332980, 4098991525, 886171109, 150598129, 2481090929, 1940642008, 1398944049, 1059722517, 201851908, 1385547719, 1699095331, 1587397571, 674240536, 2704774806, 252314885, 3039795866, 151914247, 908333586, 2602270848, 1038082786, 651029483, 1766729511, 3447698098, 2682942837, 454166793, 2652734339, 1951935532, 775166490, 758520603, 3000790638, 4004797018, 4217086112, 4137964114, 1299594043, 1639438038, 3464344499, 2068982057, 1054729187, 1901997871, 2534638724, 4121318227, 1757008337, 0, 750906861, 1614815264, 535035132, 3363418545, 3988151131, 3201591914, 1183697867, 3647454910, 1265776953, 3734260298, 3566750796, 3903871064, 1250283471, 1807470800, 717615087, 3847203498, 384695291, 3313910595, 3617213773, 1432761139, 2484176261, 3481945413, 283769337, 100925954, 2180939647, 4037038160, 1148730428, 3123027871, 3813386408, 4087501137, 4267549603, 3229630528, 2315620239, 2906624658, 3156319645, 1215313976, 82966005, 3747855548, 3245848246, 1974459098, 1665278241, 807407632, 451280895, 251524083, 1841287890, 1283575245, 337120268, 891687699, 801369324, 3787349855, 2721421207, 3431482436, 959321879, 1469301956, 4065699751, 2197585534, 1199193405, 2898814052, 3887750493, 724703513, 2514908019, 2696962144, 2551808385, 3516813135, 2141445340, 1715741218, 2119445034, 2872807568, 2198571144, 3398190662, 700968686, 3547052216, 1009259540, 2041044702, 3803995742, 487983883, 1991105499, 1004265696, 1449407026, 1316239930, 504629770, 3683797321, 168560134, 1816667172, 3837287516, 1570751170, 1857934291, 4014189740, 2797888098, 2822345105, 2754712981, 936633572, 2347923833, 852879335, 1133234376, 1500395319, 3084545389, 2348912013, 1689376213, 3533459022, 3762923945, 3034082412, 4205598294, 133428468, 634383082, 2949277029, 2398386810, 3913789102, 403703816, 3580869306, 2297460856, 1867130149, 1918643758, 607656988, 4049053350, 3346248884, 1368901318, 600565992, 2090982877, 2632479860, 557719327, 3717614411, 3697393085, 2249034635, 2232388234, 2430627952, 1115438654, 3295786421, 2865522278, 3633334344, 84280067, 33027830, 303828494, 2747425121, 1600795957, 4188952407, 3496589753, 2434238086, 1486471617, 658119965, 3106381470, 953803233, 334231800, 3005978776, 857870609, 3151128937, 1890179545, 2298973838, 2805175444, 3056442267, 574365214, 2450884487, 550103529, 1233637070, 4289353045, 2018519080, 2057691103, 2399374476, 4166623649, 2148108681, 387583245, 3664101311, 836232934, 3330556482, 3100665960, 3280093505, 2955516313, 2002398509, 287182607, 3413881008, 4238890068, 3597515707, 975967766],
@@ -13528,13 +13546,13 @@ var nn = /*#__PURE__*/function () {
         n = t >> 2, this._Ke[n][t % 4] = i[t], this._Kd[e - n][t % 4] = i[t];
       }
       for (var o, a = 0, c = r; c < s;) {
-        if (o = i[r - 1], i[0] ^= jt[o >> 16 & 255] << 24 ^ jt[o >> 8 & 255] << 16 ^ jt[255 & o] << 8 ^ jt[o >> 24 & 255] ^ Mt[a] << 24, a += 1, 8 != r) for (t = 1; t < r; t++) {
+        if (o = i[r - 1], i[0] ^= Mt[o >> 16 & 255] << 24 ^ Mt[o >> 8 & 255] << 16 ^ Mt[255 & o] << 8 ^ Mt[o >> 24 & 255] ^ jt[a] << 24, a += 1, 8 != r) for (t = 1; t < r; t++) {
           i[t] ^= i[t - 1];
         } else {
           for (t = 1; t < r / 2; t++) {
             i[t] ^= i[t - 1];
           }
-          o = i[r / 2 - 1], i[r / 2] ^= jt[255 & o] ^ jt[o >> 8 & 255] << 8 ^ jt[o >> 16 & 255] << 16 ^ jt[o >> 24 & 255] << 24;
+          o = i[r / 2 - 1], i[r / 2] ^= Mt[255 & o] ^ Mt[o >> 8 & 255] << 8 ^ Mt[o >> 16 & 255] << 16 ^ Mt[o >> 24 & 255] << 24;
           for (t = r / 2 + 1; t < r; t++) {
             i[t] ^= i[t - 1];
           }
@@ -13565,7 +13583,7 @@ var nn = /*#__PURE__*/function () {
       var o,
         a = Lt(16);
       for (r = 0; r < 4; r++) {
-        o = this._Ke[t][r], a[4 * r] = 255 & (jt[s[r] >> 24 & 255] ^ o >> 24), a[4 * r + 1] = 255 & (jt[s[(r + 1) % 4] >> 16 & 255] ^ o >> 16), a[4 * r + 2] = 255 & (jt[s[(r + 2) % 4] >> 8 & 255] ^ o >> 8), a[4 * r + 3] = 255 & (jt[255 & s[(r + 3) % 4]] ^ o);
+        o = this._Ke[t][r], a[4 * r] = 255 & (Mt[s[r] >> 24 & 255] ^ o >> 24), a[4 * r + 1] = 255 & (Mt[s[(r + 1) % 4] >> 16 & 255] ^ o >> 16), a[4 * r + 2] = 255 & (Mt[s[(r + 2) % 4] >> 8 & 255] ^ o >> 8), a[4 * r + 3] = 255 & (Mt[255 & s[(r + 3) % 4]] ^ o);
       }
       return a;
     }
@@ -15070,20 +15088,20 @@ var Kn = /*#__PURE__*/function (_ref38) {
   }]);
   return _class5;
 }());
-var Mn = "token无效，跳转登录页面",
-  jn = "token过期，跳转登录页面",
+var jn = "token无效，跳转登录页面",
+  Mn = "token过期，跳转登录页面",
   Bn = {
-    TOKEN_INVALID_TOKEN_EXPIRED: jn,
-    TOKEN_INVALID_INVALID_CLIENTID: Mn,
-    TOKEN_INVALID: Mn,
-    TOKEN_INVALID_WRONG_TOKEN: Mn,
-    TOKEN_INVALID_ANONYMOUS_USER: Mn
+    TOKEN_INVALID_TOKEN_EXPIRED: Mn,
+    TOKEN_INVALID_INVALID_CLIENTID: jn,
+    TOKEN_INVALID: jn,
+    TOKEN_INVALID_WRONG_TOKEN: jn,
+    TOKEN_INVALID_ANONYMOUS_USER: jn
   },
   $n = {
-    "uni-id-token-expired": jn,
-    "uni-id-check-token-failed": Mn,
-    "uni-id-token-not-exist": Mn,
-    "uni-id-check-device-feature-failed": Mn
+    "uni-id-token-expired": Mn,
+    "uni-id-check-token-failed": jn,
+    "uni-id-token-not-exist": jn,
+    "uni-id-check-device-feature-failed": jn
   };
 function Wn(e, t) {
   var n = "";
@@ -15314,13 +15332,17 @@ function us() {
     switch (t) {
       case "cloudobject":
         s = function (e) {
-          var t = e.errCode;
+          if ("object" != (0, _typeof2.default)(e)) return !1;
+          var _ref45 = e || {},
+            t = _ref45.errCode;
           return t in $n;
         }(n);
         break;
       case "clientdb":
         s = function (e) {
-          var t = e.errCode;
+          if ("object" != (0, _typeof2.default)(e)) return !1;
+          var _ref46 = e || {},
+            t = _ref46.errCode;
           return t in Bn;
         }(n);
     }
@@ -15409,9 +15431,9 @@ var gs = s(function (e, t) {
         return e.path;
       })), e;
     }
-    function i(e, t, _ref45) {
-      var s = _ref45.onChooseFile,
-        r = _ref45.onUploadProgress;
+    function i(e, t, _ref47) {
+      var s = _ref47.onChooseFile,
+        r = _ref47.onUploadProgress;
       return t.then(function (e) {
         if (s) {
           var _t17 = s(e);
@@ -15689,11 +15711,11 @@ function _s(e) {
       onMixinDatacomPropsChange: function onMixinDatacomPropsChange(e, t) {},
       mixinDatacomEasyGet: function mixinDatacomEasyGet() {
         var _this22 = this;
-        var _ref46 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-          _ref46$getone = _ref46.getone,
-          e = _ref46$getone === void 0 ? !1 : _ref46$getone,
-          t = _ref46.success,
-          n = _ref46.fail;
+        var _ref48 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          _ref48$getone = _ref48.getone,
+          e = _ref48$getone === void 0 ? !1 : _ref48$getone,
+          t = _ref48.success,
+          n = _ref48.fail;
         this.mixinDatacomLoading || (this.mixinDatacomLoading = !0, this.mixinDatacomErrorMessage = "", this.mixinDatacomGet().then(function (n) {
           _this22.mixinDatacomLoading = !1;
           var _n$result = n.result,
@@ -15770,10 +15792,10 @@ function ws(e) {
     return new Proxy({}, {
       get: function get(s, c) {
         return function () {
-          var _ref47 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            e = _ref47.fn,
-            t = _ref47.interceptorName,
-            n = _ref47.getCallbackArgs;
+          var _ref49 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            e = _ref49.fn,
+            t = _ref49.interceptorName,
+            n = _ref49.getCallbackArgs;
           return /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee49() {
             var _len2,
               s,
@@ -15842,7 +15864,7 @@ function ws(e) {
                 _key3,
                 d,
                 f,
-                _ref49,
+                _ref51,
                 p,
                 g,
                 m,
@@ -15892,7 +15914,7 @@ function ws(e) {
                         result: new Q(_context51.t0)
                       };
                     case 14:
-                      _ref49 = h.result || {}, p = _ref49.errSubject, g = _ref49.errCode, m = _ref49.errMsg, y = _ref49.newToken;
+                      _ref51 = h.result || {}, p = _ref51.errSubject, g = _ref51.errCode, m = _ref51.errMsg, y = _ref51.newToken;
                       if (!(a && uni.hideLoading(), y && y.token && y.tokenExpired && (ee(y), z(q, _objectSpread({}, y))), g)) {
                         _context51.next = 39;
                         break;
@@ -15944,7 +15966,7 @@ function ws(e) {
                     case 31:
                       _context51.next = 33;
                       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee50() {
-                        var _ref51,
+                        var _ref53,
                           e,
                           t,
                           n,
@@ -15955,7 +15977,7 @@ function ws(e) {
                           while (1) {
                             switch (_context50.prev = _context50.next) {
                               case 0:
-                                _ref51 = _args3.length > 0 && _args3[0] !== undefined ? _args3[0] : {}, e = _ref51.title, t = _ref51.content, n = _ref51.showCancel, s = _ref51.cancelText, r = _ref51.confirmText;
+                                _ref53 = _args3.length > 0 && _args3[0] !== undefined ? _args3[0] : {}, e = _ref53.title, t = _ref53.content, n = _ref53.showCancel, s = _ref53.cancelText, r = _ref53.confirmText;
                                 return _context50.abrupt("return", new Promise(function (i, o) {
                                   uni.showModal({
                                     title: e,
@@ -16003,12 +16025,12 @@ function ws(e) {
                         requestId: h.requestId
                       });
                       throw _n14.detail = h.result, z(D, {
-                        type: j,
+                        type: M,
                         content: _n14
                       }), _n14;
                     case 39:
                       return _context51.abrupt("return", (z(D, {
-                        type: j,
+                        type: M,
                         content: h.result
                       }), h.result));
                     case 40:
@@ -16025,8 +16047,8 @@ function ws(e) {
           }(),
           interceptorName: "callObject",
           getCallbackArgs: function getCallbackArgs() {
-            var _ref52 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-              e = _ref52.params;
+            var _ref54 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+              e = _ref54.params;
             return {
               objectName: t,
               methodName: c,
@@ -16046,8 +16068,8 @@ function Ss() {
 }
 function _Ss() {
   _Ss = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee53() {
-    var _ref56,
-      _ref56$callLoginByWei,
+    var _ref58,
+      _ref58$callLoginByWei,
       e,
       t,
       n,
@@ -16057,7 +16079,7 @@ function _Ss() {
       while (1) {
         switch (_context53.prev = _context53.next) {
           case 0:
-            _ref56 = _args6.length > 0 && _args6[0] !== undefined ? _args6[0] : {}, _ref56$callLoginByWei = _ref56.callLoginByWeixin, e = _ref56$callLoginByWei === void 0 ? !1 : _ref56$callLoginByWei;
+            _ref58 = _args6.length > 0 && _args6[0] !== undefined ? _args6[0] : {}, _ref58$callLoginByWei = _ref58.callLoginByWeixin, e = _ref58$callLoginByWei === void 0 ? !1 : _ref58$callLoginByWei;
             t = vs(this);
             if (!("mp-weixin" !== S)) {
               _context53.next = 4;
@@ -16123,9 +16145,9 @@ function _ks() {
 }
 function Is(e) {
   return function () {
-    var _ref53 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-      _ref53$callLoginByWei = _ref53.callLoginByWeixin,
-      t = _ref53$callLoginByWei === void 0 ? !1 : _ref53$callLoginByWei;
+    var _ref55 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      _ref55$callLoginByWei = _ref55.callLoginByWeixin,
+      t = _ref55$callLoginByWei === void 0 ? !1 : _ref55$callLoginByWei;
     return ks.call(e, {
       callLoginByWeixin: t
     });
@@ -16204,7 +16226,7 @@ function Ts(e) {
         _t20 = _e$__dev__$debugInfo.address,
         _n15 = _e$__dev__$debugInfo.servePort;
       return function () {
-        var _ref54 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee52(e, t) {
+        var _ref56 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee52(e, t) {
           var n, _s15, _r7;
           return _regenerator.default.wrap(function _callee52$(_context52) {
             while (1) {
@@ -16243,14 +16265,14 @@ function Ts(e) {
           }, _callee52);
         }));
         return function (_x40, _x41) {
-          return _ref54.apply(this, arguments);
+          return _ref56.apply(this, arguments);
         };
       }()(_t20, _n15);
     }
   }).then(function () {
-    var _ref55 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-      t = _ref55.address,
-      n = _ref55.port;
+    var _ref57 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      t = _ref57.address,
+      n = _ref57.port;
     if (!y) return Promise.resolve();
     var s = console["app" === S ? "error" : "warn"];
     if (t) e.__dev__.localAddress = t, e.__dev__.localPort = n;else if (e.__dev__.debugInfo) {
@@ -16977,7 +16999,7 @@ var _default = {
       "enablePullDownRefresh": false
     }
   }, {
-    "path": "compoments/article/article_detail/:id",
+    "path": "compoments/article/article_detail",
     "style": {
       "navigationBarTitleText": "文章详情",
       "navigationBarBackgroundColor": "#fad556",
@@ -17001,6 +17023,13 @@ var _default = {
     "path": "compoments/bailan/detailArticle",
     "style": {
       "navigationBarTitleText": "详情",
+      "navigationBarBackgroundColor": "#fad556",
+      "enablePullDownRefresh": false
+    }
+  }, {
+    "path": "pages/introduce/depression",
+    "style": {
+      "navigationBarTitleText": "测评介绍",
       "navigationBarBackgroundColor": "#fad556",
       "enablePullDownRefresh": false
     }
@@ -17033,9 +17062,9 @@ var _default = {
       "enablePullDownRefresh": false
     }
   }, {
-    "path": "compoments/person/update",
+    "path": "compoments/testing/index",
     "style": {
-      "navigationBarTitleText": "更新日志",
+      "navigationBarTitleText": "健康测评",
       "navigationBarBackgroundColor": "#fad556",
       "enablePullDownRefresh": false
     }
@@ -17150,6 +17179,9 @@ function normalizeComponent (
   }
   // fixed by xxxxxx renderjs
   if (renderjs) {
+    if(typeof renderjs.beforeCreate === 'function'){
+			renderjs.beforeCreate = [renderjs.beforeCreate]
+		}
     (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
       this[renderjs.__module] = this
     });
@@ -17247,10 +17279,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
-var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 47));
-var _home = _interopRequireDefault(__webpack_require__(/*! ./home.js */ 887));
-var _patients = _interopRequireDefault(__webpack_require__(/*! ./patients.js */ 888));
-var _article = _interopRequireDefault(__webpack_require__(/*! ./article.js */ 889));
+var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 46));
+var _home = _interopRequireDefault(__webpack_require__(/*! ./home.js */ 47));
+var _patients = _interopRequireDefault(__webpack_require__(/*! ./patients.js */ 49));
+var _article = _interopRequireDefault(__webpack_require__(/*! ./article.js */ 50));
 _vue.default.use(_vuex.default);
 var _default = new _vuex.default.Store({
   modules: {
@@ -17263,174 +17295,6 @@ exports.default = _default;
 
 /***/ }),
 /* 46 */
-/*!******************************************************************!*\
-  !*** D:/banzhuandaren/node_modules/uview-ui/libs/mixin/mixin.js ***!
-  \******************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(uni) {module.exports = {
-  // 定义每个组件都可能需要用到的外部样式以及类名
-  props: {
-    // 每个组件都有的父组件传递的样式，可以为字符串或者对象形式
-    customStyle: {
-      type: [Object, String],
-      default: function _default() {
-        return {};
-      }
-    },
-    customClass: {
-      type: String,
-      default: ''
-    },
-    // 跳转的页面路径
-    url: {
-      type: String,
-      default: ''
-    },
-    // 页面跳转的类型
-    linkType: {
-      type: String,
-      default: 'navigateTo'
-    }
-  },
-  data: function data() {
-    return {};
-  },
-  onLoad: function onLoad() {
-    // getRect挂载到$u上，因为这方法需要使用in(this)，所以无法把它独立成一个单独的文件导出
-    this.$u.getRect = this.$uGetRect;
-  },
-  created: function created() {
-    // 组件当中，只有created声明周期，为了能在组件使用，故也在created中将方法挂载到$u
-    this.$u.getRect = this.$uGetRect;
-  },
-  computed: {
-    // 在2.x版本中，将会把$u挂载到uni对象下，导致在模板中无法使用uni.$u.xxx形式
-    // 所以这里通过computed计算属性将其附加到this.$u上，就可以在模板或者js中使用uni.$u.xxx
-    // 只在nvue环境通过此方式引入完整的$u，其他平台会出现性能问题，非nvue则按需引入（主要原因是props过大）
-    $u: function $u() {
-      // 在非nvue端，移除props，http，mixin等对象，避免在小程序setData时数据过大影响性能
-      return uni.$u.deepMerge(uni.$u, {
-        props: undefined,
-        http: undefined,
-        mixin: undefined
-      });
-    },
-    /**
-     * 生成bem规则类名
-     * 由于微信小程序，H5，nvue之间绑定class的差异，无法通过:class="[bem()]"的形式进行同用
-     * 故采用如下折中做法，最后返回的是数组（一般平台）或字符串（支付宝和字节跳动平台），类似['a', 'b', 'c']或'a b c'的形式
-     * @param {String} name 组件名称
-     * @param {Array} fixed 一直会存在的类名
-     * @param {Array} change 会根据变量值为true或者false而出现或者隐藏的类名
-     * @returns {Array|string}
-     */
-    bem: function bem() {
-      return function (name, fixed, change) {
-        var _this = this;
-        // 类名前缀
-        var prefix = "u-".concat(name, "--");
-        var classes = {};
-        if (fixed) {
-          fixed.map(function (item) {
-            // 这里的类名，会一直存在
-            classes[prefix + _this[item]] = true;
-          });
-        }
-        if (change) {
-          change.map(function (item) {
-            // 这里的类名，会根据this[item]的值为true或者false，而进行添加或者移除某一个类
-            _this[item] ? classes[prefix + item] = _this[item] : delete classes[prefix + item];
-          });
-        }
-        return Object.keys(classes);
-        // 支付宝，头条小程序无法动态绑定一个数组类名，否则解析出来的结果会带有","，而导致失效
-      };
-    }
-  },
-
-  methods: {
-    // 跳转某一个页面
-    openPage: function openPage() {
-      var urlKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'url';
-      var url = this[urlKey];
-      if (url) {
-        // 执行类似uni.navigateTo的方法
-        uni[this.linkType]({
-          url: url
-        });
-      }
-    },
-    // 查询节点信息
-    // 目前此方法在支付宝小程序中无法获取组件跟接点的尺寸，为支付宝的bug(2020-07-21)
-    // 解决办法为在组件根部再套一个没有任何作用的view元素
-    $uGetRect: function $uGetRect(selector, all) {
-      var _this2 = this;
-      return new Promise(function (resolve) {
-        uni.createSelectorQuery().in(_this2)[all ? 'selectAll' : 'select'](selector).boundingClientRect(function (rect) {
-          if (all && Array.isArray(rect) && rect.length) {
-            resolve(rect);
-          }
-          if (!all && rect) {
-            resolve(rect);
-          }
-        }).exec();
-      });
-    },
-    getParentData: function getParentData() {
-      var _this3 = this;
-      var parentName = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-      // 避免在created中去定义parent变量
-      if (!this.parent) this.parent = {};
-      // 这里的本质原理是，通过获取父组件实例(也即类似u-radio的父组件u-radio-group的this)
-      // 将父组件this中对应的参数，赋值给本组件(u-radio的this)的parentData对象中对应的属性
-      // 之所以需要这么做，是因为所有端中，头条小程序不支持通过this.parent.xxx去监听父组件参数的变化
-      // 此处并不会自动更新子组件的数据，而是依赖父组件u-radio-group去监听data的变化，手动调用更新子组件的方法去重新获取
-      this.parent = uni.$u.$parent.call(this, parentName);
-      if (this.parent.children) {
-        // 如果父组件的children不存在本组件的实例，才将本实例添加到父组件的children中
-        this.parent.children.indexOf(this) === -1 && this.parent.children.push(this);
-      }
-      if (this.parent && this.parentData) {
-        // 历遍parentData中的属性，将parent中的同名属性赋值给parentData
-        Object.keys(this.parentData).map(function (key) {
-          _this3.parentData[key] = _this3.parent[key];
-        });
-      }
-    },
-    // 阻止事件冒泡
-    preventEvent: function preventEvent(e) {
-      e && typeof e.stopPropagation === 'function' && e.stopPropagation();
-    },
-    // 空操作
-    noop: function noop(e) {
-      this.preventEvent(e);
-    }
-  },
-  onReachBottom: function onReachBottom() {
-    uni.$emit('uOnReachBottom');
-  },
-  beforeDestroy: function beforeDestroy() {
-    var _this4 = this;
-    // 判断当前页面是否存在parent和chldren，一般在checkbox和checkbox-group父子联动的场景会有此情况
-    // 组件销毁时，移除子组件在父组件children数组中的实例，释放资源，避免数据混乱
-    if (this.parent && uni.$u.test.array(this.parent.children)) {
-      // 组件销毁时，移除父组件中的children数组中对应的实例
-      var childrenList = this.parent.children;
-      childrenList.map(function (child, index) {
-        // 如果相等，则移除
-        if (child === _this4) {
-          childrenList.splice(index, 1);
-        }
-      });
-    }
-  }
-};
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
-
-/***/ }),
-/* 47 */
 /*!**************************************************************************************!*\
   !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vuex3/dist/vuex.common.js ***!
   \**************************************************************************************/
@@ -18686,7 +18550,554 @@ module.exports = index_cjs;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../webpack/buildin/global.js */ 3)))
 
 /***/ }),
+/* 47 */
+/*!**************************************!*\
+  !*** D:/banzhuandaren/store/home.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _mixin = __webpack_require__(/*! uview-ui/libs/mixin/mixin */ 48);
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
+var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 46));
+_vue.default.use(_vuex.default);
+var state = {
+  time: {
+    startTime: '09:00',
+    endTime: '18:00',
+    startRest: '12:00',
+    endRest: '13:00',
+    salary: 10000,
+    workDay: 22
+  },
+  show: false,
+  moyuObj: {
+    lashi: 0.00,
+    waimai: 0.00,
+    hesuan: 0.00,
+    study: 0.00,
+    saunter: 0.00,
+    chat: 0.00
+  },
+  secondSalary: 0,
+  weekend: ['星期六', '星期日'],
+  restDay: 0,
+  // 距离休息日的天数
+  salaryDay: 0,
+  // 距离发工资的天数
+  birthday: 0,
+  //距离生日的天数
+  festivalDay: 0,
+  // 距离节假日剩余的天数
+  loginCode: '' // 登录后的code
+};
+
+var mutations = {
+  setTime: function setTime(state, data) {
+    state.time = data;
+    uni.setStorageSync("timeData", {
+      startTime: data.startTime,
+      endTime: data.endTime,
+      startRest: data.startRest,
+      endRest: data.endRest,
+      salary: data.salary,
+      workDay: data.workDay,
+      // timeData:data,
+      success: function success() {
+        console.log('存储成功！');
+      }
+    });
+  },
+  updateShow: function updateShow(state, data) {
+    state.show = data;
+  },
+  lashi: function lashi(state, data) {
+    state.moyuObj.lashi = data;
+  },
+  chiwaimai: function chiwaimai(state, data) {
+    state.moyuObj.waimai = data;
+  },
+  hesuan: function hesuan(state, data) {
+    state.moyuObj.hesuan = data;
+  },
+  study: function study(state, data) {
+    state.moyuObj.study = data;
+  },
+  saunter: function saunter(state, data) {
+    state.moyuObj.saunter = data;
+  },
+  chat: function chat(state, data) {
+    state.moyuObj.chat = data;
+  },
+  setSecondSalary: function setSecondSalary(state, data) {
+    state.secondSalary = data;
+  },
+  setWeekend: function setWeekend(state, data) {
+    state.weekend = data;
+    uni.setStorageSync('weekend', data);
+  },
+  setRestDay: function setRestDay(state, data) {
+    state.restDay = data;
+    uni.setStorageSync('restDay', data);
+  },
+  setSalaryDay: function setSalaryDay(state, data) {
+    state.salaryDay = data;
+    uni.setStorageSync('salaryDay', data);
+  },
+  setBirthday: function setBirthday(state, data) {
+    state.birthday = data;
+    uni.setStorageSync('birthday', data);
+  },
+  setFestivalDay: function setFestivalDay(state, data) {
+    state.festivalDay = data;
+    uni.setStorageSync('festivalDay', data);
+  },
+  getLoginCode: function getLoginCode(state, data) {
+    state.loginCode = data;
+    uni.setStorageSync('loginCode', data);
+  }
+};
+var actions = {};
+var getters = {};
+var _default = {
+  state: state,
+  mutations: mutations,
+  actions: actions,
+  getters: getters
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
 /* 48 */
+/*!******************************************************************!*\
+  !*** D:/banzhuandaren/node_modules/uview-ui/libs/mixin/mixin.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(uni) {module.exports = {
+  // 定义每个组件都可能需要用到的外部样式以及类名
+  props: {
+    // 每个组件都有的父组件传递的样式，可以为字符串或者对象形式
+    customStyle: {
+      type: [Object, String],
+      default: function _default() {
+        return {};
+      }
+    },
+    customClass: {
+      type: String,
+      default: ''
+    },
+    // 跳转的页面路径
+    url: {
+      type: String,
+      default: ''
+    },
+    // 页面跳转的类型
+    linkType: {
+      type: String,
+      default: 'navigateTo'
+    }
+  },
+  data: function data() {
+    return {};
+  },
+  onLoad: function onLoad() {
+    // getRect挂载到$u上，因为这方法需要使用in(this)，所以无法把它独立成一个单独的文件导出
+    this.$u.getRect = this.$uGetRect;
+  },
+  created: function created() {
+    // 组件当中，只有created声明周期，为了能在组件使用，故也在created中将方法挂载到$u
+    this.$u.getRect = this.$uGetRect;
+  },
+  computed: {
+    // 在2.x版本中，将会把$u挂载到uni对象下，导致在模板中无法使用uni.$u.xxx形式
+    // 所以这里通过computed计算属性将其附加到this.$u上，就可以在模板或者js中使用uni.$u.xxx
+    // 只在nvue环境通过此方式引入完整的$u，其他平台会出现性能问题，非nvue则按需引入（主要原因是props过大）
+    $u: function $u() {
+      // 在非nvue端，移除props，http，mixin等对象，避免在小程序setData时数据过大影响性能
+      return uni.$u.deepMerge(uni.$u, {
+        props: undefined,
+        http: undefined,
+        mixin: undefined
+      });
+    },
+    /**
+     * 生成bem规则类名
+     * 由于微信小程序，H5，nvue之间绑定class的差异，无法通过:class="[bem()]"的形式进行同用
+     * 故采用如下折中做法，最后返回的是数组（一般平台）或字符串（支付宝和字节跳动平台），类似['a', 'b', 'c']或'a b c'的形式
+     * @param {String} name 组件名称
+     * @param {Array} fixed 一直会存在的类名
+     * @param {Array} change 会根据变量值为true或者false而出现或者隐藏的类名
+     * @returns {Array|string}
+     */
+    bem: function bem() {
+      return function (name, fixed, change) {
+        var _this = this;
+        // 类名前缀
+        var prefix = "u-".concat(name, "--");
+        var classes = {};
+        if (fixed) {
+          fixed.map(function (item) {
+            // 这里的类名，会一直存在
+            classes[prefix + _this[item]] = true;
+          });
+        }
+        if (change) {
+          change.map(function (item) {
+            // 这里的类名，会根据this[item]的值为true或者false，而进行添加或者移除某一个类
+            _this[item] ? classes[prefix + item] = _this[item] : delete classes[prefix + item];
+          });
+        }
+        return Object.keys(classes);
+        // 支付宝，头条小程序无法动态绑定一个数组类名，否则解析出来的结果会带有","，而导致失效
+      };
+    }
+  },
+
+  methods: {
+    // 跳转某一个页面
+    openPage: function openPage() {
+      var urlKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'url';
+      var url = this[urlKey];
+      if (url) {
+        // 执行类似uni.navigateTo的方法
+        uni[this.linkType]({
+          url: url
+        });
+      }
+    },
+    // 查询节点信息
+    // 目前此方法在支付宝小程序中无法获取组件跟接点的尺寸，为支付宝的bug(2020-07-21)
+    // 解决办法为在组件根部再套一个没有任何作用的view元素
+    $uGetRect: function $uGetRect(selector, all) {
+      var _this2 = this;
+      return new Promise(function (resolve) {
+        uni.createSelectorQuery().in(_this2)[all ? 'selectAll' : 'select'](selector).boundingClientRect(function (rect) {
+          if (all && Array.isArray(rect) && rect.length) {
+            resolve(rect);
+          }
+          if (!all && rect) {
+            resolve(rect);
+          }
+        }).exec();
+      });
+    },
+    getParentData: function getParentData() {
+      var _this3 = this;
+      var parentName = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+      // 避免在created中去定义parent变量
+      if (!this.parent) this.parent = {};
+      // 这里的本质原理是，通过获取父组件实例(也即类似u-radio的父组件u-radio-group的this)
+      // 将父组件this中对应的参数，赋值给本组件(u-radio的this)的parentData对象中对应的属性
+      // 之所以需要这么做，是因为所有端中，头条小程序不支持通过this.parent.xxx去监听父组件参数的变化
+      // 此处并不会自动更新子组件的数据，而是依赖父组件u-radio-group去监听data的变化，手动调用更新子组件的方法去重新获取
+      this.parent = uni.$u.$parent.call(this, parentName);
+      if (this.parent.children) {
+        // 如果父组件的children不存在本组件的实例，才将本实例添加到父组件的children中
+        this.parent.children.indexOf(this) === -1 && this.parent.children.push(this);
+      }
+      if (this.parent && this.parentData) {
+        // 历遍parentData中的属性，将parent中的同名属性赋值给parentData
+        Object.keys(this.parentData).map(function (key) {
+          _this3.parentData[key] = _this3.parent[key];
+        });
+      }
+    },
+    // 阻止事件冒泡
+    preventEvent: function preventEvent(e) {
+      e && typeof e.stopPropagation === 'function' && e.stopPropagation();
+    },
+    // 空操作
+    noop: function noop(e) {
+      this.preventEvent(e);
+    }
+  },
+  onReachBottom: function onReachBottom() {
+    uni.$emit('uOnReachBottom');
+  },
+  beforeDestroy: function beforeDestroy() {
+    var _this4 = this;
+    // 判断当前页面是否存在parent和chldren，一般在checkbox和checkbox-group父子联动的场景会有此情况
+    // 组件销毁时，移除子组件在父组件children数组中的实例，释放资源，避免数据混乱
+    if (this.parent && uni.$u.test.array(this.parent.children)) {
+      // 组件销毁时，移除父组件中的children数组中对应的实例
+      var childrenList = this.parent.children;
+      childrenList.map(function (child, index) {
+        // 如果相等，则移除
+        if (child === _this4) {
+          childrenList.splice(index, 1);
+        }
+      });
+    }
+  }
+};
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 49 */
+/*!******************************************!*\
+  !*** D:/banzhuandaren/store/patients.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _mixin = __webpack_require__(/*! uview-ui/libs/mixin/mixin */ 48);
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
+var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 46));
+var state = {
+  consult: {} // 问诊记录
+};
+
+var mutations = {
+  // 设置病情描述
+  setIllness: function setIllness(state, data) {
+    state.consult.illnessDesc = data.illnessDesc;
+    state.consult.illnessTime = data.illnessTime;
+    state.consult.consultFlag = data.consultFlag;
+    state.consult.pictures = data.pictures;
+  },
+  // 设置问诊记录类型 1.找医生 2.快速问诊 3.开药问诊
+  setType: function setType(state, data) {
+    state.consult.type = data;
+  },
+  // 设置急速问诊类型
+  setIllnessType: function setIllnessType(state, data) {
+    state.consult.illnessType = data; // 0 或 1
+  },
+  // 设置患者
+  setPatient: function setPatient(state, id) {
+    state.consult.patientId = id;
+  },
+  // 设置优惠券
+  setCoupon: function setCoupon(state, id) {
+    state.consult.couponId = id;
+  },
+  // 清空记录
+  clear: function clear(state) {
+    state.consult = {};
+  }
+};
+var actions = {};
+var getters = {};
+var _default = {
+  state: state,
+  mutations: mutations,
+  actions: actions,
+  getters: getters
+};
+exports.default = _default;
+
+/***/ }),
+/* 50 */
+/*!*****************************************!*\
+  !*** D:/banzhuandaren/store/article.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _mixin = __webpack_require__(/*! uview-ui/libs/mixin/mixin */ 48);
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
+var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 46));
+var state = {
+  articles: {}
+};
+var mutations = {
+  setArticles: function setArticles(state, data) {
+    state.articles = data;
+  }
+};
+var _default = {
+  state: state,
+  mutations: mutations
+};
+exports.default = _default;
+
+/***/ }),
+/* 51 */
+/*!**************************************!*\
+  !*** D:/banzhuandaren/common/api.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _request = _interopRequireDefault(__webpack_require__(/*! ./request.js */ 52));
+var _default = {
+  // 登录接口
+  login: function login(params) {
+    return (0, _request.default)('/user/login', 'POST', params);
+  },
+  // 注册接口
+  register: function register(params) {
+    return (0, _request.default)('/user/register', 'POST', params);
+  },
+  // 发送验证码
+  sendMobileCode: function sendMobileCode(mobile) {
+    return (0, _request.default)('/user/sendcode', 'POST', mobile);
+  },
+  // 获取科室列表
+  getConsultList: function getConsultList() {
+    return (0, _request.default)('/consult', 'GET');
+  },
+  // 获取距离
+  getLocation: function getLocation(params) {
+    return new Promise(function (resolve, reject) {
+      uni.request({
+        url: 'https://apis.map.qq.com/ws/distance/v1/matrix',
+        method: 'GET',
+        data: params
+      }).then(function (res) {
+        resolve(res.data);
+      });
+    });
+  },
+  // 获取需要帮助的数据
+  getHelpData: function getHelpData() {
+    return (0, _request.default)('/help/allinfo', 'GET');
+  },
+  // 获取患者信息
+  getPatients: function getPatients() {
+    return (0, _request.default)('/patient/mylist', 'GET');
+  },
+  // 添加患者
+  addPatient: function addPatient(params) {
+    return (0, _request.default)('/patient/add', 'POST', params);
+  },
+  // 删除患者
+  removePatient: function removePatient(params) {
+    return (0, _request.default)('/patient/remove', 'DELETE', params);
+  },
+  // 修改患者信息
+  modifyPatient: function modifyPatient(params) {
+    return (0, _request.default)('/patient/modify', 'PATCH', params);
+  },
+  // 生成预订单信息
+  getConsultOrderPre: function getConsultOrderPre(params) {
+    return (0, _request.default)('/patient/consult/order/pre', 'GET', params);
+  },
+  //生成订单
+  createConsultOrder: function createConsultOrder(params) {
+    return resuest('/patient/consult/order', 'POST', params);
+  },
+  // 获取支付地址  0 是微信  1 支付宝
+  getConsultOrderPayUrl: function getConsultOrderPayUrl(params) {
+    return (0, _request.default)('/patient/consult/pay', 'POST', params);
+  },
+  // 查询患者详情
+  getPatientDetail: function getPatientDetail(id) {
+    return (0, _request.default)("/patient/info/".concat(id));
+  },
+  // 获取订单详情接口
+  getConsultOrderDetail: function getConsultOrderDetail(orderId) {
+    return (0, _request.default)('/patient/consult/order/detail', 'GET', {
+      orderId: orderId
+    });
+  },
+  // 获取文章接口
+  getAllArticle: function getAllArticle() {
+    return (0, _request.default)('/article/findAllArticle', 'GET');
+  },
+  // 根据id获取文章内容显式文章详情页
+  getArticleById: function getArticleById(id) {
+    return (0, _request.default)("/article/findarticle?id=".concat(id), 'GET');
+  },
+  // 根据articleId获取该文章评论
+  getArticleComment: function getArticleComment(id) {
+    return (0, _request.default)("/comment/getcomment?articleId=".concat(id), 'GET');
+  },
+  // 根据tag标签获取文章
+  getArticleByTag: function getArticleByTag(tag) {
+    console.log("article/findtag?tag=".concat(tag));
+    return (0, _request.default)("/article/findtag?tag=".concat(tag), 'GET');
+  }
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 52 */
+/*!******************************************!*\
+  !*** D:/banzhuandaren/common/request.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var baseUrl = "http://localhost:3000";
+var _default = function _default(url, method, params, tokens) {
+  return new Promise(function (resolve, reject) {
+    uni.showLoading({
+      title: '加载中...'
+    });
+    uni.request({
+      url: baseUrl + url,
+      method: method,
+      data: params
+      // header:{
+      // 	token:tokens
+      // }
+    }).then(function (res) {
+      // 请求成功的处理
+      resolve(res[1].data);
+      uni.hideLoading();
+    }).catch(function (err) {
+      // 请求失败的处理
+      console.log('请求失败');
+      setTimeout(function () {
+        uni.hideLoading();
+        uni.showToast({
+          title: '请求失败',
+          icon: 'error'
+        });
+      }, 2000);
+    });
+  });
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 53 */
 /*!*******************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/index.js ***!
   \*******************************************************/
@@ -18702,20 +19113,20 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
-var _mixin = _interopRequireDefault(__webpack_require__(/*! ./libs/mixin/mixin.js */ 46));
-var _mpMixin = _interopRequireDefault(__webpack_require__(/*! ./libs/mixin/mpMixin.js */ 49));
-var _luchRequest = _interopRequireDefault(__webpack_require__(/*! ./libs/luch-request */ 50));
-var _route = _interopRequireDefault(__webpack_require__(/*! ./libs/util/route.js */ 68));
-var _colorGradient = _interopRequireDefault(__webpack_require__(/*! ./libs/function/colorGradient.js */ 69));
-var _test = _interopRequireDefault(__webpack_require__(/*! ./libs/function/test.js */ 70));
-var _debounce = _interopRequireDefault(__webpack_require__(/*! ./libs/function/debounce.js */ 71));
-var _throttle = _interopRequireDefault(__webpack_require__(/*! ./libs/function/throttle.js */ 72));
-var _index = _interopRequireDefault(__webpack_require__(/*! ./libs/function/index.js */ 73));
-var _config = _interopRequireDefault(__webpack_require__(/*! ./libs/config/config.js */ 76));
-var _props = _interopRequireDefault(__webpack_require__(/*! ./libs/config/props.js */ 77));
-var _zIndex = _interopRequireDefault(__webpack_require__(/*! ./libs/config/zIndex.js */ 167));
-var _color = _interopRequireDefault(__webpack_require__(/*! ./libs/config/color.js */ 125));
-var _platform = _interopRequireDefault(__webpack_require__(/*! ./libs/function/platform */ 168));
+var _mixin = _interopRequireDefault(__webpack_require__(/*! ./libs/mixin/mixin.js */ 48));
+var _mpMixin = _interopRequireDefault(__webpack_require__(/*! ./libs/mixin/mpMixin.js */ 54));
+var _luchRequest = _interopRequireDefault(__webpack_require__(/*! ./libs/luch-request */ 55));
+var _route = _interopRequireDefault(__webpack_require__(/*! ./libs/util/route.js */ 73));
+var _colorGradient = _interopRequireDefault(__webpack_require__(/*! ./libs/function/colorGradient.js */ 74));
+var _test = _interopRequireDefault(__webpack_require__(/*! ./libs/function/test.js */ 75));
+var _debounce = _interopRequireDefault(__webpack_require__(/*! ./libs/function/debounce.js */ 76));
+var _throttle = _interopRequireDefault(__webpack_require__(/*! ./libs/function/throttle.js */ 77));
+var _index = _interopRequireDefault(__webpack_require__(/*! ./libs/function/index.js */ 78));
+var _config = _interopRequireDefault(__webpack_require__(/*! ./libs/config/config.js */ 81));
+var _props = _interopRequireDefault(__webpack_require__(/*! ./libs/config/props.js */ 82));
+var _zIndex = _interopRequireDefault(__webpack_require__(/*! ./libs/config/zIndex.js */ 172));
+var _color = _interopRequireDefault(__webpack_require__(/*! ./libs/config/color.js */ 130));
+var _platform = _interopRequireDefault(__webpack_require__(/*! ./libs/function/platform */ 173));
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 // 看到此报错，是因为没有配置vue.config.js的【transpileDependencies】，详见：https://www.uviewui.com/components/npmSetting.html#_5-cli模式额外配置
@@ -18775,7 +19186,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 49 */
+/* 54 */
 /*!********************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/mixin/mpMixin.js ***!
   \********************************************************************/
@@ -18798,7 +19209,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 50 */
+/* 55 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/luch-request/index.js ***!
   \*************************************************************************/
@@ -18813,12 +19224,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _Request = _interopRequireDefault(__webpack_require__(/*! ./core/Request */ 51));
+var _Request = _interopRequireDefault(__webpack_require__(/*! ./core/Request */ 56));
 var _default = _Request.default;
 exports.default = _default;
 
 /***/ }),
-/* 51 */
+/* 56 */
 /*!********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/luch-request/core/Request.js ***!
   \********************************************************************************/
@@ -18836,12 +19247,12 @@ exports.default = void 0;
 var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
 var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ 23));
 var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/createClass */ 24));
-var _dispatchRequest = _interopRequireDefault(__webpack_require__(/*! ./dispatchRequest */ 52));
-var _InterceptorManager = _interopRequireDefault(__webpack_require__(/*! ./InterceptorManager */ 60));
-var _mergeConfig = _interopRequireDefault(__webpack_require__(/*! ./mergeConfig */ 61));
-var _defaults = _interopRequireDefault(__webpack_require__(/*! ./defaults */ 62));
-var _utils = __webpack_require__(/*! ../utils */ 55);
-var _clone = _interopRequireDefault(__webpack_require__(/*! ../utils/clone */ 63));
+var _dispatchRequest = _interopRequireDefault(__webpack_require__(/*! ./dispatchRequest */ 57));
+var _InterceptorManager = _interopRequireDefault(__webpack_require__(/*! ./InterceptorManager */ 65));
+var _mergeConfig = _interopRequireDefault(__webpack_require__(/*! ./mergeConfig */ 66));
+var _defaults = _interopRequireDefault(__webpack_require__(/*! ./defaults */ 67));
+var _utils = __webpack_require__(/*! ../utils */ 60);
+var _clone = _interopRequireDefault(__webpack_require__(/*! ../utils/clone */ 68));
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 var Request = /*#__PURE__*/function () {
@@ -19024,7 +19435,7 @@ var Request = /*#__PURE__*/function () {
 exports.default = Request;
 
 /***/ }),
-/* 52 */
+/* 57 */
 /*!****************************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/luch-request/core/dispatchRequest.js ***!
   \****************************************************************************************/
@@ -19039,14 +19450,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _index = _interopRequireDefault(__webpack_require__(/*! ../adapters/index */ 53));
+var _index = _interopRequireDefault(__webpack_require__(/*! ../adapters/index */ 58));
 var _default = function _default(config) {
   return (0, _index.default)(config);
 };
 exports.default = _default;
 
 /***/ }),
-/* 53 */
+/* 58 */
 /*!**********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/luch-request/adapters/index.js ***!
   \**********************************************************************************/
@@ -19062,10 +19473,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
-var _buildURL = _interopRequireDefault(__webpack_require__(/*! ../helpers/buildURL */ 54));
-var _buildFullPath = _interopRequireDefault(__webpack_require__(/*! ../core/buildFullPath */ 56));
-var _settle = _interopRequireDefault(__webpack_require__(/*! ../core/settle */ 59));
-var _utils = __webpack_require__(/*! ../utils */ 55);
+var _buildURL = _interopRequireDefault(__webpack_require__(/*! ../helpers/buildURL */ 59));
+var _buildFullPath = _interopRequireDefault(__webpack_require__(/*! ../core/buildFullPath */ 61));
+var _settle = _interopRequireDefault(__webpack_require__(/*! ../core/settle */ 64));
+var _utils = __webpack_require__(/*! ../utils */ 60);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 /**
@@ -19127,7 +19538,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 54 */
+/* 59 */
 /*!************************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/luch-request/helpers/buildURL.js ***!
   \************************************************************************************/
@@ -19142,7 +19553,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = buildURL;
-var utils = _interopRequireWildcard(__webpack_require__(/*! ../utils */ 55));
+var utils = _interopRequireWildcard(__webpack_require__(/*! ../utils */ 60));
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 function encode(val) {
@@ -19197,7 +19608,7 @@ function buildURL(url, params) {
 }
 
 /***/ }),
-/* 55 */
+/* 60 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/luch-request/utils.js ***!
   \*************************************************************************/
@@ -19350,7 +19761,7 @@ function isUndefined(val) {
 }
 
 /***/ }),
-/* 56 */
+/* 61 */
 /*!**************************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/luch-request/core/buildFullPath.js ***!
   \**************************************************************************************/
@@ -19365,8 +19776,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = buildFullPath;
-var _isAbsoluteURL = _interopRequireDefault(__webpack_require__(/*! ../helpers/isAbsoluteURL */ 57));
-var _combineURLs = _interopRequireDefault(__webpack_require__(/*! ../helpers/combineURLs */ 58));
+var _isAbsoluteURL = _interopRequireDefault(__webpack_require__(/*! ../helpers/isAbsoluteURL */ 62));
+var _combineURLs = _interopRequireDefault(__webpack_require__(/*! ../helpers/combineURLs */ 63));
 /**
  * Creates a new URL by combining the baseURL with the requestedURL,
  * only when the requestedURL is not already an absolute URL.
@@ -19384,7 +19795,7 @@ function buildFullPath(baseURL, requestedURL) {
 }
 
 /***/ }),
-/* 57 */
+/* 62 */
 /*!*****************************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/luch-request/helpers/isAbsoluteURL.js ***!
   \*****************************************************************************************/
@@ -19412,7 +19823,7 @@ function isAbsoluteURL(url) {
 }
 
 /***/ }),
-/* 58 */
+/* 63 */
 /*!***************************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/luch-request/helpers/combineURLs.js ***!
   \***************************************************************************************/
@@ -19438,7 +19849,7 @@ function combineURLs(baseURL, relativeURL) {
 }
 
 /***/ }),
-/* 59 */
+/* 64 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/luch-request/core/settle.js ***!
   \*******************************************************************************/
@@ -19470,7 +19881,7 @@ function settle(resolve, reject, response) {
 }
 
 /***/ }),
-/* 60 */
+/* 65 */
 /*!*******************************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/luch-request/core/InterceptorManager.js ***!
   \*******************************************************************************************/
@@ -19534,7 +19945,7 @@ var _default = InterceptorManager;
 exports.default = _default;
 
 /***/ }),
-/* 61 */
+/* 66 */
 /*!************************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/luch-request/core/mergeConfig.js ***!
   \************************************************************************************/
@@ -19550,7 +19961,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
-var _utils = __webpack_require__(/*! ../utils */ 55);
+var _utils = __webpack_require__(/*! ../utils */ 60);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 /**
@@ -19610,7 +20021,7 @@ var _default = function _default(globalsConfig) {
 exports.default = _default;
 
 /***/ }),
-/* 62 */
+/* 67 */
 /*!*********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/luch-request/core/defaults.js ***!
   \*********************************************************************************/
@@ -19642,7 +20053,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 63 */
+/* 68 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/luch-request/utils/clone.js ***!
   \*******************************************************************************/
@@ -19891,10 +20302,10 @@ var clone = function () {
 }();
 var _default = clone;
 exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/buffer/index.js */ 64).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/buffer/index.js */ 69).Buffer))
 
 /***/ }),
-/* 64 */
+/* 69 */
 /*!**************************************!*\
   !*** ./node_modules/buffer/index.js ***!
   \**************************************/
@@ -19912,9 +20323,9 @@ exports.default = _default;
 
 
 
-var base64 = __webpack_require__(/*! base64-js */ 65)
-var ieee754 = __webpack_require__(/*! ieee754 */ 66)
-var isArray = __webpack_require__(/*! isarray */ 67)
+var base64 = __webpack_require__(/*! base64-js */ 70)
+var ieee754 = __webpack_require__(/*! ieee754 */ 71)
+var isArray = __webpack_require__(/*! isarray */ 72)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -21695,7 +22106,7 @@ function isnan (val) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ 3)))
 
 /***/ }),
-/* 65 */
+/* 70 */
 /*!*****************************************!*\
   !*** ./node_modules/base64-js/index.js ***!
   \*****************************************/
@@ -21856,7 +22267,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 66 */
+/* 71 */
 /*!***************************************!*\
   !*** ./node_modules/ieee754/index.js ***!
   \***************************************/
@@ -21951,7 +22362,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 67 */
+/* 72 */
 /*!***************************************!*\
   !*** ./node_modules/isarray/index.js ***!
   \***************************************/
@@ -21966,7 +22377,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 68 */
+/* 73 */
 /*!*****************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/util/route.js ***!
   \*****************************************************************/
@@ -22154,7 +22565,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 69 */
+/* 74 */
 /*!*****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/function/colorGradient.js ***!
   \*****************************************************************************/
@@ -22309,7 +22720,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 70 */
+/* 75 */
 /*!********************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/function/test.js ***!
   \********************************************************************/
@@ -22614,7 +23025,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 71 */
+/* 76 */
 /*!************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/function/debounce.js ***!
   \************************************************************************/
@@ -22661,7 +23072,7 @@ var _default = debounce;
 exports.default = _default;
 
 /***/ }),
-/* 72 */
+/* 77 */
 /*!************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/function/throttle.js ***!
   \************************************************************************/
@@ -22710,7 +23121,7 @@ var _default = throttle;
 exports.default = _default;
 
 /***/ }),
-/* 73 */
+/* 78 */
 /*!*********************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/function/index.js ***!
   \*********************************************************************/
@@ -22727,8 +23138,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _slicedToArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ 5));
 var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 13));
-var _test = _interopRequireDefault(__webpack_require__(/*! ./test.js */ 70));
-var _digit = __webpack_require__(/*! ./digit.js */ 74);
+var _test = _interopRequireDefault(__webpack_require__(/*! ./test.js */ 75));
+var _digit = __webpack_require__(/*! ./digit.js */ 79);
 /**
  * @description 如果value小于min，取min；如果value大于max，取max
  * @param {number} min 
@@ -23467,7 +23878,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 74 */
+/* 79 */
 /*!*********************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/function/digit.js ***!
   \*********************************************************************/
@@ -23488,7 +23899,7 @@ exports.minus = minus;
 exports.plus = plus;
 exports.round = round;
 exports.times = times;
-var _toArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/toArray */ 75));
+var _toArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/toArray */ 80));
 var _boundaryCheckingState = true; // 是否进行越界检查的全局开关
 
 /**
@@ -23669,7 +24080,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 75 */
+/* 80 */
 /*!********************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/toArray.js ***!
   \********************************************************/
@@ -23686,7 +24097,7 @@ function _toArray(arr) {
 module.exports = _toArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 76 */
+/* 81 */
 /*!********************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/config.js ***!
   \********************************************************************/
@@ -23730,7 +24141,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 77 */
+/* 82 */
 /*!*******************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props.js ***!
   \*******************************************************************/
@@ -23746,95 +24157,95 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
-var _config = _interopRequireDefault(__webpack_require__(/*! ./config */ 76));
-var _actionSheet = _interopRequireDefault(__webpack_require__(/*! ./props/actionSheet.js */ 78));
-var _album = _interopRequireDefault(__webpack_require__(/*! ./props/album.js */ 79));
-var _alert = _interopRequireDefault(__webpack_require__(/*! ./props/alert.js */ 80));
-var _avatar = _interopRequireDefault(__webpack_require__(/*! ./props/avatar */ 81));
-var _avatarGroup = _interopRequireDefault(__webpack_require__(/*! ./props/avatarGroup */ 82));
-var _backtop = _interopRequireDefault(__webpack_require__(/*! ./props/backtop */ 83));
-var _badge = _interopRequireDefault(__webpack_require__(/*! ./props/badge */ 84));
-var _button = _interopRequireDefault(__webpack_require__(/*! ./props/button */ 85));
-var _calendar = _interopRequireDefault(__webpack_require__(/*! ./props/calendar */ 86));
-var _carKeyboard = _interopRequireDefault(__webpack_require__(/*! ./props/carKeyboard */ 87));
-var _cell = _interopRequireDefault(__webpack_require__(/*! ./props/cell */ 88));
-var _cellGroup = _interopRequireDefault(__webpack_require__(/*! ./props/cellGroup */ 89));
-var _checkbox = _interopRequireDefault(__webpack_require__(/*! ./props/checkbox */ 90));
-var _checkboxGroup = _interopRequireDefault(__webpack_require__(/*! ./props/checkboxGroup */ 91));
-var _circleProgress = _interopRequireDefault(__webpack_require__(/*! ./props/circleProgress */ 92));
-var _code = _interopRequireDefault(__webpack_require__(/*! ./props/code */ 93));
-var _codeInput = _interopRequireDefault(__webpack_require__(/*! ./props/codeInput */ 94));
-var _col = _interopRequireDefault(__webpack_require__(/*! ./props/col */ 95));
-var _collapse = _interopRequireDefault(__webpack_require__(/*! ./props/collapse */ 96));
-var _collapseItem = _interopRequireDefault(__webpack_require__(/*! ./props/collapseItem */ 97));
-var _columnNotice = _interopRequireDefault(__webpack_require__(/*! ./props/columnNotice */ 98));
-var _countDown = _interopRequireDefault(__webpack_require__(/*! ./props/countDown */ 99));
-var _countTo = _interopRequireDefault(__webpack_require__(/*! ./props/countTo */ 100));
-var _datetimePicker = _interopRequireDefault(__webpack_require__(/*! ./props/datetimePicker */ 101));
-var _divider = _interopRequireDefault(__webpack_require__(/*! ./props/divider */ 102));
-var _empty = _interopRequireDefault(__webpack_require__(/*! ./props/empty */ 103));
-var _form = _interopRequireDefault(__webpack_require__(/*! ./props/form */ 104));
-var _formItem = _interopRequireDefault(__webpack_require__(/*! ./props/formItem */ 105));
-var _gap = _interopRequireDefault(__webpack_require__(/*! ./props/gap */ 106));
-var _grid = _interopRequireDefault(__webpack_require__(/*! ./props/grid */ 107));
-var _gridItem = _interopRequireDefault(__webpack_require__(/*! ./props/gridItem */ 108));
-var _icon = _interopRequireDefault(__webpack_require__(/*! ./props/icon */ 109));
-var _image = _interopRequireDefault(__webpack_require__(/*! ./props/image */ 110));
-var _indexAnchor = _interopRequireDefault(__webpack_require__(/*! ./props/indexAnchor */ 111));
-var _indexList = _interopRequireDefault(__webpack_require__(/*! ./props/indexList */ 112));
-var _input = _interopRequireDefault(__webpack_require__(/*! ./props/input */ 113));
-var _keyboard = _interopRequireDefault(__webpack_require__(/*! ./props/keyboard */ 114));
-var _line = _interopRequireDefault(__webpack_require__(/*! ./props/line */ 115));
-var _lineProgress = _interopRequireDefault(__webpack_require__(/*! ./props/lineProgress */ 116));
-var _link = _interopRequireDefault(__webpack_require__(/*! ./props/link */ 117));
-var _list = _interopRequireDefault(__webpack_require__(/*! ./props/list */ 118));
-var _listItem = _interopRequireDefault(__webpack_require__(/*! ./props/listItem */ 119));
-var _loadingIcon = _interopRequireDefault(__webpack_require__(/*! ./props/loadingIcon */ 120));
-var _loadingPage = _interopRequireDefault(__webpack_require__(/*! ./props/loadingPage */ 121));
-var _loadmore = _interopRequireDefault(__webpack_require__(/*! ./props/loadmore */ 122));
-var _modal = _interopRequireDefault(__webpack_require__(/*! ./props/modal */ 123));
-var _navbar = _interopRequireDefault(__webpack_require__(/*! ./props/navbar */ 124));
-var _noNetwork = _interopRequireDefault(__webpack_require__(/*! ./props/noNetwork */ 126));
-var _noticeBar = _interopRequireDefault(__webpack_require__(/*! ./props/noticeBar */ 127));
-var _notify = _interopRequireDefault(__webpack_require__(/*! ./props/notify */ 128));
-var _numberBox = _interopRequireDefault(__webpack_require__(/*! ./props/numberBox */ 129));
-var _numberKeyboard = _interopRequireDefault(__webpack_require__(/*! ./props/numberKeyboard */ 130));
-var _overlay = _interopRequireDefault(__webpack_require__(/*! ./props/overlay */ 131));
-var _parse = _interopRequireDefault(__webpack_require__(/*! ./props/parse */ 132));
-var _picker = _interopRequireDefault(__webpack_require__(/*! ./props/picker */ 133));
-var _popup = _interopRequireDefault(__webpack_require__(/*! ./props/popup */ 134));
-var _radio = _interopRequireDefault(__webpack_require__(/*! ./props/radio */ 135));
-var _radioGroup = _interopRequireDefault(__webpack_require__(/*! ./props/radioGroup */ 136));
-var _rate = _interopRequireDefault(__webpack_require__(/*! ./props/rate */ 137));
-var _readMore = _interopRequireDefault(__webpack_require__(/*! ./props/readMore */ 138));
-var _row = _interopRequireDefault(__webpack_require__(/*! ./props/row */ 139));
-var _rowNotice = _interopRequireDefault(__webpack_require__(/*! ./props/rowNotice */ 140));
-var _scrollList = _interopRequireDefault(__webpack_require__(/*! ./props/scrollList */ 141));
-var _search = _interopRequireDefault(__webpack_require__(/*! ./props/search */ 142));
-var _section = _interopRequireDefault(__webpack_require__(/*! ./props/section */ 143));
-var _skeleton = _interopRequireDefault(__webpack_require__(/*! ./props/skeleton */ 144));
-var _slider = _interopRequireDefault(__webpack_require__(/*! ./props/slider */ 145));
-var _statusBar = _interopRequireDefault(__webpack_require__(/*! ./props/statusBar */ 146));
-var _steps = _interopRequireDefault(__webpack_require__(/*! ./props/steps */ 147));
-var _stepsItem = _interopRequireDefault(__webpack_require__(/*! ./props/stepsItem */ 148));
-var _sticky = _interopRequireDefault(__webpack_require__(/*! ./props/sticky */ 149));
-var _subsection = _interopRequireDefault(__webpack_require__(/*! ./props/subsection */ 150));
-var _swipeAction = _interopRequireDefault(__webpack_require__(/*! ./props/swipeAction */ 151));
-var _swipeActionItem = _interopRequireDefault(__webpack_require__(/*! ./props/swipeActionItem */ 152));
-var _swiper = _interopRequireDefault(__webpack_require__(/*! ./props/swiper */ 153));
-var _swipterIndicator = _interopRequireDefault(__webpack_require__(/*! ./props/swipterIndicator */ 154));
-var _switch2 = _interopRequireDefault(__webpack_require__(/*! ./props/switch */ 155));
-var _tabbar = _interopRequireDefault(__webpack_require__(/*! ./props/tabbar */ 156));
-var _tabbarItem = _interopRequireDefault(__webpack_require__(/*! ./props/tabbarItem */ 157));
-var _tabs = _interopRequireDefault(__webpack_require__(/*! ./props/tabs */ 158));
-var _tag = _interopRequireDefault(__webpack_require__(/*! ./props/tag */ 159));
-var _text = _interopRequireDefault(__webpack_require__(/*! ./props/text */ 160));
-var _textarea = _interopRequireDefault(__webpack_require__(/*! ./props/textarea */ 161));
-var _toast = _interopRequireDefault(__webpack_require__(/*! ./props/toast */ 162));
-var _toolbar = _interopRequireDefault(__webpack_require__(/*! ./props/toolbar */ 163));
-var _tooltip = _interopRequireDefault(__webpack_require__(/*! ./props/tooltip */ 164));
-var _transition = _interopRequireDefault(__webpack_require__(/*! ./props/transition */ 165));
-var _upload = _interopRequireDefault(__webpack_require__(/*! ./props/upload */ 166));
+var _config = _interopRequireDefault(__webpack_require__(/*! ./config */ 81));
+var _actionSheet = _interopRequireDefault(__webpack_require__(/*! ./props/actionSheet.js */ 83));
+var _album = _interopRequireDefault(__webpack_require__(/*! ./props/album.js */ 84));
+var _alert = _interopRequireDefault(__webpack_require__(/*! ./props/alert.js */ 85));
+var _avatar = _interopRequireDefault(__webpack_require__(/*! ./props/avatar */ 86));
+var _avatarGroup = _interopRequireDefault(__webpack_require__(/*! ./props/avatarGroup */ 87));
+var _backtop = _interopRequireDefault(__webpack_require__(/*! ./props/backtop */ 88));
+var _badge = _interopRequireDefault(__webpack_require__(/*! ./props/badge */ 89));
+var _button = _interopRequireDefault(__webpack_require__(/*! ./props/button */ 90));
+var _calendar = _interopRequireDefault(__webpack_require__(/*! ./props/calendar */ 91));
+var _carKeyboard = _interopRequireDefault(__webpack_require__(/*! ./props/carKeyboard */ 92));
+var _cell = _interopRequireDefault(__webpack_require__(/*! ./props/cell */ 93));
+var _cellGroup = _interopRequireDefault(__webpack_require__(/*! ./props/cellGroup */ 94));
+var _checkbox = _interopRequireDefault(__webpack_require__(/*! ./props/checkbox */ 95));
+var _checkboxGroup = _interopRequireDefault(__webpack_require__(/*! ./props/checkboxGroup */ 96));
+var _circleProgress = _interopRequireDefault(__webpack_require__(/*! ./props/circleProgress */ 97));
+var _code = _interopRequireDefault(__webpack_require__(/*! ./props/code */ 98));
+var _codeInput = _interopRequireDefault(__webpack_require__(/*! ./props/codeInput */ 99));
+var _col = _interopRequireDefault(__webpack_require__(/*! ./props/col */ 100));
+var _collapse = _interopRequireDefault(__webpack_require__(/*! ./props/collapse */ 101));
+var _collapseItem = _interopRequireDefault(__webpack_require__(/*! ./props/collapseItem */ 102));
+var _columnNotice = _interopRequireDefault(__webpack_require__(/*! ./props/columnNotice */ 103));
+var _countDown = _interopRequireDefault(__webpack_require__(/*! ./props/countDown */ 104));
+var _countTo = _interopRequireDefault(__webpack_require__(/*! ./props/countTo */ 105));
+var _datetimePicker = _interopRequireDefault(__webpack_require__(/*! ./props/datetimePicker */ 106));
+var _divider = _interopRequireDefault(__webpack_require__(/*! ./props/divider */ 107));
+var _empty = _interopRequireDefault(__webpack_require__(/*! ./props/empty */ 108));
+var _form = _interopRequireDefault(__webpack_require__(/*! ./props/form */ 109));
+var _formItem = _interopRequireDefault(__webpack_require__(/*! ./props/formItem */ 110));
+var _gap = _interopRequireDefault(__webpack_require__(/*! ./props/gap */ 111));
+var _grid = _interopRequireDefault(__webpack_require__(/*! ./props/grid */ 112));
+var _gridItem = _interopRequireDefault(__webpack_require__(/*! ./props/gridItem */ 113));
+var _icon = _interopRequireDefault(__webpack_require__(/*! ./props/icon */ 114));
+var _image = _interopRequireDefault(__webpack_require__(/*! ./props/image */ 115));
+var _indexAnchor = _interopRequireDefault(__webpack_require__(/*! ./props/indexAnchor */ 116));
+var _indexList = _interopRequireDefault(__webpack_require__(/*! ./props/indexList */ 117));
+var _input = _interopRequireDefault(__webpack_require__(/*! ./props/input */ 118));
+var _keyboard = _interopRequireDefault(__webpack_require__(/*! ./props/keyboard */ 119));
+var _line = _interopRequireDefault(__webpack_require__(/*! ./props/line */ 120));
+var _lineProgress = _interopRequireDefault(__webpack_require__(/*! ./props/lineProgress */ 121));
+var _link = _interopRequireDefault(__webpack_require__(/*! ./props/link */ 122));
+var _list = _interopRequireDefault(__webpack_require__(/*! ./props/list */ 123));
+var _listItem = _interopRequireDefault(__webpack_require__(/*! ./props/listItem */ 124));
+var _loadingIcon = _interopRequireDefault(__webpack_require__(/*! ./props/loadingIcon */ 125));
+var _loadingPage = _interopRequireDefault(__webpack_require__(/*! ./props/loadingPage */ 126));
+var _loadmore = _interopRequireDefault(__webpack_require__(/*! ./props/loadmore */ 127));
+var _modal = _interopRequireDefault(__webpack_require__(/*! ./props/modal */ 128));
+var _navbar = _interopRequireDefault(__webpack_require__(/*! ./props/navbar */ 129));
+var _noNetwork = _interopRequireDefault(__webpack_require__(/*! ./props/noNetwork */ 131));
+var _noticeBar = _interopRequireDefault(__webpack_require__(/*! ./props/noticeBar */ 132));
+var _notify = _interopRequireDefault(__webpack_require__(/*! ./props/notify */ 133));
+var _numberBox = _interopRequireDefault(__webpack_require__(/*! ./props/numberBox */ 134));
+var _numberKeyboard = _interopRequireDefault(__webpack_require__(/*! ./props/numberKeyboard */ 135));
+var _overlay = _interopRequireDefault(__webpack_require__(/*! ./props/overlay */ 136));
+var _parse = _interopRequireDefault(__webpack_require__(/*! ./props/parse */ 137));
+var _picker = _interopRequireDefault(__webpack_require__(/*! ./props/picker */ 138));
+var _popup = _interopRequireDefault(__webpack_require__(/*! ./props/popup */ 139));
+var _radio = _interopRequireDefault(__webpack_require__(/*! ./props/radio */ 140));
+var _radioGroup = _interopRequireDefault(__webpack_require__(/*! ./props/radioGroup */ 141));
+var _rate = _interopRequireDefault(__webpack_require__(/*! ./props/rate */ 142));
+var _readMore = _interopRequireDefault(__webpack_require__(/*! ./props/readMore */ 143));
+var _row = _interopRequireDefault(__webpack_require__(/*! ./props/row */ 144));
+var _rowNotice = _interopRequireDefault(__webpack_require__(/*! ./props/rowNotice */ 145));
+var _scrollList = _interopRequireDefault(__webpack_require__(/*! ./props/scrollList */ 146));
+var _search = _interopRequireDefault(__webpack_require__(/*! ./props/search */ 147));
+var _section = _interopRequireDefault(__webpack_require__(/*! ./props/section */ 148));
+var _skeleton = _interopRequireDefault(__webpack_require__(/*! ./props/skeleton */ 149));
+var _slider = _interopRequireDefault(__webpack_require__(/*! ./props/slider */ 150));
+var _statusBar = _interopRequireDefault(__webpack_require__(/*! ./props/statusBar */ 151));
+var _steps = _interopRequireDefault(__webpack_require__(/*! ./props/steps */ 152));
+var _stepsItem = _interopRequireDefault(__webpack_require__(/*! ./props/stepsItem */ 153));
+var _sticky = _interopRequireDefault(__webpack_require__(/*! ./props/sticky */ 154));
+var _subsection = _interopRequireDefault(__webpack_require__(/*! ./props/subsection */ 155));
+var _swipeAction = _interopRequireDefault(__webpack_require__(/*! ./props/swipeAction */ 156));
+var _swipeActionItem = _interopRequireDefault(__webpack_require__(/*! ./props/swipeActionItem */ 157));
+var _swiper = _interopRequireDefault(__webpack_require__(/*! ./props/swiper */ 158));
+var _swipterIndicator = _interopRequireDefault(__webpack_require__(/*! ./props/swipterIndicator */ 159));
+var _switch2 = _interopRequireDefault(__webpack_require__(/*! ./props/switch */ 160));
+var _tabbar = _interopRequireDefault(__webpack_require__(/*! ./props/tabbar */ 161));
+var _tabbarItem = _interopRequireDefault(__webpack_require__(/*! ./props/tabbarItem */ 162));
+var _tabs = _interopRequireDefault(__webpack_require__(/*! ./props/tabs */ 163));
+var _tag = _interopRequireDefault(__webpack_require__(/*! ./props/tag */ 164));
+var _text = _interopRequireDefault(__webpack_require__(/*! ./props/text */ 165));
+var _textarea = _interopRequireDefault(__webpack_require__(/*! ./props/textarea */ 166));
+var _toast = _interopRequireDefault(__webpack_require__(/*! ./props/toast */ 167));
+var _toolbar = _interopRequireDefault(__webpack_require__(/*! ./props/toolbar */ 168));
+var _tooltip = _interopRequireDefault(__webpack_require__(/*! ./props/tooltip */ 169));
+var _transition = _interopRequireDefault(__webpack_require__(/*! ./props/transition */ 170));
+var _upload = _interopRequireDefault(__webpack_require__(/*! ./props/upload */ 171));
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 var color = _config.default.color;
@@ -23842,7 +24253,7 @@ var _default = _objectSpread(_objectSpread(_objectSpread(_objectSpread(_objectSp
 exports.default = _default;
 
 /***/ }),
-/* 78 */
+/* 83 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/actionSheet.js ***!
   \*******************************************************************************/
@@ -23886,7 +24297,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 79 */
+/* 84 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/album.js ***!
   \*************************************************************************/
@@ -23930,7 +24341,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 80 */
+/* 85 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/alert.js ***!
   \*************************************************************************/
@@ -23969,7 +24380,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 81 */
+/* 86 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/avatar.js ***!
   \**************************************************************************/
@@ -24014,7 +24425,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 82 */
+/* 87 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/avatarGroup.js ***!
   \*******************************************************************************/
@@ -24056,7 +24467,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 83 */
+/* 88 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/backtop.js ***!
   \***************************************************************************/
@@ -24102,7 +24513,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 84 */
+/* 89 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/badge.js ***!
   \*************************************************************************/
@@ -24148,7 +24559,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 85 */
+/* 90 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/button.js ***!
   \**************************************************************************/
@@ -24207,7 +24618,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 86 */
+/* 91 */
 /*!****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/calendar.js ***!
   \****************************************************************************/
@@ -24270,7 +24681,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 87 */
+/* 92 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/carKeyboard.js ***!
   \*******************************************************************************/
@@ -24302,7 +24713,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 88 */
+/* 93 */
 /*!************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/cell.js ***!
   \************************************************************************/
@@ -24354,7 +24765,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 89 */
+/* 94 */
 /*!*****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/cellGroup.js ***!
   \*****************************************************************************/
@@ -24388,7 +24799,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 90 */
+/* 95 */
 /*!****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/checkbox.js ***!
   \****************************************************************************/
@@ -24432,7 +24843,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 91 */
+/* 96 */
 /*!*********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/checkboxGroup.js ***!
   \*********************************************************************************/
@@ -24480,7 +24891,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 92 */
+/* 97 */
 /*!**********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/circleProgress.js ***!
   \**********************************************************************************/
@@ -24512,7 +24923,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 93 */
+/* 98 */
 /*!************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/code.js ***!
   \************************************************************************/
@@ -24549,7 +24960,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 94 */
+/* 99 */
 /*!*****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/codeInput.js ***!
   \*****************************************************************************/
@@ -24594,7 +25005,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 95 */
+/* 100 */
 /*!***********************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/col.js ***!
   \***********************************************************************/
@@ -24630,7 +25041,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 96 */
+/* 101 */
 /*!****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/collapse.js ***!
   \****************************************************************************/
@@ -24664,7 +25075,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 97 */
+/* 102 */
 /*!********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/collapseItem.js ***!
   \********************************************************************************/
@@ -24706,7 +25117,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 98 */
+/* 103 */
 /*!********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/columnNotice.js ***!
   \********************************************************************************/
@@ -24747,7 +25158,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 99 */
+/* 104 */
 /*!*****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/countDown.js ***!
   \*****************************************************************************/
@@ -24782,7 +25193,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 100 */
+/* 105 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/countTo.js ***!
   \***************************************************************************/
@@ -24824,7 +25235,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 101 */
+/* 106 */
 /*!**********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/datetimePicker.js ***!
   \**********************************************************************************/
@@ -24879,7 +25290,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 102 */
+/* 107 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/divider.js ***!
   \***************************************************************************/
@@ -24918,7 +25329,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 103 */
+/* 108 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/empty.js ***!
   \*************************************************************************/
@@ -24960,7 +25371,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 104 */
+/* 109 */
 /*!************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/form.js ***!
   \************************************************************************/
@@ -25005,7 +25416,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 105 */
+/* 110 */
 /*!****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/formItem.js ***!
   \****************************************************************************/
@@ -25044,7 +25455,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 106 */
+/* 111 */
 /*!***********************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/gap.js ***!
   \***********************************************************************/
@@ -25080,7 +25491,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 107 */
+/* 112 */
 /*!************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/grid.js ***!
   \************************************************************************/
@@ -25114,7 +25525,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 108 */
+/* 113 */
 /*!****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/gridItem.js ***!
   \****************************************************************************/
@@ -25147,7 +25558,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 109 */
+/* 114 */
 /*!************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/icon.js ***!
   \************************************************************************/
@@ -25162,7 +25573,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 76));
+var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 81));
 /*
  * @Author       : LQ
  * @Description  :
@@ -25199,7 +25610,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 110 */
+/* 115 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/image.js ***!
   \*************************************************************************/
@@ -25246,7 +25657,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 111 */
+/* 116 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/indexAnchor.js ***!
   \*******************************************************************************/
@@ -25282,7 +25693,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 112 */
+/* 117 */
 /*!*****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/indexList.js ***!
   \*****************************************************************************/
@@ -25320,7 +25731,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 113 */
+/* 118 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/input.js ***!
   \*************************************************************************/
@@ -25385,7 +25796,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 114 */
+/* 119 */
 /*!****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/keyboard.js ***!
   \****************************************************************************/
@@ -25432,7 +25843,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 115 */
+/* 120 */
 /*!************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/line.js ***!
   \************************************************************************/
@@ -25469,7 +25880,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 116 */
+/* 121 */
 /*!********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/lineProgress.js ***!
   \********************************************************************************/
@@ -25505,7 +25916,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 117 */
+/* 122 */
 /*!************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/link.js ***!
   \************************************************************************/
@@ -25520,7 +25931,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 76));
+var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 81));
 /*
  * @Author       : LQ
  * @Description  :
@@ -25547,7 +25958,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 118 */
+/* 123 */
 /*!************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/list.js ***!
   \************************************************************************/
@@ -25592,7 +26003,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 119 */
+/* 124 */
 /*!****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/listItem.js ***!
   \****************************************************************************/
@@ -25624,7 +26035,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 120 */
+/* 125 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/loadingIcon.js ***!
   \*******************************************************************************/
@@ -25639,7 +26050,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 76));
+var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 81));
 /*
  * @Author       : LQ
  * @Description  :
@@ -25670,7 +26081,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 121 */
+/* 126 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/loadingPage.js ***!
   \*******************************************************************************/
@@ -25709,7 +26120,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 122 */
+/* 127 */
 /*!****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/loadmore.js ***!
   \****************************************************************************/
@@ -25755,7 +26166,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 123 */
+/* 128 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/modal.js ***!
   \*************************************************************************/
@@ -25802,7 +26213,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 124 */
+/* 129 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/navbar.js ***!
   \**************************************************************************/
@@ -25817,7 +26228,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _color = _interopRequireDefault(__webpack_require__(/*! ../color */ 125));
+var _color = _interopRequireDefault(__webpack_require__(/*! ../color */ 130));
 /*
  * @Author       : LQ
  * @Description  :
@@ -25851,7 +26262,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 125 */
+/* 130 */
 /*!*******************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/color.js ***!
   \*******************************************************************/
@@ -25884,7 +26295,7 @@ var _default = color;
 exports.default = _default;
 
 /***/ }),
-/* 126 */
+/* 131 */
 /*!*****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/noNetwork.js ***!
   \*****************************************************************************/
@@ -25918,7 +26329,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 127 */
+/* 132 */
 /*!*****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/noticeBar.js ***!
   \*****************************************************************************/
@@ -25964,7 +26375,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 128 */
+/* 133 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/notify.js ***!
   \**************************************************************************/
@@ -26003,7 +26414,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 129 */
+/* 134 */
 /*!*****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/numberBox.js ***!
   \*****************************************************************************/
@@ -26055,7 +26466,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 130 */
+/* 135 */
 /*!**********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/numberKeyboard.js ***!
   \**********************************************************************************/
@@ -26089,7 +26500,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 131 */
+/* 136 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/overlay.js ***!
   \***************************************************************************/
@@ -26124,7 +26535,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 132 */
+/* 137 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/parse.js ***!
   \*************************************************************************/
@@ -26163,7 +26574,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 133 */
+/* 138 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/picker.js ***!
   \**************************************************************************/
@@ -26214,7 +26625,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 134 */
+/* 139 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/popup.js ***!
   \*************************************************************************/
@@ -26260,7 +26671,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 135 */
+/* 140 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/radio.js ***!
   \*************************************************************************/
@@ -26304,7 +26715,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 136 */
+/* 141 */
 /*!******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/radioGroup.js ***!
   \******************************************************************************/
@@ -26351,7 +26762,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 137 */
+/* 142 */
 /*!************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/rate.js ***!
   \************************************************************************/
@@ -26394,7 +26805,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 138 */
+/* 143 */
 /*!****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/readMore.js ***!
   \****************************************************************************/
@@ -26433,7 +26844,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 139 */
+/* 144 */
 /*!***********************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/row.js ***!
   \***********************************************************************/
@@ -26467,7 +26878,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 140 */
+/* 145 */
 /*!*****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/rowNotice.js ***!
   \*****************************************************************************/
@@ -26505,7 +26916,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 141 */
+/* 146 */
 /*!******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/scrollList.js ***!
   \******************************************************************************/
@@ -26542,7 +26953,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 142 */
+/* 147 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/search.js ***!
   \**************************************************************************/
@@ -26600,7 +27011,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 143 */
+/* 148 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/section.js ***!
   \***************************************************************************/
@@ -26641,7 +27052,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 144 */
+/* 149 */
 /*!****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/skeleton.js ***!
   \****************************************************************************/
@@ -26683,7 +27094,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 145 */
+/* 150 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/slider.js ***!
   \**************************************************************************/
@@ -26725,7 +27136,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 146 */
+/* 151 */
 /*!*****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/statusBar.js ***!
   \*****************************************************************************/
@@ -26757,7 +27168,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 147 */
+/* 152 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/steps.js ***!
   \*************************************************************************/
@@ -26795,7 +27206,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 148 */
+/* 153 */
 /*!*****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/stepsItem.js ***!
   \*****************************************************************************/
@@ -26830,7 +27241,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 149 */
+/* 154 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/sticky.js ***!
   \**************************************************************************/
@@ -26867,7 +27278,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 150 */
+/* 155 */
 /*!******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/subsection.js ***!
   \******************************************************************************/
@@ -26907,7 +27318,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 151 */
+/* 156 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/swipeAction.js ***!
   \*******************************************************************************/
@@ -26939,7 +27350,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 152 */
+/* 157 */
 /*!***********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/swipeActionItem.js ***!
   \***********************************************************************************/
@@ -26977,7 +27388,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 153 */
+/* 158 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/swiper.js ***!
   \**************************************************************************/
@@ -27034,7 +27445,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 154 */
+/* 159 */
 /*!************************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/swipterIndicator.js ***!
   \************************************************************************************/
@@ -27070,7 +27481,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 155 */
+/* 160 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/switch.js ***!
   \**************************************************************************/
@@ -27111,7 +27522,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 156 */
+/* 161 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/tabbar.js ***!
   \**************************************************************************/
@@ -27150,7 +27561,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 157 */
+/* 162 */
 /*!******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/tabbarItem.js ***!
   \******************************************************************************/
@@ -27187,7 +27598,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 158 */
+/* 163 */
 /*!************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/tabs.js ***!
   \************************************************************************/
@@ -27244,7 +27655,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 159 */
+/* 164 */
 /*!***********************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/tag.js ***!
   \***********************************************************************/
@@ -27290,7 +27701,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 160 */
+/* 165 */
 /*!************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/text.js ***!
   \************************************************************************/
@@ -27346,7 +27757,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 161 */
+/* 166 */
 /*!****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/textarea.js ***!
   \****************************************************************************/
@@ -27399,7 +27810,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 162 */
+/* 167 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/toast.js ***!
   \*************************************************************************/
@@ -27445,7 +27856,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 163 */
+/* 168 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/toolbar.js ***!
   \***************************************************************************/
@@ -27482,7 +27893,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 164 */
+/* 169 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/tooltip.js ***!
   \***************************************************************************/
@@ -27526,7 +27937,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 165 */
+/* 170 */
 /*!******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/transition.js ***!
   \******************************************************************************/
@@ -27561,7 +27972,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 166 */
+/* 171 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/props/upload.js ***!
   \**************************************************************************/
@@ -27620,7 +28031,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 167 */
+/* 172 */
 /*!********************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/config/zIndex.js ***!
   \********************************************************************/
@@ -27656,7 +28067,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 168 */
+/* 173 */
 /*!************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/function/platform.js ***!
   \************************************************************************/
@@ -27686,11 +28097,6 @@ var _default = platform;
 exports.default = _default;
 
 /***/ }),
-/* 169 */,
-/* 170 */,
-/* 171 */,
-/* 172 */,
-/* 173 */,
 /* 174 */,
 /* 175 */,
 /* 176 */,
@@ -27710,7 +28116,16 @@ exports.default = _default;
 /* 190 */,
 /* 191 */,
 /* 192 */,
-/* 193 */,
+/* 193 */
+/*!********************************************!*\
+  !*** D:/banzhuandaren/static/image/qq.svg ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "static/img/qq.3d828a10.svg";
+
+/***/ }),
 /* 194 */,
 /* 195 */,
 /* 196 */,
@@ -27739,7 +28154,21 @@ exports.default = _default;
 /* 219 */,
 /* 220 */,
 /* 221 */,
-/* 222 */
+/* 222 */,
+/* 223 */,
+/* 224 */,
+/* 225 */,
+/* 226 */,
+/* 227 */,
+/* 228 */,
+/* 229 */,
+/* 230 */,
+/* 231 */,
+/* 232 */,
+/* 233 */,
+/* 234 */,
+/* 235 */,
+/* 236 */
 /*!******************************************!*\
   !*** D:/banzhuandaren/qqmap-wx-jssdk.js ***!
   \******************************************/
@@ -28849,13 +29278,13 @@ module.exports = QQMapWX;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/wx.js */ 1)["default"]))
 
 /***/ }),
-/* 223 */,
-/* 224 */,
-/* 225 */,
-/* 226 */,
-/* 227 */,
-/* 228 */,
-/* 229 */
+/* 237 */,
+/* 238 */,
+/* 239 */,
+/* 240 */,
+/* 241 */,
+/* 242 */,
+/* 243 */
 /*!******************************************************!*\
   !*** D:/banzhuandaren/static/image/consult-fast.png ***!
   \******************************************************/
@@ -28865,20 +29294,6 @@ module.exports = QQMapWX;
 module.exports = "/static/image/consult-fast.png";
 
 /***/ }),
-/* 230 */,
-/* 231 */,
-/* 232 */,
-/* 233 */,
-/* 234 */,
-/* 235 */,
-/* 236 */,
-/* 237 */,
-/* 238 */,
-/* 239 */,
-/* 240 */,
-/* 241 */,
-/* 242 */,
-/* 243 */,
 /* 244 */,
 /* 245 */,
 /* 246 */,
@@ -28987,7 +29402,29 @@ module.exports = "/static/image/consult-fast.png";
 /* 349 */,
 /* 350 */,
 /* 351 */,
-/* 352 */
+/* 352 */,
+/* 353 */,
+/* 354 */,
+/* 355 */,
+/* 356 */,
+/* 357 */,
+/* 358 */,
+/* 359 */,
+/* 360 */,
+/* 361 */,
+/* 362 */,
+/* 363 */,
+/* 364 */,
+/* 365 */,
+/* 366 */,
+/* 367 */,
+/* 368 */,
+/* 369 */,
+/* 370 */,
+/* 371 */,
+/* 372 */,
+/* 373 */,
+/* 374 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-count-down/props.js ***!
   \*******************************************************************************/
@@ -29029,7 +29466,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 353 */
+/* 375 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-count-down/utils.js ***!
   \*******************************************************************************/
@@ -29108,14 +29545,14 @@ function isSameSecond(time1, time2) {
 }
 
 /***/ }),
-/* 354 */,
-/* 355 */,
-/* 356 */,
-/* 357 */,
-/* 358 */,
-/* 359 */,
-/* 360 */,
-/* 361 */
+/* 376 */,
+/* 377 */,
+/* 378 */,
+/* 379 */,
+/* 380 */,
+/* 381 */,
+/* 382 */,
+/* 383 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-icon/icons.js ***!
   \*************************************************************************/
@@ -29346,7 +29783,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 362 */
+/* 384 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-icon/props.js ***!
   \*************************************************************************/
@@ -29453,14 +29890,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 363 */,
-/* 364 */,
-/* 365 */,
-/* 366 */,
-/* 367 */,
-/* 368 */,
-/* 369 */,
-/* 370 */
+/* 385 */,
+/* 386 */,
+/* 387 */,
+/* 388 */,
+/* 389 */,
+/* 390 */,
+/* 391 */,
+/* 392 */
 /*!*******************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/mixin/button.js ***!
   \*******************************************************************/
@@ -29490,7 +29927,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 371 */
+/* 393 */
 /*!*********************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/mixin/openType.js ***!
   \*********************************************************************/
@@ -29532,7 +29969,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 372 */
+/* 394 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-button/props.js ***!
   \***************************************************************************/
@@ -29711,14 +30148,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 373 */,
-/* 374 */,
-/* 375 */,
-/* 376 */,
-/* 377 */,
-/* 378 */,
-/* 379 */,
-/* 380 */
+/* 395 */,
+/* 396 */,
+/* 397 */,
+/* 398 */,
+/* 399 */,
+/* 400 */,
+/* 401 */,
+/* 402 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-tabs/props.js ***!
   \*************************************************************************/
@@ -29800,28 +30237,6 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 381 */,
-/* 382 */,
-/* 383 */,
-/* 384 */,
-/* 385 */,
-/* 386 */,
-/* 387 */,
-/* 388 */,
-/* 389 */,
-/* 390 */,
-/* 391 */,
-/* 392 */,
-/* 393 */,
-/* 394 */,
-/* 395 */,
-/* 396 */,
-/* 397 */,
-/* 398 */,
-/* 399 */,
-/* 400 */,
-/* 401 */,
-/* 402 */,
 /* 403 */,
 /* 404 */,
 /* 405 */,
@@ -29835,7 +30250,29 @@ exports.default = _default;
 /* 413 */,
 /* 414 */,
 /* 415 */,
-/* 416 */
+/* 416 */,
+/* 417 */,
+/* 418 */,
+/* 419 */,
+/* 420 */,
+/* 421 */,
+/* 422 */,
+/* 423 */,
+/* 424 */,
+/* 425 */,
+/* 426 */,
+/* 427 */,
+/* 428 */,
+/* 429 */,
+/* 430 */,
+/* 431 */,
+/* 432 */,
+/* 433 */,
+/* 434 */,
+/* 435 */,
+/* 436 */,
+/* 437 */,
+/* 438 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-line/props.js ***!
   \*************************************************************************/
@@ -29886,14 +30323,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 417 */,
-/* 418 */,
-/* 419 */,
-/* 420 */,
-/* 421 */,
-/* 422 */,
-/* 423 */,
-/* 424 */
+/* 439 */,
+/* 440 */,
+/* 441 */,
+/* 442 */,
+/* 443 */,
+/* 444 */,
+/* 445 */,
+/* 446 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-form/props.js ***!
   \*************************************************************************/
@@ -29956,12 +30393,1553 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 425 */,
-/* 426 */,
-/* 427 */,
-/* 428 */,
-/* 429 */,
-/* 430 */
+/* 447 */
+/*!***************************************************************************!*\
+  !*** D:/banzhuandaren/node_modules/uview-ui/libs/util/async-validator.js ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
+var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 13));
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+    return target;
+  };
+  return _extends.apply(this, arguments);
+}
+
+/* eslint no-console:0 */
+var formatRegExp = /%[sdj%]/g;
+var warning = function warning() {}; // don't print warning message when in production env or node runtime
+
+if (typeof process !== 'undefined' && Object({"VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"moyudashi","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}) && "development" !== 'production' && typeof window !== 'undefined' && typeof document !== 'undefined') {
+  warning = function warning(type, errors) {
+    if (typeof console !== 'undefined' && console.warn) {
+      if (errors.every(function (e) {
+        return typeof e === 'string';
+      })) {
+        console.warn(type, errors);
+      }
+    }
+  };
+}
+function convertFieldsError(errors) {
+  if (!errors || !errors.length) return null;
+  var fields = {};
+  errors.forEach(function (error) {
+    var field = error.field;
+    fields[field] = fields[field] || [];
+    fields[field].push(error);
+  });
+  return fields;
+}
+function format() {
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+  var i = 1;
+  var f = args[0];
+  var len = args.length;
+  if (typeof f === 'function') {
+    return f.apply(null, args.slice(1));
+  }
+  if (typeof f === 'string') {
+    var str = String(f).replace(formatRegExp, function (x) {
+      if (x === '%%') {
+        return '%';
+      }
+      if (i >= len) {
+        return x;
+      }
+      switch (x) {
+        case '%s':
+          return String(args[i++]);
+        case '%d':
+          return Number(args[i++]);
+        case '%j':
+          try {
+            return JSON.stringify(args[i++]);
+          } catch (_) {
+            return '[Circular]';
+          }
+          break;
+        default:
+          return x;
+      }
+    });
+    for (var arg = args[i]; i < len; arg = args[++i]) {
+      str += " ".concat(arg);
+    }
+    return str;
+  }
+  return f;
+}
+function isNativeStringType(type) {
+  return type === 'string' || type === 'url' || type === 'hex' || type === 'email' || type === 'pattern';
+}
+function isEmptyValue(value, type) {
+  if (value === undefined || value === null) {
+    return true;
+  }
+  if (type === 'array' && Array.isArray(value) && !value.length) {
+    return true;
+  }
+  if (isNativeStringType(type) && typeof value === 'string' && !value) {
+    return true;
+  }
+  return false;
+}
+function asyncParallelArray(arr, func, callback) {
+  var results = [];
+  var total = 0;
+  var arrLength = arr.length;
+  function count(errors) {
+    results.push.apply(results, errors);
+    total++;
+    if (total === arrLength) {
+      callback(results);
+    }
+  }
+  arr.forEach(function (a) {
+    func(a, count);
+  });
+}
+function asyncSerialArray(arr, func, callback) {
+  var index = 0;
+  var arrLength = arr.length;
+  function next(errors) {
+    if (errors && errors.length) {
+      callback(errors);
+      return;
+    }
+    var original = index;
+    index += 1;
+    if (original < arrLength) {
+      func(arr[original], next);
+    } else {
+      callback([]);
+    }
+  }
+  next([]);
+}
+function flattenObjArr(objArr) {
+  var ret = [];
+  Object.keys(objArr).forEach(function (k) {
+    ret.push.apply(ret, objArr[k]);
+  });
+  return ret;
+}
+function asyncMap(objArr, option, func, callback) {
+  if (option.first) {
+    var _pending = new Promise(function (resolve, reject) {
+      var next = function next(errors) {
+        callback(errors);
+        return errors.length ? reject({
+          errors: errors,
+          fields: convertFieldsError(errors)
+        }) : resolve();
+      };
+      var flattenArr = flattenObjArr(objArr);
+      asyncSerialArray(flattenArr, func, next);
+    });
+    _pending.catch(function (e) {
+      return e;
+    });
+    return _pending;
+  }
+  var firstFields = option.firstFields || [];
+  if (firstFields === true) {
+    firstFields = Object.keys(objArr);
+  }
+  var objArrKeys = Object.keys(objArr);
+  var objArrLength = objArrKeys.length;
+  var total = 0;
+  var results = [];
+  var pending = new Promise(function (resolve, reject) {
+    var next = function next(errors) {
+      results.push.apply(results, errors);
+      total++;
+      if (total === objArrLength) {
+        callback(results);
+        return results.length ? reject({
+          errors: results,
+          fields: convertFieldsError(results)
+        }) : resolve();
+      }
+    };
+    if (!objArrKeys.length) {
+      callback(results);
+      resolve();
+    }
+    objArrKeys.forEach(function (key) {
+      var arr = objArr[key];
+      if (firstFields.indexOf(key) !== -1) {
+        asyncSerialArray(arr, func, next);
+      } else {
+        asyncParallelArray(arr, func, next);
+      }
+    });
+  });
+  pending.catch(function (e) {
+    return e;
+  });
+  return pending;
+}
+function complementError(rule) {
+  return function (oe) {
+    if (oe && oe.message) {
+      oe.field = oe.field || rule.fullField;
+      return oe;
+    }
+    return {
+      message: typeof oe === 'function' ? oe() : oe,
+      field: oe.field || rule.fullField
+    };
+  };
+}
+function deepMerge(target, source) {
+  if (source) {
+    for (var s in source) {
+      if (source.hasOwnProperty(s)) {
+        var value = source[s];
+        if ((0, _typeof2.default)(value) === 'object' && (0, _typeof2.default)(target[s]) === 'object') {
+          target[s] = _objectSpread(_objectSpread({}, target[s]), value);
+        } else {
+          target[s] = value;
+        }
+      }
+    }
+  }
+  return target;
+}
+
+/**
+ *  Rule for validating required fields.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param source The source object being validated.
+ *  @param errors An array of errors that this rule may add
+ *  validation errors to.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function required(rule, value, source, errors, options, type) {
+  if (rule.required && (!source.hasOwnProperty(rule.field) || isEmptyValue(value, type || rule.type))) {
+    errors.push(format(options.messages.required, rule.fullField));
+  }
+}
+
+/**
+ *  Rule for validating whitespace.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param source The source object being validated.
+ *  @param errors An array of errors that this rule may add
+ *  validation errors to.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function whitespace(rule, value, source, errors, options) {
+  if (/^\s+$/.test(value) || value === '') {
+    errors.push(format(options.messages.whitespace, rule.fullField));
+  }
+}
+
+/* eslint max-len:0 */
+
+var pattern = {
+  // http://emailregex.com/
+  email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  url: new RegExp("^(?!mailto:)(?:(?:http|https|ftp)://|//)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$", 'i'),
+  hex: /^#?([a-f0-9]{6}|[a-f0-9]{3})$/i
+};
+var types = {
+  integer: function integer(value) {
+    return /^(-)?\d+$/.test(value);
+  },
+  float: function float(value) {
+    return /^(-)?\d+(\.\d+)?$/.test(value);
+  },
+  array: function array(value) {
+    return Array.isArray(value);
+  },
+  regexp: function regexp(value) {
+    if (value instanceof RegExp) {
+      return true;
+    }
+    try {
+      return !!new RegExp(value);
+    } catch (e) {
+      return false;
+    }
+  },
+  date: function date(value) {
+    return typeof value.getTime === 'function' && typeof value.getMonth === 'function' && typeof value.getYear === 'function';
+  },
+  number: function number(value) {
+    if (isNaN(value)) {
+      return false;
+    }
+
+    // 修改源码，将字符串数值先转为数值
+    return typeof +value === 'number';
+  },
+  object: function object(value) {
+    return (0, _typeof2.default)(value) === 'object' && !types.array(value);
+  },
+  method: function method(value) {
+    return typeof value === 'function';
+  },
+  email: function email(value) {
+    return typeof value === 'string' && !!value.match(pattern.email) && value.length < 255;
+  },
+  url: function url(value) {
+    return typeof value === 'string' && !!value.match(pattern.url);
+  },
+  hex: function hex(value) {
+    return typeof value === 'string' && !!value.match(pattern.hex);
+  }
+};
+/**
+ *  Rule for validating the type of a value.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param source The source object being validated.
+ *  @param errors An array of errors that this rule may add
+ *  validation errors to.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function type(rule, value, source, errors, options) {
+  if (rule.required && value === undefined) {
+    required(rule, value, source, errors, options);
+    return;
+  }
+  var custom = ['integer', 'float', 'array', 'regexp', 'object', 'method', 'email', 'number', 'date', 'url', 'hex'];
+  var ruleType = rule.type;
+  if (custom.indexOf(ruleType) > -1) {
+    if (!types[ruleType](value)) {
+      errors.push(format(options.messages.types[ruleType], rule.fullField, rule.type));
+    } // straight typeof check
+  } else if (ruleType && (0, _typeof2.default)(value) !== rule.type) {
+    errors.push(format(options.messages.types[ruleType], rule.fullField, rule.type));
+  }
+}
+
+/**
+ *  Rule for validating minimum and maximum allowed values.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param source The source object being validated.
+ *  @param errors An array of errors that this rule may add
+ *  validation errors to.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function range(rule, value, source, errors, options) {
+  var len = typeof rule.len === 'number';
+  var min = typeof rule.min === 'number';
+  var max = typeof rule.max === 'number'; // 正则匹配码点范围从U+010000一直到U+10FFFF的文字（补充平面Supplementary Plane）
+
+  var spRegexp = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
+  var val = value;
+  var key = null;
+  var num = typeof value === 'number';
+  var str = typeof value === 'string';
+  var arr = Array.isArray(value);
+  if (num) {
+    key = 'number';
+  } else if (str) {
+    key = 'string';
+  } else if (arr) {
+    key = 'array';
+  } // if the value is not of a supported type for range validation
+  // the validation rule rule should use the
+  // type property to also test for a particular type
+
+  if (!key) {
+    return false;
+  }
+  if (arr) {
+    val = value.length;
+  }
+  if (str) {
+    // 处理码点大于U+010000的文字length属性不准确的bug，如"𠮷𠮷𠮷".lenght !== 3
+    val = value.replace(spRegexp, '_').length;
+  }
+  if (len) {
+    if (val !== rule.len) {
+      errors.push(format(options.messages[key].len, rule.fullField, rule.len));
+    }
+  } else if (min && !max && val < rule.min) {
+    errors.push(format(options.messages[key].min, rule.fullField, rule.min));
+  } else if (max && !min && val > rule.max) {
+    errors.push(format(options.messages[key].max, rule.fullField, rule.max));
+  } else if (min && max && (val < rule.min || val > rule.max)) {
+    errors.push(format(options.messages[key].range, rule.fullField, rule.min, rule.max));
+  }
+}
+var ENUM = 'enum';
+/**
+ *  Rule for validating a value exists in an enumerable list.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param source The source object being validated.
+ *  @param errors An array of errors that this rule may add
+ *  validation errors to.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function enumerable(rule, value, source, errors, options) {
+  rule[ENUM] = Array.isArray(rule[ENUM]) ? rule[ENUM] : [];
+  if (rule[ENUM].indexOf(value) === -1) {
+    errors.push(format(options.messages[ENUM], rule.fullField, rule[ENUM].join(', ')));
+  }
+}
+
+/**
+ *  Rule for validating a regular expression pattern.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param source The source object being validated.
+ *  @param errors An array of errors that this rule may add
+ *  validation errors to.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function pattern$1(rule, value, source, errors, options) {
+  if (rule.pattern) {
+    if (rule.pattern instanceof RegExp) {
+      // if a RegExp instance is passed, reset `lastIndex` in case its `global`
+      // flag is accidentally set to `true`, which in a validation scenario
+      // is not necessary and the result might be misleading
+      rule.pattern.lastIndex = 0;
+      if (!rule.pattern.test(value)) {
+        errors.push(format(options.messages.pattern.mismatch, rule.fullField, value, rule.pattern));
+      }
+    } else if (typeof rule.pattern === 'string') {
+      var _pattern = new RegExp(rule.pattern);
+      if (!_pattern.test(value)) {
+        errors.push(format(options.messages.pattern.mismatch, rule.fullField, value, rule.pattern));
+      }
+    }
+  }
+}
+var rules = {
+  required: required,
+  whitespace: whitespace,
+  type: type,
+  range: range,
+  enum: enumerable,
+  pattern: pattern$1
+};
+
+/**
+ *  Performs validation for string types.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param callback The callback function.
+ *  @param source The source object being validated.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function string(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate) {
+    if (isEmptyValue(value, 'string') && !rule.required) {
+      return callback();
+    }
+    rules.required(rule, value, source, errors, options, 'string');
+    if (!isEmptyValue(value, 'string')) {
+      rules.type(rule, value, source, errors, options);
+      rules.range(rule, value, source, errors, options);
+      rules.pattern(rule, value, source, errors, options);
+      if (rule.whitespace === true) {
+        rules.whitespace(rule, value, source, errors, options);
+      }
+    }
+  }
+  callback(errors);
+}
+
+/**
+ *  Validates a function.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param callback The callback function.
+ *  @param source The source object being validated.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function method(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+    rules.required(rule, value, source, errors, options);
+    if (value !== undefined) {
+      rules.type(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+
+/**
+ *  Validates a number.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param callback The callback function.
+ *  @param source The source object being validated.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function number(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate) {
+    if (value === '') {
+      value = undefined;
+    }
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+    rules.required(rule, value, source, errors, options);
+    if (value !== undefined) {
+      rules.type(rule, value, source, errors, options);
+      rules.range(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+
+/**
+ *  Validates a boolean.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param callback The callback function.
+ *  @param source The source object being validated.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function _boolean(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+    rules.required(rule, value, source, errors, options);
+    if (value !== undefined) {
+      rules.type(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+
+/**
+ *  Validates the regular expression type.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param callback The callback function.
+ *  @param source The source object being validated.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function regexp(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+    rules.required(rule, value, source, errors, options);
+    if (!isEmptyValue(value)) {
+      rules.type(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+
+/**
+ *  Validates a number is an integer.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param callback The callback function.
+ *  @param source The source object being validated.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function integer(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+    rules.required(rule, value, source, errors, options);
+    if (value !== undefined) {
+      rules.type(rule, value, source, errors, options);
+      rules.range(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+
+/**
+ *  Validates a number is a floating point number.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param callback The callback function.
+ *  @param source The source object being validated.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function floatFn(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+    rules.required(rule, value, source, errors, options);
+    if (value !== undefined) {
+      rules.type(rule, value, source, errors, options);
+      rules.range(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+
+/**
+ *  Validates an array.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param callback The callback function.
+ *  @param source The source object being validated.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function array(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate) {
+    if (isEmptyValue(value, 'array') && !rule.required) {
+      return callback();
+    }
+    rules.required(rule, value, source, errors, options, 'array');
+    if (!isEmptyValue(value, 'array')) {
+      rules.type(rule, value, source, errors, options);
+      rules.range(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+
+/**
+ *  Validates an object.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param callback The callback function.
+ *  @param source The source object being validated.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function object(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+    rules.required(rule, value, source, errors, options);
+    if (value !== undefined) {
+      rules.type(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+var ENUM$1 = 'enum';
+/**
+ *  Validates an enumerable list.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param callback The callback function.
+ *  @param source The source object being validated.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function enumerable$1(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+    rules.required(rule, value, source, errors, options);
+    if (value !== undefined) {
+      rules[ENUM$1](rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+
+/**
+ *  Validates a regular expression pattern.
+ *
+ *  Performs validation when a rule only contains
+ *  a pattern property but is not declared as a string type.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param callback The callback function.
+ *  @param source The source object being validated.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function pattern$2(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate) {
+    if (isEmptyValue(value, 'string') && !rule.required) {
+      return callback();
+    }
+    rules.required(rule, value, source, errors, options);
+    if (!isEmptyValue(value, 'string')) {
+      rules.pattern(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+function date(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+    rules.required(rule, value, source, errors, options);
+    if (!isEmptyValue(value)) {
+      var dateObject;
+      if (typeof value === 'number') {
+        dateObject = new Date(value);
+      } else {
+        dateObject = value;
+      }
+      rules.type(rule, dateObject, source, errors, options);
+      if (dateObject) {
+        rules.range(rule, dateObject.getTime(), source, errors, options);
+      }
+    }
+  }
+  callback(errors);
+}
+function required$1(rule, value, callback, source, options) {
+  var errors = [];
+  var type = Array.isArray(value) ? 'array' : (0, _typeof2.default)(value);
+  rules.required(rule, value, source, errors, options, type);
+  callback(errors);
+}
+function type$1(rule, value, callback, source, options) {
+  var ruleType = rule.type;
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate) {
+    if (isEmptyValue(value, ruleType) && !rule.required) {
+      return callback();
+    }
+    rules.required(rule, value, source, errors, options, ruleType);
+    if (!isEmptyValue(value, ruleType)) {
+      rules.type(rule, value, source, errors, options);
+    }
+  }
+  callback(errors);
+}
+
+/**
+ *  Performs validation for any type.
+ *
+ *  @param rule The validation rule.
+ *  @param value The value of the field on the source object.
+ *  @param callback The callback function.
+ *  @param source The source object being validated.
+ *  @param options The validation options.
+ *  @param options.messages The validation messages.
+ */
+
+function any(rule, value, callback, source, options) {
+  var errors = [];
+  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
+  if (validate) {
+    if (isEmptyValue(value) && !rule.required) {
+      return callback();
+    }
+    rules.required(rule, value, source, errors, options);
+  }
+  callback(errors);
+}
+var validators = {
+  string: string,
+  method: method,
+  number: number,
+  boolean: _boolean,
+  regexp: regexp,
+  integer: integer,
+  float: floatFn,
+  array: array,
+  object: object,
+  enum: enumerable$1,
+  pattern: pattern$2,
+  date: date,
+  url: type$1,
+  hex: type$1,
+  email: type$1,
+  required: required$1,
+  any: any
+};
+function newMessages() {
+  return {
+    default: 'Validation error on field %s',
+    required: '%s is required',
+    enum: '%s must be one of %s',
+    whitespace: '%s cannot be empty',
+    date: {
+      format: '%s date %s is invalid for format %s',
+      parse: '%s date could not be parsed, %s is invalid ',
+      invalid: '%s date %s is invalid'
+    },
+    types: {
+      string: '%s is not a %s',
+      method: '%s is not a %s (function)',
+      array: '%s is not an %s',
+      object: '%s is not an %s',
+      number: '%s is not a %s',
+      date: '%s is not a %s',
+      boolean: '%s is not a %s',
+      integer: '%s is not an %s',
+      float: '%s is not a %s',
+      regexp: '%s is not a valid %s',
+      email: '%s is not a valid %s',
+      url: '%s is not a valid %s',
+      hex: '%s is not a valid %s'
+    },
+    string: {
+      len: '%s must be exactly %s characters',
+      min: '%s must be at least %s characters',
+      max: '%s cannot be longer than %s characters',
+      range: '%s must be between %s and %s characters'
+    },
+    number: {
+      len: '%s must equal %s',
+      min: '%s cannot be less than %s',
+      max: '%s cannot be greater than %s',
+      range: '%s must be between %s and %s'
+    },
+    array: {
+      len: '%s must be exactly %s in length',
+      min: '%s cannot be less than %s in length',
+      max: '%s cannot be greater than %s in length',
+      range: '%s must be between %s and %s in length'
+    },
+    pattern: {
+      mismatch: '%s value %s does not match pattern %s'
+    },
+    clone: function clone() {
+      var cloned = JSON.parse(JSON.stringify(this));
+      cloned.clone = this.clone;
+      return cloned;
+    }
+  };
+}
+var messages = newMessages();
+
+/**
+ *  Encapsulates a validation schema.
+ *
+ *  @param descriptor An object declaring validation rules
+ *  for this schema.
+ */
+
+function Schema(descriptor) {
+  this.rules = null;
+  this._messages = messages;
+  this.define(descriptor);
+}
+Schema.prototype = {
+  messages: function messages(_messages) {
+    if (_messages) {
+      this._messages = deepMerge(newMessages(), _messages);
+    }
+    return this._messages;
+  },
+  define: function define(rules) {
+    if (!rules) {
+      throw new Error('Cannot configure a schema with no rules');
+    }
+    if ((0, _typeof2.default)(rules) !== 'object' || Array.isArray(rules)) {
+      throw new Error('Rules must be an object');
+    }
+    this.rules = {};
+    var z;
+    var item;
+    for (z in rules) {
+      if (rules.hasOwnProperty(z)) {
+        item = rules[z];
+        this.rules[z] = Array.isArray(item) ? item : [item];
+      }
+    }
+  },
+  validate: function validate(source_, o, oc) {
+    var _this = this;
+    if (o === void 0) {
+      o = {};
+    }
+    if (oc === void 0) {
+      oc = function oc() {};
+    }
+    var source = source_;
+    var options = o;
+    var callback = oc;
+    if (typeof options === 'function') {
+      callback = options;
+      options = {};
+    }
+    if (!this.rules || Object.keys(this.rules).length === 0) {
+      if (callback) {
+        callback();
+      }
+      return Promise.resolve();
+    }
+    function complete(results) {
+      var i;
+      var errors = [];
+      var fields = {};
+      function add(e) {
+        if (Array.isArray(e)) {
+          var _errors;
+          errors = (_errors = errors).concat.apply(_errors, e);
+        } else {
+          errors.push(e);
+        }
+      }
+      for (i = 0; i < results.length; i++) {
+        add(results[i]);
+      }
+      if (!errors.length) {
+        errors = null;
+        fields = null;
+      } else {
+        fields = convertFieldsError(errors);
+      }
+      callback(errors, fields);
+    }
+    if (options.messages) {
+      var messages$1 = this.messages();
+      if (messages$1 === messages) {
+        messages$1 = newMessages();
+      }
+      deepMerge(messages$1, options.messages);
+      options.messages = messages$1;
+    } else {
+      options.messages = this.messages();
+    }
+    var arr;
+    var value;
+    var series = {};
+    var keys = options.keys || Object.keys(this.rules);
+    keys.forEach(function (z) {
+      arr = _this.rules[z];
+      value = source[z];
+      arr.forEach(function (r) {
+        var rule = r;
+        if (typeof rule.transform === 'function') {
+          if (source === source_) {
+            source = _objectSpread({}, source);
+          }
+          value = source[z] = rule.transform(value);
+        }
+        if (typeof rule === 'function') {
+          rule = {
+            validator: rule
+          };
+        } else {
+          rule = _objectSpread({}, rule);
+        }
+        rule.validator = _this.getValidationMethod(rule);
+        rule.field = z;
+        rule.fullField = rule.fullField || z;
+        rule.type = _this.getType(rule);
+        if (!rule.validator) {
+          return;
+        }
+        series[z] = series[z] || [];
+        series[z].push({
+          rule: rule,
+          value: value,
+          source: source,
+          field: z
+        });
+      });
+    });
+    var errorFields = {};
+    return asyncMap(series, options, function (data, doIt) {
+      var rule = data.rule;
+      var deep = (rule.type === 'object' || rule.type === 'array') && ((0, _typeof2.default)(rule.fields) === 'object' || (0, _typeof2.default)(rule.defaultField) === 'object');
+      deep = deep && (rule.required || !rule.required && data.value);
+      rule.field = data.field;
+      function addFullfield(key, schema) {
+        return _objectSpread(_objectSpread({}, schema), {}, {
+          fullField: "".concat(rule.fullField, ".").concat(key)
+        });
+      }
+      function cb(e) {
+        if (e === void 0) {
+          e = [];
+        }
+        var errors = e;
+        if (!Array.isArray(errors)) {
+          errors = [errors];
+        }
+        if (!options.suppressWarning && errors.length) {
+          Schema.warning('async-validator:', errors);
+        }
+        if (errors.length && rule.message) {
+          errors = [].concat(rule.message);
+        }
+        errors = errors.map(complementError(rule));
+        if (options.first && errors.length) {
+          errorFields[rule.field] = 1;
+          return doIt(errors);
+        }
+        if (!deep) {
+          doIt(errors);
+        } else {
+          // if rule is required but the target object
+          // does not exist fail at the rule level and don't
+          // go deeper
+          if (rule.required && !data.value) {
+            if (rule.message) {
+              errors = [].concat(rule.message).map(complementError(rule));
+            } else if (options.error) {
+              errors = [options.error(rule, format(options.messages.required, rule.field))];
+            } else {
+              errors = [];
+            }
+            return doIt(errors);
+          }
+          var fieldsSchema = {};
+          if (rule.defaultField) {
+            for (var k in data.value) {
+              if (data.value.hasOwnProperty(k)) {
+                fieldsSchema[k] = rule.defaultField;
+              }
+            }
+          }
+          fieldsSchema = _objectSpread(_objectSpread({}, fieldsSchema), data.rule.fields);
+          for (var f in fieldsSchema) {
+            if (fieldsSchema.hasOwnProperty(f)) {
+              var fieldSchema = Array.isArray(fieldsSchema[f]) ? fieldsSchema[f] : [fieldsSchema[f]];
+              fieldsSchema[f] = fieldSchema.map(addFullfield.bind(null, f));
+            }
+          }
+          var schema = new Schema(fieldsSchema);
+          schema.messages(options.messages);
+          if (data.rule.options) {
+            data.rule.options.messages = options.messages;
+            data.rule.options.error = options.error;
+          }
+          schema.validate(data.value, data.rule.options || options, function (errs) {
+            var finalErrors = [];
+            if (errors && errors.length) {
+              finalErrors.push.apply(finalErrors, errors);
+            }
+            if (errs && errs.length) {
+              finalErrors.push.apply(finalErrors, errs);
+            }
+            doIt(finalErrors.length ? finalErrors : null);
+          });
+        }
+      }
+      var res;
+      if (rule.asyncValidator) {
+        res = rule.asyncValidator(rule, data.value, cb, data.source, options);
+      } else if (rule.validator) {
+        res = rule.validator(rule, data.value, cb, data.source, options);
+        if (res === true) {
+          cb();
+        } else if (res === false) {
+          cb(rule.message || "".concat(rule.field, " fails"));
+        } else if (res instanceof Array) {
+          cb(res);
+        } else if (res instanceof Error) {
+          cb(res.message);
+        }
+      }
+      if (res && res.then) {
+        res.then(function () {
+          return cb();
+        }, function (e) {
+          return cb(e);
+        });
+      }
+    }, function (results) {
+      complete(results);
+    });
+  },
+  getType: function getType(rule) {
+    if (rule.type === undefined && rule.pattern instanceof RegExp) {
+      rule.type = 'pattern';
+    }
+    if (typeof rule.validator !== 'function' && rule.type && !validators.hasOwnProperty(rule.type)) {
+      throw new Error(format('Unknown rule type %s', rule.type));
+    }
+    return rule.type || 'string';
+  },
+  getValidationMethod: function getValidationMethod(rule) {
+    if (typeof rule.validator === 'function') {
+      return rule.validator;
+    }
+    var keys = Object.keys(rule);
+    var messageIndex = keys.indexOf('message');
+    if (messageIndex !== -1) {
+      keys.splice(messageIndex, 1);
+    }
+    if (keys.length === 1 && keys[0] === 'required') {
+      return validators.required;
+    }
+    return validators[this.getType(rule)] || false;
+  }
+};
+Schema.register = function register(type, validator) {
+  if (typeof validator !== 'function') {
+    throw new Error('Cannot register a validator by type, validator is not a function');
+  }
+  validators[type] = validator;
+};
+Schema.warning = warning;
+Schema.messages = messages;
+var _default = Schema; // # sourceMappingURL=index.js.map
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/node-libs-browser/mock/process.js */ 448)))
+
+/***/ }),
+/* 448 */
+/*!********************************************************!*\
+  !*** ./node_modules/node-libs-browser/mock/process.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports.nextTick = function nextTick(fn) {
+    var args = Array.prototype.slice.call(arguments);
+    args.shift();
+    setTimeout(function () {
+        fn.apply(null, args);
+    }, 0);
+};
+
+exports.platform = exports.arch = 
+exports.execPath = exports.title = 'browser';
+exports.pid = 1;
+exports.browser = true;
+exports.env = {};
+exports.argv = [];
+
+exports.binding = function (name) {
+	throw new Error('No such module. (Possibly not yet loaded)')
+};
+
+(function () {
+    var cwd = '/';
+    var path;
+    exports.cwd = function () { return cwd };
+    exports.chdir = function (dir) {
+        if (!path) path = __webpack_require__(/*! path */ 449);
+        cwd = path.resolve(dir, cwd);
+    };
+})();
+
+exports.exit = exports.kill = 
+exports.umask = exports.dlopen = 
+exports.uptime = exports.memoryUsage = 
+exports.uvCounters = function() {};
+exports.features = {};
+
+
+/***/ }),
+/* 449 */
+/*!***********************************************!*\
+  !*** ./node_modules/path-browserify/index.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(process) {// .dirname, .basename, and .extname methods are extracted from Node.js v8.11.1,
+// backported and transplited with Babel, with backwards-compat fixes
+
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length - 1; i >= 0; i--) {
+    var last = parts[i];
+    if (last === '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+// path.resolve([from ...], to)
+// posix version
+exports.resolve = function() {
+  var resolvedPath = '',
+      resolvedAbsolute = false;
+
+  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    var path = (i >= 0) ? arguments[i] : process.cwd();
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path.charAt(0) === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
+    return !!p;
+  }), !resolvedAbsolute).join('/');
+
+  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+};
+
+// path.normalize(path)
+// posix version
+exports.normalize = function(path) {
+  var isAbsolute = exports.isAbsolute(path),
+      trailingSlash = substr(path, -1) === '/';
+
+  // Normalize the path
+  path = normalizeArray(filter(path.split('/'), function(p) {
+    return !!p;
+  }), !isAbsolute).join('/');
+
+  if (!path && !isAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+
+  return (isAbsolute ? '/' : '') + path;
+};
+
+// posix version
+exports.isAbsolute = function(path) {
+  return path.charAt(0) === '/';
+};
+
+// posix version
+exports.join = function() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return exports.normalize(filter(paths, function(p, index) {
+    if (typeof p !== 'string') {
+      throw new TypeError('Arguments to path.join must be strings');
+    }
+    return p;
+  }).join('/'));
+};
+
+
+// path.relative(from, to)
+// posix version
+exports.relative = function(from, to) {
+  from = exports.resolve(from).substr(1);
+  to = exports.resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+};
+
+exports.sep = '/';
+exports.delimiter = ':';
+
+exports.dirname = function (path) {
+  if (typeof path !== 'string') path = path + '';
+  if (path.length === 0) return '.';
+  var code = path.charCodeAt(0);
+  var hasRoot = code === 47 /*/*/;
+  var end = -1;
+  var matchedSlash = true;
+  for (var i = path.length - 1; i >= 1; --i) {
+    code = path.charCodeAt(i);
+    if (code === 47 /*/*/) {
+        if (!matchedSlash) {
+          end = i;
+          break;
+        }
+      } else {
+      // We saw the first non-path separator
+      matchedSlash = false;
+    }
+  }
+
+  if (end === -1) return hasRoot ? '/' : '.';
+  if (hasRoot && end === 1) {
+    // return '//';
+    // Backwards-compat fix:
+    return '/';
+  }
+  return path.slice(0, end);
+};
+
+function basename(path) {
+  if (typeof path !== 'string') path = path + '';
+
+  var start = 0;
+  var end = -1;
+  var matchedSlash = true;
+  var i;
+
+  for (i = path.length - 1; i >= 0; --i) {
+    if (path.charCodeAt(i) === 47 /*/*/) {
+        // If we reached a path separator that was not part of a set of path
+        // separators at the end of the string, stop now
+        if (!matchedSlash) {
+          start = i + 1;
+          break;
+        }
+      } else if (end === -1) {
+      // We saw the first non-path separator, mark this as the end of our
+      // path component
+      matchedSlash = false;
+      end = i + 1;
+    }
+  }
+
+  if (end === -1) return '';
+  return path.slice(start, end);
+}
+
+// Uses a mixed approach for backwards-compatibility, as ext behavior changed
+// in new Node.js versions, so only basename() above is backported here
+exports.basename = function (path, ext) {
+  var f = basename(path);
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+};
+
+exports.extname = function (path) {
+  if (typeof path !== 'string') path = path + '';
+  var startDot = -1;
+  var startPart = 0;
+  var end = -1;
+  var matchedSlash = true;
+  // Track the state of characters (if any) we see before our first dot and
+  // after any path separator we find
+  var preDotState = 0;
+  for (var i = path.length - 1; i >= 0; --i) {
+    var code = path.charCodeAt(i);
+    if (code === 47 /*/*/) {
+        // If we reached a path separator that was not part of a set of path
+        // separators at the end of the string, stop now
+        if (!matchedSlash) {
+          startPart = i + 1;
+          break;
+        }
+        continue;
+      }
+    if (end === -1) {
+      // We saw the first non-path separator, mark this as the end of our
+      // extension
+      matchedSlash = false;
+      end = i + 1;
+    }
+    if (code === 46 /*.*/) {
+        // If this is our first dot, mark it as the start of our extension
+        if (startDot === -1)
+          startDot = i;
+        else if (preDotState !== 1)
+          preDotState = 1;
+    } else if (startDot !== -1) {
+      // We saw a non-dot and non-path separator before our dot, so we should
+      // have a good chance at having a non-empty extension
+      preDotState = -1;
+    }
+  }
+
+  if (startDot === -1 || end === -1 ||
+      // We saw a non-dot character immediately before the dot
+      preDotState === 0 ||
+      // The (right-most) trimmed path component is exactly '..'
+      preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+    return '';
+  }
+  return path.slice(startDot, end);
+};
+
+function filter (xs, f) {
+    if (xs.filter) return xs.filter(f);
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (f(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
+// String.prototype.substr - negative index don't work in IE8
+var substr = 'ab'.substr(-1) === 'b'
+    ? function (str, start, len) { return str.substr(start, len) }
+    : function (str, start, len) {
+        if (start < 0) start = str.length + start;
+        return str.substr(start, len);
+    }
+;
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 448)))
+
+/***/ }),
+/* 450 */,
+/* 451 */,
+/* 452 */,
+/* 453 */,
+/* 454 */,
+/* 455 */
 /*!******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-form-item/props.js ***!
   \******************************************************************************/
@@ -30022,14 +32000,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 431 */,
-/* 432 */,
-/* 433 */,
-/* 434 */,
-/* 435 */,
-/* 436 */,
-/* 437 */,
-/* 438 */
+/* 456 */,
+/* 457 */,
+/* 458 */,
+/* 459 */,
+/* 460 */,
+/* 461 */,
+/* 462 */,
+/* 463 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-input/props.js ***!
   \**************************************************************************/
@@ -30229,12 +32207,215 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 439 */,
-/* 440 */,
-/* 441 */,
-/* 442 */,
-/* 443 */,
-/* 444 */
+/* 464 */,
+/* 465 */,
+/* 466 */,
+/* 467 */,
+/* 468 */,
+/* 469 */
+/*!***********************************************************************************!*\
+  !*** D:/banzhuandaren/node_modules/uview-ui/components/u-checkbox-group/props.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  props: {
+    // 标识符
+    name: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.name
+    },
+    // 绑定的值
+    value: {
+      type: Array,
+      default: uni.$u.props.checkboxGroup.value
+    },
+    // 形状，circle-圆形，square-方形
+    shape: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.shape
+    },
+    // 是否禁用全部checkbox
+    disabled: {
+      type: Boolean,
+      default: uni.$u.props.checkboxGroup.disabled
+    },
+    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
+    activeColor: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.activeColor
+    },
+    // 未选中的颜色
+    inactiveColor: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.inactiveColor
+    },
+    // 整个组件的尺寸，默认px
+    size: {
+      type: [String, Number],
+      default: uni.$u.props.checkboxGroup.size
+    },
+    // 布局方式，row-横向，column-纵向
+    placement: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.placement
+    },
+    // label的字体大小，px单位
+    labelSize: {
+      type: [String, Number],
+      default: uni.$u.props.checkboxGroup.labelSize
+    },
+    // label的字体颜色
+    labelColor: {
+      type: [String],
+      default: uni.$u.props.checkboxGroup.labelColor
+    },
+    // 是否禁止点击文本操作
+    labelDisabled: {
+      type: Boolean,
+      default: uni.$u.props.checkboxGroup.labelDisabled
+    },
+    // 图标颜色
+    iconColor: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.iconColor
+    },
+    // 图标的大小，单位px
+    iconSize: {
+      type: [String, Number],
+      default: uni.$u.props.checkboxGroup.iconSize
+    },
+    // 勾选图标的对齐方式，left-左边，right-右边
+    iconPlacement: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.iconPlacement
+    },
+    // 竖向配列时，是否显示下划线
+    borderBottom: {
+      type: Boolean,
+      default: uni.$u.props.checkboxGroup.borderBottom
+    }
+  }
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 470 */,
+/* 471 */,
+/* 472 */,
+/* 473 */,
+/* 474 */,
+/* 475 */,
+/* 476 */,
+/* 477 */
+/*!*****************************************************************************!*\
+  !*** D:/banzhuandaren/node_modules/uview-ui/components/u-checkbox/props.js ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  props: {
+    // checkbox的名称
+    name: {
+      type: [String, Number, Boolean],
+      default: uni.$u.props.checkbox.name
+    },
+    // 形状，square为方形，circle为圆型
+    shape: {
+      type: String,
+      default: uni.$u.props.checkbox.shape
+    },
+    // 整体的大小
+    size: {
+      type: [String, Number],
+      default: uni.$u.props.checkbox.size
+    },
+    // 是否默认选中
+    checked: {
+      type: Boolean,
+      default: uni.$u.props.checkbox.checked
+    },
+    // 是否禁用
+    disabled: {
+      type: [String, Boolean],
+      default: uni.$u.props.checkbox.disabled
+    },
+    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
+    activeColor: {
+      type: String,
+      default: uni.$u.props.checkbox.activeColor
+    },
+    // 未选中的颜色
+    inactiveColor: {
+      type: String,
+      default: uni.$u.props.checkbox.inactiveColor
+    },
+    // 图标的大小，单位px
+    iconSize: {
+      type: [String, Number],
+      default: uni.$u.props.checkbox.iconSize
+    },
+    // 图标颜色
+    iconColor: {
+      type: String,
+      default: uni.$u.props.checkbox.iconColor
+    },
+    // label提示文字，因为nvue下，直接slot进来的文字，由于特殊的结构，无法修改样式
+    label: {
+      type: [String, Number],
+      default: uni.$u.props.checkbox.label
+    },
+    // label的字体大小，px单位
+    labelSize: {
+      type: [String, Number],
+      default: uni.$u.props.checkbox.labelSize
+    },
+    // label的颜色
+    labelColor: {
+      type: String,
+      default: uni.$u.props.checkbox.labelColor
+    },
+    // 是否禁止点击提示语选中复选框
+    labelDisabled: {
+      type: [String, Boolean],
+      default: uni.$u.props.checkbox.labelDisabled
+    }
+  }
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 478 */,
+/* 479 */,
+/* 480 */,
+/* 481 */,
+/* 482 */,
+/* 483 */,
+/* 484 */,
+/* 485 */,
+/* 486 */,
+/* 487 */,
+/* 488 */,
+/* 489 */,
+/* 490 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-switch/props.js ***!
   \***************************************************************************/
@@ -30306,14 +32487,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 445 */,
-/* 446 */,
-/* 447 */,
-/* 448 */,
-/* 449 */,
-/* 450 */,
-/* 451 */,
-/* 452 */
+/* 491 */,
+/* 492 */,
+/* 493 */,
+/* 494 */,
+/* 495 */,
+/* 496 */,
+/* 497 */,
+/* 498 */
 /*!*********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-action-sheet/props.js ***!
   \*********************************************************************************/
@@ -30385,14 +32566,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 453 */,
-/* 454 */,
-/* 455 */,
-/* 456 */,
-/* 457 */,
-/* 458 */,
-/* 459 */,
-/* 460 */
+/* 499 */,
+/* 500 */,
+/* 501 */,
+/* 502 */,
+/* 503 */,
+/* 504 */,
+/* 505 */,
+/* 506 */
 /*!******************************************************************!*\
   !*** D:/banzhuandaren/compoments/wangding-pickerAddress/data.js ***!
   \******************************************************************/
@@ -40672,12 +42853,12 @@ var _default = [{
 exports.default = _default;
 
 /***/ }),
-/* 461 */,
-/* 462 */,
-/* 463 */,
-/* 464 */,
-/* 465 */,
-/* 466 */
+/* 507 */,
+/* 508 */,
+/* 509 */,
+/* 510 */,
+/* 511 */,
+/* 512 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-search/props.js ***!
   \***************************************************************************/
@@ -40813,14 +42994,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 467 */,
-/* 468 */,
-/* 469 */,
-/* 470 */,
-/* 471 */,
-/* 472 */,
-/* 473 */,
-/* 474 */
+/* 513 */,
+/* 514 */,
+/* 515 */,
+/* 516 */,
+/* 517 */,
+/* 518 */,
+/* 519 */,
+/* 520 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-modal/props.js ***!
   \**************************************************************************/
@@ -40922,14 +43103,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 475 */,
-/* 476 */,
-/* 477 */,
-/* 478 */,
-/* 479 */,
-/* 480 */,
-/* 481 */,
-/* 482 */
+/* 521 */,
+/* 522 */,
+/* 523 */,
+/* 524 */,
+/* 525 */,
+/* 526 */,
+/* 527 */,
+/* 528 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-avatar/props.js ***!
   \***************************************************************************/
@@ -41025,14 +43206,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 483 */,
-/* 484 */,
-/* 485 */,
-/* 486 */,
-/* 487 */,
-/* 488 */,
-/* 489 */,
-/* 490 */
+/* 529 */,
+/* 530 */,
+/* 531 */,
+/* 532 */,
+/* 533 */,
+/* 534 */,
+/* 535 */,
+/* 536 */
 /*!************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-gap/props.js ***!
   \************************************************************************/
@@ -41074,14 +43255,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 491 */,
-/* 492 */,
-/* 493 */,
-/* 494 */,
-/* 495 */,
-/* 496 */,
-/* 497 */,
-/* 498 */
+/* 537 */,
+/* 538 */,
+/* 539 */,
+/* 540 */,
+/* 541 */,
+/* 542 */,
+/* 543 */,
+/* 544 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-cell-group/props.js ***!
   \*******************************************************************************/
@@ -41113,14 +43294,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 499 */,
-/* 500 */,
-/* 501 */,
-/* 502 */,
-/* 503 */,
-/* 504 */,
-/* 505 */,
-/* 506 */
+/* 545 */,
+/* 546 */,
+/* 547 */,
+/* 548 */,
+/* 549 */,
+/* 550 */,
+/* 551 */,
+/* 552 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-cell/props.js ***!
   \*************************************************************************/
@@ -41248,14 +43429,14 @@ exports.default = _default2;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 507 */,
-/* 508 */,
-/* 509 */,
-/* 510 */,
-/* 511 */,
-/* 512 */,
-/* 513 */,
-/* 514 */
+/* 553 */,
+/* 554 */,
+/* 555 */,
+/* 556 */,
+/* 557 */,
+/* 558 */,
+/* 559 */,
+/* 560 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-text/props.js ***!
   \*************************************************************************/
@@ -41383,12 +43564,12 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 515 */,
-/* 516 */,
-/* 517 */,
-/* 518 */,
-/* 519 */,
-/* 520 */
+/* 561 */,
+/* 562 */,
+/* 563 */,
+/* 564 */,
+/* 565 */,
+/* 566 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-album/props.js ***!
   \**************************************************************************/
@@ -41465,14 +43646,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 521 */,
-/* 522 */,
-/* 523 */,
-/* 524 */,
-/* 525 */,
-/* 526 */,
-/* 527 */,
-/* 528 */
+/* 567 */,
+/* 568 */,
+/* 569 */,
+/* 570 */,
+/* 571 */,
+/* 572 */,
+/* 573 */,
+/* 574 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-popup/props.js ***!
   \**************************************************************************/
@@ -41569,14 +43750,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 529 */,
-/* 530 */,
-/* 531 */,
-/* 532 */,
-/* 533 */,
-/* 534 */,
-/* 535 */,
-/* 536 */
+/* 575 */,
+/* 576 */,
+/* 577 */,
+/* 578 */,
+/* 579 */,
+/* 580 */,
+/* 581 */,
+/* 582 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-notice-bar/props.js ***!
   \*******************************************************************************/
@@ -41664,14 +43845,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 537 */,
-/* 538 */,
-/* 539 */,
-/* 540 */,
-/* 541 */,
-/* 542 */,
-/* 543 */,
-/* 544 */
+/* 583 */,
+/* 584 */,
+/* 585 */,
+/* 586 */,
+/* 587 */,
+/* 588 */,
+/* 589 */,
+/* 590 */
 /*!****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-overlay/props.js ***!
   \****************************************************************************/
@@ -41713,219 +43894,21 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 545 */,
-/* 546 */,
-/* 547 */,
-/* 548 */,
-/* 549 */,
-/* 550 */,
-/* 551 */,
-/* 552 */
-/*!***********************************************************************************!*\
-  !*** D:/banzhuandaren/node_modules/uview-ui/components/u-checkbox-group/props.js ***!
-  \***********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _default = {
-  props: {
-    // 标识符
-    name: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.name
-    },
-    // 绑定的值
-    value: {
-      type: Array,
-      default: uni.$u.props.checkboxGroup.value
-    },
-    // 形状，circle-圆形，square-方形
-    shape: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.shape
-    },
-    // 是否禁用全部checkbox
-    disabled: {
-      type: Boolean,
-      default: uni.$u.props.checkboxGroup.disabled
-    },
-    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
-    activeColor: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.activeColor
-    },
-    // 未选中的颜色
-    inactiveColor: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.inactiveColor
-    },
-    // 整个组件的尺寸，默认px
-    size: {
-      type: [String, Number],
-      default: uni.$u.props.checkboxGroup.size
-    },
-    // 布局方式，row-横向，column-纵向
-    placement: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.placement
-    },
-    // label的字体大小，px单位
-    labelSize: {
-      type: [String, Number],
-      default: uni.$u.props.checkboxGroup.labelSize
-    },
-    // label的字体颜色
-    labelColor: {
-      type: [String],
-      default: uni.$u.props.checkboxGroup.labelColor
-    },
-    // 是否禁止点击文本操作
-    labelDisabled: {
-      type: Boolean,
-      default: uni.$u.props.checkboxGroup.labelDisabled
-    },
-    // 图标颜色
-    iconColor: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.iconColor
-    },
-    // 图标的大小，单位px
-    iconSize: {
-      type: [String, Number],
-      default: uni.$u.props.checkboxGroup.iconSize
-    },
-    // 勾选图标的对齐方式，left-左边，right-右边
-    iconPlacement: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.iconPlacement
-    },
-    // 竖向配列时，是否显示下划线
-    borderBottom: {
-      type: Boolean,
-      default: uni.$u.props.checkboxGroup.borderBottom
-    }
-  }
-};
-exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
-
-/***/ }),
-/* 553 */,
-/* 554 */,
-/* 555 */,
-/* 556 */,
-/* 557 */,
-/* 558 */,
-/* 559 */,
-/* 560 */
-/*!*****************************************************************************!*\
-  !*** D:/banzhuandaren/node_modules/uview-ui/components/u-checkbox/props.js ***!
-  \*****************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _default = {
-  props: {
-    // checkbox的名称
-    name: {
-      type: [String, Number, Boolean],
-      default: uni.$u.props.checkbox.name
-    },
-    // 形状，square为方形，circle为圆型
-    shape: {
-      type: String,
-      default: uni.$u.props.checkbox.shape
-    },
-    // 整体的大小
-    size: {
-      type: [String, Number],
-      default: uni.$u.props.checkbox.size
-    },
-    // 是否默认选中
-    checked: {
-      type: Boolean,
-      default: uni.$u.props.checkbox.checked
-    },
-    // 是否禁用
-    disabled: {
-      type: [String, Boolean],
-      default: uni.$u.props.checkbox.disabled
-    },
-    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
-    activeColor: {
-      type: String,
-      default: uni.$u.props.checkbox.activeColor
-    },
-    // 未选中的颜色
-    inactiveColor: {
-      type: String,
-      default: uni.$u.props.checkbox.inactiveColor
-    },
-    // 图标的大小，单位px
-    iconSize: {
-      type: [String, Number],
-      default: uni.$u.props.checkbox.iconSize
-    },
-    // 图标颜色
-    iconColor: {
-      type: String,
-      default: uni.$u.props.checkbox.iconColor
-    },
-    // label提示文字，因为nvue下，直接slot进来的文字，由于特殊的结构，无法修改样式
-    label: {
-      type: [String, Number],
-      default: uni.$u.props.checkbox.label
-    },
-    // label的字体大小，px单位
-    labelSize: {
-      type: [String, Number],
-      default: uni.$u.props.checkbox.labelSize
-    },
-    // label的颜色
-    labelColor: {
-      type: String,
-      default: uni.$u.props.checkbox.labelColor
-    },
-    // 是否禁止点击提示语选中复选框
-    labelDisabled: {
-      type: [String, Boolean],
-      default: uni.$u.props.checkbox.labelDisabled
-    }
-  }
-};
-exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
-
-/***/ }),
-/* 561 */,
-/* 562 */,
-/* 563 */,
-/* 564 */,
-/* 565 */,
-/* 566 */,
-/* 567 */,
-/* 568 */,
-/* 569 */,
-/* 570 */,
-/* 571 */,
-/* 572 */,
-/* 573 */,
-/* 574 */,
-/* 575 */
+/* 591 */,
+/* 592 */,
+/* 593 */,
+/* 594 */,
+/* 595 */,
+/* 596 */,
+/* 597 */,
+/* 598 */,
+/* 599 */,
+/* 600 */,
+/* 601 */,
+/* 602 */,
+/* 603 */,
+/* 604 */,
+/* 605 */
 /*!*****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-textarea/props.js ***!
   \*****************************************************************************/
@@ -42057,12 +44040,12 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 576 */,
-/* 577 */,
-/* 578 */,
-/* 579 */,
-/* 580 */,
-/* 581 */
+/* 606 */,
+/* 607 */,
+/* 608 */,
+/* 609 */,
+/* 610 */,
+/* 611 */
 /*!********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-radio-group/props.js ***!
   \********************************************************************************/
@@ -42164,14 +44147,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 582 */,
-/* 583 */,
-/* 584 */,
-/* 585 */,
-/* 586 */,
-/* 587 */,
-/* 588 */,
-/* 589 */
+/* 612 */,
+/* 613 */,
+/* 614 */,
+/* 615 */,
+/* 616 */,
+/* 617 */,
+/* 618 */,
+/* 619 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-radio/props.js ***!
   \**************************************************************************/
@@ -42253,14 +44236,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 590 */,
-/* 591 */,
-/* 592 */,
-/* 593 */,
-/* 594 */,
-/* 595 */,
-/* 596 */,
-/* 597 */
+/* 620 */,
+/* 621 */,
+/* 622 */,
+/* 623 */,
+/* 624 */,
+/* 625 */,
+/* 626 */,
+/* 627 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-upload/utils.js ***!
   \***************************************************************************/
@@ -42404,7 +44387,7 @@ function chooseFile(_ref) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/wx.js */ 1)["default"]))
 
 /***/ }),
-/* 598 */
+/* 628 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-upload/mixin.js ***!
   \***************************************************************************/
@@ -42431,7 +44414,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 599 */
+/* 629 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-upload/props.js ***!
   \***************************************************************************/
@@ -42573,14 +44556,21 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 600 */,
-/* 601 */,
-/* 602 */,
-/* 603 */,
-/* 604 */,
-/* 605 */,
-/* 606 */,
-/* 607 */
+/* 630 */,
+/* 631 */,
+/* 632 */,
+/* 633 */,
+/* 634 */,
+/* 635 */,
+/* 636 */,
+/* 637 */,
+/* 638 */,
+/* 639 */,
+/* 640 */,
+/* 641 */,
+/* 642 */,
+/* 643 */,
+/* 644 */
 /*!************************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-datetime-picker/props.js ***!
   \************************************************************************************/
@@ -42714,7 +44704,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 608 */
+/* 645 */
 /*!*****************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/util/dayjs.js ***!
   \*****************************************************************/
@@ -43026,14 +45016,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = 
 });
 
 /***/ }),
-/* 609 */,
-/* 610 */,
-/* 611 */,
-/* 612 */,
-/* 613 */,
-/* 614 */,
-/* 615 */,
-/* 616 */
+/* 646 */,
+/* 647 */,
+/* 648 */,
+/* 649 */,
+/* 650 */,
+/* 651 */,
+/* 652 */,
+/* 653 */
 /*!**************************************************************************************!*\
   !*** D:/banzhuandaren/compoments/uni-calendar_1.4.5/components/uni-calendar/util.js ***!
   \**************************************************************************************/
@@ -43051,7 +45041,7 @@ exports.default = void 0;
 var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 13));
 var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ 23));
 var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/createClass */ 24));
-var _calendar = _interopRequireDefault(__webpack_require__(/*! ./calendar.js */ 617));
+var _calendar = _interopRequireDefault(__webpack_require__(/*! ./calendar.js */ 654));
 var Calendar = /*#__PURE__*/function () {
   function Calendar() {
     var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
@@ -43443,7 +45433,7 @@ var _default = Calendar;
 exports.default = _default;
 
 /***/ }),
-/* 617 */
+/* 654 */
 /*!******************************************************************************************!*\
   !*** D:/banzhuandaren/compoments/uni-calendar_1.4.5/components/uni-calendar/calendar.js ***!
   \******************************************************************************************/
@@ -43960,7 +45950,7 @@ var _default = calendar;
 exports.default = _default;
 
 /***/ }),
-/* 618 */
+/* 655 */
 /*!********************************************************************************************!*\
   !*** D:/banzhuandaren/compoments/uni-calendar_1.4.5/components/uni-calendar/i18n/index.js ***!
   \********************************************************************************************/
@@ -43975,9 +45965,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 619));
-var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 620));
-var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 621));
+var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 656));
+var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 657));
+var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 658));
 var _default = {
   en: _en.default,
   'zh-Hans': _zhHans.default,
@@ -43986,7 +45976,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 619 */
+/* 656 */
 /*!*******************************************************************************************!*\
   !*** D:/banzhuandaren/compoments/uni-calendar_1.4.5/components/uni-calendar/i18n/en.json ***!
   \*******************************************************************************************/
@@ -43996,7 +45986,7 @@ exports.default = _default;
 module.exports = JSON.parse("{\"uni-calender.ok\":\"ok\",\"uni-calender.cancel\":\"cancel\",\"uni-calender.today\":\"today\",\"uni-calender.MON\":\"MON\",\"uni-calender.TUE\":\"TUE\",\"uni-calender.WED\":\"WED\",\"uni-calender.THU\":\"THU\",\"uni-calender.FRI\":\"FRI\",\"uni-calender.SAT\":\"SAT\",\"uni-calender.SUN\":\"SUN\"}");
 
 /***/ }),
-/* 620 */
+/* 657 */
 /*!************************************************************************************************!*\
   !*** D:/banzhuandaren/compoments/uni-calendar_1.4.5/components/uni-calendar/i18n/zh-Hans.json ***!
   \************************************************************************************************/
@@ -44006,7 +45996,7 @@ module.exports = JSON.parse("{\"uni-calender.ok\":\"ok\",\"uni-calender.cancel\"
 module.exports = JSON.parse("{\"uni-calender.ok\":\"确定\",\"uni-calender.cancel\":\"取消\",\"uni-calender.today\":\"今日\",\"uni-calender.SUN\":\"日\",\"uni-calender.MON\":\"一\",\"uni-calender.TUE\":\"二\",\"uni-calender.WED\":\"三\",\"uni-calender.THU\":\"四\",\"uni-calender.FRI\":\"五\",\"uni-calender.SAT\":\"六\"}");
 
 /***/ }),
-/* 621 */
+/* 658 */
 /*!************************************************************************************************!*\
   !*** D:/banzhuandaren/compoments/uni-calendar_1.4.5/components/uni-calendar/i18n/zh-Hant.json ***!
   \************************************************************************************************/
@@ -44016,14 +46006,14 @@ module.exports = JSON.parse("{\"uni-calender.ok\":\"确定\",\"uni-calender.canc
 module.exports = JSON.parse("{\"uni-calender.ok\":\"確定\",\"uni-calender.cancel\":\"取消\",\"uni-calender.today\":\"今日\",\"uni-calender.SUN\":\"日\",\"uni-calender.MON\":\"一\",\"uni-calender.TUE\":\"二\",\"uni-calender.WED\":\"三\",\"uni-calender.THU\":\"四\",\"uni-calender.FRI\":\"五\",\"uni-calender.SAT\":\"六\"}");
 
 /***/ }),
-/* 622 */,
-/* 623 */,
-/* 624 */,
-/* 625 */,
-/* 626 */,
-/* 627 */,
-/* 628 */,
-/* 629 */
+/* 659 */,
+/* 660 */,
+/* 661 */,
+/* 662 */,
+/* 663 */,
+/* 664 */,
+/* 665 */,
+/* 666 */
 /*!*********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-loading-icon/props.js ***!
   \*********************************************************************************/
@@ -44100,14 +46090,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 630 */,
-/* 631 */,
-/* 632 */,
-/* 633 */,
-/* 634 */,
-/* 635 */,
-/* 636 */,
-/* 637 */
+/* 667 */,
+/* 668 */,
+/* 669 */,
+/* 670 */,
+/* 671 */,
+/* 672 */,
+/* 673 */,
+/* 674 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-badge/props.js ***!
   \**************************************************************************/
@@ -44197,1589 +46187,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 638 */,
-/* 639 */,
-/* 640 */,
-/* 641 */,
-/* 642 */,
-/* 643 */,
-/* 644 */,
-/* 645 */,
-/* 646 */,
-/* 647 */,
-/* 648 */,
-/* 649 */,
-/* 650 */,
-/* 651 */,
-/* 652 */,
-/* 653 */,
-/* 654 */,
-/* 655 */,
-/* 656 */,
-/* 657 */,
-/* 658 */,
-/* 659 */,
-/* 660 */,
-/* 661 */,
-/* 662 */,
-/* 663 */,
-/* 664 */,
-/* 665 */,
-/* 666 */,
-/* 667 */,
-/* 668 */,
-/* 669 */,
-/* 670 */,
-/* 671 */,
-/* 672 */,
-/* 673 */,
-/* 674 */,
 /* 675 */,
 /* 676 */,
 /* 677 */,
 /* 678 */,
 /* 679 */,
-/* 680 */
-/*!***************************************************************************!*\
-  !*** D:/banzhuandaren/node_modules/uview-ui/libs/util/async-validator.js ***!
-  \***************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
-var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 13));
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-function _extends() {
-  _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  };
-  return _extends.apply(this, arguments);
-}
-
-/* eslint no-console:0 */
-var formatRegExp = /%[sdj%]/g;
-var warning = function warning() {}; // don't print warning message when in production env or node runtime
-
-if (typeof process !== 'undefined' && Object({"NODE_ENV":"development","VUE_APP_DARK_MODE":"false","VUE_APP_NAME":"moyudashi","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}) && "development" !== 'production' && typeof window !== 'undefined' && typeof document !== 'undefined') {
-  warning = function warning(type, errors) {
-    if (typeof console !== 'undefined' && console.warn) {
-      if (errors.every(function (e) {
-        return typeof e === 'string';
-      })) {
-        console.warn(type, errors);
-      }
-    }
-  };
-}
-function convertFieldsError(errors) {
-  if (!errors || !errors.length) return null;
-  var fields = {};
-  errors.forEach(function (error) {
-    var field = error.field;
-    fields[field] = fields[field] || [];
-    fields[field].push(error);
-  });
-  return fields;
-}
-function format() {
-  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-    args[_key] = arguments[_key];
-  }
-  var i = 1;
-  var f = args[0];
-  var len = args.length;
-  if (typeof f === 'function') {
-    return f.apply(null, args.slice(1));
-  }
-  if (typeof f === 'string') {
-    var str = String(f).replace(formatRegExp, function (x) {
-      if (x === '%%') {
-        return '%';
-      }
-      if (i >= len) {
-        return x;
-      }
-      switch (x) {
-        case '%s':
-          return String(args[i++]);
-        case '%d':
-          return Number(args[i++]);
-        case '%j':
-          try {
-            return JSON.stringify(args[i++]);
-          } catch (_) {
-            return '[Circular]';
-          }
-          break;
-        default:
-          return x;
-      }
-    });
-    for (var arg = args[i]; i < len; arg = args[++i]) {
-      str += " ".concat(arg);
-    }
-    return str;
-  }
-  return f;
-}
-function isNativeStringType(type) {
-  return type === 'string' || type === 'url' || type === 'hex' || type === 'email' || type === 'pattern';
-}
-function isEmptyValue(value, type) {
-  if (value === undefined || value === null) {
-    return true;
-  }
-  if (type === 'array' && Array.isArray(value) && !value.length) {
-    return true;
-  }
-  if (isNativeStringType(type) && typeof value === 'string' && !value) {
-    return true;
-  }
-  return false;
-}
-function asyncParallelArray(arr, func, callback) {
-  var results = [];
-  var total = 0;
-  var arrLength = arr.length;
-  function count(errors) {
-    results.push.apply(results, errors);
-    total++;
-    if (total === arrLength) {
-      callback(results);
-    }
-  }
-  arr.forEach(function (a) {
-    func(a, count);
-  });
-}
-function asyncSerialArray(arr, func, callback) {
-  var index = 0;
-  var arrLength = arr.length;
-  function next(errors) {
-    if (errors && errors.length) {
-      callback(errors);
-      return;
-    }
-    var original = index;
-    index += 1;
-    if (original < arrLength) {
-      func(arr[original], next);
-    } else {
-      callback([]);
-    }
-  }
-  next([]);
-}
-function flattenObjArr(objArr) {
-  var ret = [];
-  Object.keys(objArr).forEach(function (k) {
-    ret.push.apply(ret, objArr[k]);
-  });
-  return ret;
-}
-function asyncMap(objArr, option, func, callback) {
-  if (option.first) {
-    var _pending = new Promise(function (resolve, reject) {
-      var next = function next(errors) {
-        callback(errors);
-        return errors.length ? reject({
-          errors: errors,
-          fields: convertFieldsError(errors)
-        }) : resolve();
-      };
-      var flattenArr = flattenObjArr(objArr);
-      asyncSerialArray(flattenArr, func, next);
-    });
-    _pending.catch(function (e) {
-      return e;
-    });
-    return _pending;
-  }
-  var firstFields = option.firstFields || [];
-  if (firstFields === true) {
-    firstFields = Object.keys(objArr);
-  }
-  var objArrKeys = Object.keys(objArr);
-  var objArrLength = objArrKeys.length;
-  var total = 0;
-  var results = [];
-  var pending = new Promise(function (resolve, reject) {
-    var next = function next(errors) {
-      results.push.apply(results, errors);
-      total++;
-      if (total === objArrLength) {
-        callback(results);
-        return results.length ? reject({
-          errors: results,
-          fields: convertFieldsError(results)
-        }) : resolve();
-      }
-    };
-    if (!objArrKeys.length) {
-      callback(results);
-      resolve();
-    }
-    objArrKeys.forEach(function (key) {
-      var arr = objArr[key];
-      if (firstFields.indexOf(key) !== -1) {
-        asyncSerialArray(arr, func, next);
-      } else {
-        asyncParallelArray(arr, func, next);
-      }
-    });
-  });
-  pending.catch(function (e) {
-    return e;
-  });
-  return pending;
-}
-function complementError(rule) {
-  return function (oe) {
-    if (oe && oe.message) {
-      oe.field = oe.field || rule.fullField;
-      return oe;
-    }
-    return {
-      message: typeof oe === 'function' ? oe() : oe,
-      field: oe.field || rule.fullField
-    };
-  };
-}
-function deepMerge(target, source) {
-  if (source) {
-    for (var s in source) {
-      if (source.hasOwnProperty(s)) {
-        var value = source[s];
-        if ((0, _typeof2.default)(value) === 'object' && (0, _typeof2.default)(target[s]) === 'object') {
-          target[s] = _objectSpread(_objectSpread({}, target[s]), value);
-        } else {
-          target[s] = value;
-        }
-      }
-    }
-  }
-  return target;
-}
-
-/**
- *  Rule for validating required fields.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param source The source object being validated.
- *  @param errors An array of errors that this rule may add
- *  validation errors to.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function required(rule, value, source, errors, options, type) {
-  if (rule.required && (!source.hasOwnProperty(rule.field) || isEmptyValue(value, type || rule.type))) {
-    errors.push(format(options.messages.required, rule.fullField));
-  }
-}
-
-/**
- *  Rule for validating whitespace.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param source The source object being validated.
- *  @param errors An array of errors that this rule may add
- *  validation errors to.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function whitespace(rule, value, source, errors, options) {
-  if (/^\s+$/.test(value) || value === '') {
-    errors.push(format(options.messages.whitespace, rule.fullField));
-  }
-}
-
-/* eslint max-len:0 */
-
-var pattern = {
-  // http://emailregex.com/
-  email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-  url: new RegExp("^(?!mailto:)(?:(?:http|https|ftp)://|//)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$", 'i'),
-  hex: /^#?([a-f0-9]{6}|[a-f0-9]{3})$/i
-};
-var types = {
-  integer: function integer(value) {
-    return /^(-)?\d+$/.test(value);
-  },
-  float: function float(value) {
-    return /^(-)?\d+(\.\d+)?$/.test(value);
-  },
-  array: function array(value) {
-    return Array.isArray(value);
-  },
-  regexp: function regexp(value) {
-    if (value instanceof RegExp) {
-      return true;
-    }
-    try {
-      return !!new RegExp(value);
-    } catch (e) {
-      return false;
-    }
-  },
-  date: function date(value) {
-    return typeof value.getTime === 'function' && typeof value.getMonth === 'function' && typeof value.getYear === 'function';
-  },
-  number: function number(value) {
-    if (isNaN(value)) {
-      return false;
-    }
-
-    // 修改源码，将字符串数值先转为数值
-    return typeof +value === 'number';
-  },
-  object: function object(value) {
-    return (0, _typeof2.default)(value) === 'object' && !types.array(value);
-  },
-  method: function method(value) {
-    return typeof value === 'function';
-  },
-  email: function email(value) {
-    return typeof value === 'string' && !!value.match(pattern.email) && value.length < 255;
-  },
-  url: function url(value) {
-    return typeof value === 'string' && !!value.match(pattern.url);
-  },
-  hex: function hex(value) {
-    return typeof value === 'string' && !!value.match(pattern.hex);
-  }
-};
-/**
- *  Rule for validating the type of a value.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param source The source object being validated.
- *  @param errors An array of errors that this rule may add
- *  validation errors to.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function type(rule, value, source, errors, options) {
-  if (rule.required && value === undefined) {
-    required(rule, value, source, errors, options);
-    return;
-  }
-  var custom = ['integer', 'float', 'array', 'regexp', 'object', 'method', 'email', 'number', 'date', 'url', 'hex'];
-  var ruleType = rule.type;
-  if (custom.indexOf(ruleType) > -1) {
-    if (!types[ruleType](value)) {
-      errors.push(format(options.messages.types[ruleType], rule.fullField, rule.type));
-    } // straight typeof check
-  } else if (ruleType && (0, _typeof2.default)(value) !== rule.type) {
-    errors.push(format(options.messages.types[ruleType], rule.fullField, rule.type));
-  }
-}
-
-/**
- *  Rule for validating minimum and maximum allowed values.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param source The source object being validated.
- *  @param errors An array of errors that this rule may add
- *  validation errors to.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function range(rule, value, source, errors, options) {
-  var len = typeof rule.len === 'number';
-  var min = typeof rule.min === 'number';
-  var max = typeof rule.max === 'number'; // 正则匹配码点范围从U+010000一直到U+10FFFF的文字（补充平面Supplementary Plane）
-
-  var spRegexp = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
-  var val = value;
-  var key = null;
-  var num = typeof value === 'number';
-  var str = typeof value === 'string';
-  var arr = Array.isArray(value);
-  if (num) {
-    key = 'number';
-  } else if (str) {
-    key = 'string';
-  } else if (arr) {
-    key = 'array';
-  } // if the value is not of a supported type for range validation
-  // the validation rule rule should use the
-  // type property to also test for a particular type
-
-  if (!key) {
-    return false;
-  }
-  if (arr) {
-    val = value.length;
-  }
-  if (str) {
-    // 处理码点大于U+010000的文字length属性不准确的bug，如"𠮷𠮷𠮷".lenght !== 3
-    val = value.replace(spRegexp, '_').length;
-  }
-  if (len) {
-    if (val !== rule.len) {
-      errors.push(format(options.messages[key].len, rule.fullField, rule.len));
-    }
-  } else if (min && !max && val < rule.min) {
-    errors.push(format(options.messages[key].min, rule.fullField, rule.min));
-  } else if (max && !min && val > rule.max) {
-    errors.push(format(options.messages[key].max, rule.fullField, rule.max));
-  } else if (min && max && (val < rule.min || val > rule.max)) {
-    errors.push(format(options.messages[key].range, rule.fullField, rule.min, rule.max));
-  }
-}
-var ENUM = 'enum';
-/**
- *  Rule for validating a value exists in an enumerable list.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param source The source object being validated.
- *  @param errors An array of errors that this rule may add
- *  validation errors to.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function enumerable(rule, value, source, errors, options) {
-  rule[ENUM] = Array.isArray(rule[ENUM]) ? rule[ENUM] : [];
-  if (rule[ENUM].indexOf(value) === -1) {
-    errors.push(format(options.messages[ENUM], rule.fullField, rule[ENUM].join(', ')));
-  }
-}
-
-/**
- *  Rule for validating a regular expression pattern.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param source The source object being validated.
- *  @param errors An array of errors that this rule may add
- *  validation errors to.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function pattern$1(rule, value, source, errors, options) {
-  if (rule.pattern) {
-    if (rule.pattern instanceof RegExp) {
-      // if a RegExp instance is passed, reset `lastIndex` in case its `global`
-      // flag is accidentally set to `true`, which in a validation scenario
-      // is not necessary and the result might be misleading
-      rule.pattern.lastIndex = 0;
-      if (!rule.pattern.test(value)) {
-        errors.push(format(options.messages.pattern.mismatch, rule.fullField, value, rule.pattern));
-      }
-    } else if (typeof rule.pattern === 'string') {
-      var _pattern = new RegExp(rule.pattern);
-      if (!_pattern.test(value)) {
-        errors.push(format(options.messages.pattern.mismatch, rule.fullField, value, rule.pattern));
-      }
-    }
-  }
-}
-var rules = {
-  required: required,
-  whitespace: whitespace,
-  type: type,
-  range: range,
-  enum: enumerable,
-  pattern: pattern$1
-};
-
-/**
- *  Performs validation for string types.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param callback The callback function.
- *  @param source The source object being validated.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function string(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate) {
-    if (isEmptyValue(value, 'string') && !rule.required) {
-      return callback();
-    }
-    rules.required(rule, value, source, errors, options, 'string');
-    if (!isEmptyValue(value, 'string')) {
-      rules.type(rule, value, source, errors, options);
-      rules.range(rule, value, source, errors, options);
-      rules.pattern(rule, value, source, errors, options);
-      if (rule.whitespace === true) {
-        rules.whitespace(rule, value, source, errors, options);
-      }
-    }
-  }
-  callback(errors);
-}
-
-/**
- *  Validates a function.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param callback The callback function.
- *  @param source The source object being validated.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function method(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-    rules.required(rule, value, source, errors, options);
-    if (value !== undefined) {
-      rules.type(rule, value, source, errors, options);
-    }
-  }
-  callback(errors);
-}
-
-/**
- *  Validates a number.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param callback The callback function.
- *  @param source The source object being validated.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function number(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate) {
-    if (value === '') {
-      value = undefined;
-    }
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-    rules.required(rule, value, source, errors, options);
-    if (value !== undefined) {
-      rules.type(rule, value, source, errors, options);
-      rules.range(rule, value, source, errors, options);
-    }
-  }
-  callback(errors);
-}
-
-/**
- *  Validates a boolean.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param callback The callback function.
- *  @param source The source object being validated.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function _boolean(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-    rules.required(rule, value, source, errors, options);
-    if (value !== undefined) {
-      rules.type(rule, value, source, errors, options);
-    }
-  }
-  callback(errors);
-}
-
-/**
- *  Validates the regular expression type.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param callback The callback function.
- *  @param source The source object being validated.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function regexp(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-    rules.required(rule, value, source, errors, options);
-    if (!isEmptyValue(value)) {
-      rules.type(rule, value, source, errors, options);
-    }
-  }
-  callback(errors);
-}
-
-/**
- *  Validates a number is an integer.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param callback The callback function.
- *  @param source The source object being validated.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function integer(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-    rules.required(rule, value, source, errors, options);
-    if (value !== undefined) {
-      rules.type(rule, value, source, errors, options);
-      rules.range(rule, value, source, errors, options);
-    }
-  }
-  callback(errors);
-}
-
-/**
- *  Validates a number is a floating point number.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param callback The callback function.
- *  @param source The source object being validated.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function floatFn(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-    rules.required(rule, value, source, errors, options);
-    if (value !== undefined) {
-      rules.type(rule, value, source, errors, options);
-      rules.range(rule, value, source, errors, options);
-    }
-  }
-  callback(errors);
-}
-
-/**
- *  Validates an array.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param callback The callback function.
- *  @param source The source object being validated.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function array(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate) {
-    if (isEmptyValue(value, 'array') && !rule.required) {
-      return callback();
-    }
-    rules.required(rule, value, source, errors, options, 'array');
-    if (!isEmptyValue(value, 'array')) {
-      rules.type(rule, value, source, errors, options);
-      rules.range(rule, value, source, errors, options);
-    }
-  }
-  callback(errors);
-}
-
-/**
- *  Validates an object.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param callback The callback function.
- *  @param source The source object being validated.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function object(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-    rules.required(rule, value, source, errors, options);
-    if (value !== undefined) {
-      rules.type(rule, value, source, errors, options);
-    }
-  }
-  callback(errors);
-}
-var ENUM$1 = 'enum';
-/**
- *  Validates an enumerable list.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param callback The callback function.
- *  @param source The source object being validated.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function enumerable$1(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-    rules.required(rule, value, source, errors, options);
-    if (value !== undefined) {
-      rules[ENUM$1](rule, value, source, errors, options);
-    }
-  }
-  callback(errors);
-}
-
-/**
- *  Validates a regular expression pattern.
- *
- *  Performs validation when a rule only contains
- *  a pattern property but is not declared as a string type.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param callback The callback function.
- *  @param source The source object being validated.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function pattern$2(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate) {
-    if (isEmptyValue(value, 'string') && !rule.required) {
-      return callback();
-    }
-    rules.required(rule, value, source, errors, options);
-    if (!isEmptyValue(value, 'string')) {
-      rules.pattern(rule, value, source, errors, options);
-    }
-  }
-  callback(errors);
-}
-function date(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-    rules.required(rule, value, source, errors, options);
-    if (!isEmptyValue(value)) {
-      var dateObject;
-      if (typeof value === 'number') {
-        dateObject = new Date(value);
-      } else {
-        dateObject = value;
-      }
-      rules.type(rule, dateObject, source, errors, options);
-      if (dateObject) {
-        rules.range(rule, dateObject.getTime(), source, errors, options);
-      }
-    }
-  }
-  callback(errors);
-}
-function required$1(rule, value, callback, source, options) {
-  var errors = [];
-  var type = Array.isArray(value) ? 'array' : (0, _typeof2.default)(value);
-  rules.required(rule, value, source, errors, options, type);
-  callback(errors);
-}
-function type$1(rule, value, callback, source, options) {
-  var ruleType = rule.type;
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate) {
-    if (isEmptyValue(value, ruleType) && !rule.required) {
-      return callback();
-    }
-    rules.required(rule, value, source, errors, options, ruleType);
-    if (!isEmptyValue(value, ruleType)) {
-      rules.type(rule, value, source, errors, options);
-    }
-  }
-  callback(errors);
-}
-
-/**
- *  Performs validation for any type.
- *
- *  @param rule The validation rule.
- *  @param value The value of the field on the source object.
- *  @param callback The callback function.
- *  @param source The source object being validated.
- *  @param options The validation options.
- *  @param options.messages The validation messages.
- */
-
-function any(rule, value, callback, source, options) {
-  var errors = [];
-  var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
-  if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
-      return callback();
-    }
-    rules.required(rule, value, source, errors, options);
-  }
-  callback(errors);
-}
-var validators = {
-  string: string,
-  method: method,
-  number: number,
-  boolean: _boolean,
-  regexp: regexp,
-  integer: integer,
-  float: floatFn,
-  array: array,
-  object: object,
-  enum: enumerable$1,
-  pattern: pattern$2,
-  date: date,
-  url: type$1,
-  hex: type$1,
-  email: type$1,
-  required: required$1,
-  any: any
-};
-function newMessages() {
-  return {
-    default: 'Validation error on field %s',
-    required: '%s is required',
-    enum: '%s must be one of %s',
-    whitespace: '%s cannot be empty',
-    date: {
-      format: '%s date %s is invalid for format %s',
-      parse: '%s date could not be parsed, %s is invalid ',
-      invalid: '%s date %s is invalid'
-    },
-    types: {
-      string: '%s is not a %s',
-      method: '%s is not a %s (function)',
-      array: '%s is not an %s',
-      object: '%s is not an %s',
-      number: '%s is not a %s',
-      date: '%s is not a %s',
-      boolean: '%s is not a %s',
-      integer: '%s is not an %s',
-      float: '%s is not a %s',
-      regexp: '%s is not a valid %s',
-      email: '%s is not a valid %s',
-      url: '%s is not a valid %s',
-      hex: '%s is not a valid %s'
-    },
-    string: {
-      len: '%s must be exactly %s characters',
-      min: '%s must be at least %s characters',
-      max: '%s cannot be longer than %s characters',
-      range: '%s must be between %s and %s characters'
-    },
-    number: {
-      len: '%s must equal %s',
-      min: '%s cannot be less than %s',
-      max: '%s cannot be greater than %s',
-      range: '%s must be between %s and %s'
-    },
-    array: {
-      len: '%s must be exactly %s in length',
-      min: '%s cannot be less than %s in length',
-      max: '%s cannot be greater than %s in length',
-      range: '%s must be between %s and %s in length'
-    },
-    pattern: {
-      mismatch: '%s value %s does not match pattern %s'
-    },
-    clone: function clone() {
-      var cloned = JSON.parse(JSON.stringify(this));
-      cloned.clone = this.clone;
-      return cloned;
-    }
-  };
-}
-var messages = newMessages();
-
-/**
- *  Encapsulates a validation schema.
- *
- *  @param descriptor An object declaring validation rules
- *  for this schema.
- */
-
-function Schema(descriptor) {
-  this.rules = null;
-  this._messages = messages;
-  this.define(descriptor);
-}
-Schema.prototype = {
-  messages: function messages(_messages) {
-    if (_messages) {
-      this._messages = deepMerge(newMessages(), _messages);
-    }
-    return this._messages;
-  },
-  define: function define(rules) {
-    if (!rules) {
-      throw new Error('Cannot configure a schema with no rules');
-    }
-    if ((0, _typeof2.default)(rules) !== 'object' || Array.isArray(rules)) {
-      throw new Error('Rules must be an object');
-    }
-    this.rules = {};
-    var z;
-    var item;
-    for (z in rules) {
-      if (rules.hasOwnProperty(z)) {
-        item = rules[z];
-        this.rules[z] = Array.isArray(item) ? item : [item];
-      }
-    }
-  },
-  validate: function validate(source_, o, oc) {
-    var _this = this;
-    if (o === void 0) {
-      o = {};
-    }
-    if (oc === void 0) {
-      oc = function oc() {};
-    }
-    var source = source_;
-    var options = o;
-    var callback = oc;
-    if (typeof options === 'function') {
-      callback = options;
-      options = {};
-    }
-    if (!this.rules || Object.keys(this.rules).length === 0) {
-      if (callback) {
-        callback();
-      }
-      return Promise.resolve();
-    }
-    function complete(results) {
-      var i;
-      var errors = [];
-      var fields = {};
-      function add(e) {
-        if (Array.isArray(e)) {
-          var _errors;
-          errors = (_errors = errors).concat.apply(_errors, e);
-        } else {
-          errors.push(e);
-        }
-      }
-      for (i = 0; i < results.length; i++) {
-        add(results[i]);
-      }
-      if (!errors.length) {
-        errors = null;
-        fields = null;
-      } else {
-        fields = convertFieldsError(errors);
-      }
-      callback(errors, fields);
-    }
-    if (options.messages) {
-      var messages$1 = this.messages();
-      if (messages$1 === messages) {
-        messages$1 = newMessages();
-      }
-      deepMerge(messages$1, options.messages);
-      options.messages = messages$1;
-    } else {
-      options.messages = this.messages();
-    }
-    var arr;
-    var value;
-    var series = {};
-    var keys = options.keys || Object.keys(this.rules);
-    keys.forEach(function (z) {
-      arr = _this.rules[z];
-      value = source[z];
-      arr.forEach(function (r) {
-        var rule = r;
-        if (typeof rule.transform === 'function') {
-          if (source === source_) {
-            source = _objectSpread({}, source);
-          }
-          value = source[z] = rule.transform(value);
-        }
-        if (typeof rule === 'function') {
-          rule = {
-            validator: rule
-          };
-        } else {
-          rule = _objectSpread({}, rule);
-        }
-        rule.validator = _this.getValidationMethod(rule);
-        rule.field = z;
-        rule.fullField = rule.fullField || z;
-        rule.type = _this.getType(rule);
-        if (!rule.validator) {
-          return;
-        }
-        series[z] = series[z] || [];
-        series[z].push({
-          rule: rule,
-          value: value,
-          source: source,
-          field: z
-        });
-      });
-    });
-    var errorFields = {};
-    return asyncMap(series, options, function (data, doIt) {
-      var rule = data.rule;
-      var deep = (rule.type === 'object' || rule.type === 'array') && ((0, _typeof2.default)(rule.fields) === 'object' || (0, _typeof2.default)(rule.defaultField) === 'object');
-      deep = deep && (rule.required || !rule.required && data.value);
-      rule.field = data.field;
-      function addFullfield(key, schema) {
-        return _objectSpread(_objectSpread({}, schema), {}, {
-          fullField: "".concat(rule.fullField, ".").concat(key)
-        });
-      }
-      function cb(e) {
-        if (e === void 0) {
-          e = [];
-        }
-        var errors = e;
-        if (!Array.isArray(errors)) {
-          errors = [errors];
-        }
-        if (!options.suppressWarning && errors.length) {
-          Schema.warning('async-validator:', errors);
-        }
-        if (errors.length && rule.message) {
-          errors = [].concat(rule.message);
-        }
-        errors = errors.map(complementError(rule));
-        if (options.first && errors.length) {
-          errorFields[rule.field] = 1;
-          return doIt(errors);
-        }
-        if (!deep) {
-          doIt(errors);
-        } else {
-          // if rule is required but the target object
-          // does not exist fail at the rule level and don't
-          // go deeper
-          if (rule.required && !data.value) {
-            if (rule.message) {
-              errors = [].concat(rule.message).map(complementError(rule));
-            } else if (options.error) {
-              errors = [options.error(rule, format(options.messages.required, rule.field))];
-            } else {
-              errors = [];
-            }
-            return doIt(errors);
-          }
-          var fieldsSchema = {};
-          if (rule.defaultField) {
-            for (var k in data.value) {
-              if (data.value.hasOwnProperty(k)) {
-                fieldsSchema[k] = rule.defaultField;
-              }
-            }
-          }
-          fieldsSchema = _objectSpread(_objectSpread({}, fieldsSchema), data.rule.fields);
-          for (var f in fieldsSchema) {
-            if (fieldsSchema.hasOwnProperty(f)) {
-              var fieldSchema = Array.isArray(fieldsSchema[f]) ? fieldsSchema[f] : [fieldsSchema[f]];
-              fieldsSchema[f] = fieldSchema.map(addFullfield.bind(null, f));
-            }
-          }
-          var schema = new Schema(fieldsSchema);
-          schema.messages(options.messages);
-          if (data.rule.options) {
-            data.rule.options.messages = options.messages;
-            data.rule.options.error = options.error;
-          }
-          schema.validate(data.value, data.rule.options || options, function (errs) {
-            var finalErrors = [];
-            if (errors && errors.length) {
-              finalErrors.push.apply(finalErrors, errors);
-            }
-            if (errs && errs.length) {
-              finalErrors.push.apply(finalErrors, errs);
-            }
-            doIt(finalErrors.length ? finalErrors : null);
-          });
-        }
-      }
-      var res;
-      if (rule.asyncValidator) {
-        res = rule.asyncValidator(rule, data.value, cb, data.source, options);
-      } else if (rule.validator) {
-        res = rule.validator(rule, data.value, cb, data.source, options);
-        if (res === true) {
-          cb();
-        } else if (res === false) {
-          cb(rule.message || "".concat(rule.field, " fails"));
-        } else if (res instanceof Array) {
-          cb(res);
-        } else if (res instanceof Error) {
-          cb(res.message);
-        }
-      }
-      if (res && res.then) {
-        res.then(function () {
-          return cb();
-        }, function (e) {
-          return cb(e);
-        });
-      }
-    }, function (results) {
-      complete(results);
-    });
-  },
-  getType: function getType(rule) {
-    if (rule.type === undefined && rule.pattern instanceof RegExp) {
-      rule.type = 'pattern';
-    }
-    if (typeof rule.validator !== 'function' && rule.type && !validators.hasOwnProperty(rule.type)) {
-      throw new Error(format('Unknown rule type %s', rule.type));
-    }
-    return rule.type || 'string';
-  },
-  getValidationMethod: function getValidationMethod(rule) {
-    if (typeof rule.validator === 'function') {
-      return rule.validator;
-    }
-    var keys = Object.keys(rule);
-    var messageIndex = keys.indexOf('message');
-    if (messageIndex !== -1) {
-      keys.splice(messageIndex, 1);
-    }
-    if (keys.length === 1 && keys[0] === 'required') {
-      return validators.required;
-    }
-    return validators[this.getType(rule)] || false;
-  }
-};
-Schema.register = function register(type, validator) {
-  if (typeof validator !== 'function') {
-    throw new Error('Cannot register a validator by type, validator is not a function');
-  }
-  validators[type] = validator;
-};
-Schema.warning = warning;
-Schema.messages = messages;
-var _default = Schema; // # sourceMappingURL=index.js.map
-exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/node-libs-browser/mock/process.js */ 681)))
-
-/***/ }),
-/* 681 */
-/*!********************************************************!*\
-  !*** ./node_modules/node-libs-browser/mock/process.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports.nextTick = function nextTick(fn) {
-    var args = Array.prototype.slice.call(arguments);
-    args.shift();
-    setTimeout(function () {
-        fn.apply(null, args);
-    }, 0);
-};
-
-exports.platform = exports.arch = 
-exports.execPath = exports.title = 'browser';
-exports.pid = 1;
-exports.browser = true;
-exports.env = {};
-exports.argv = [];
-
-exports.binding = function (name) {
-	throw new Error('No such module. (Possibly not yet loaded)')
-};
-
-(function () {
-    var cwd = '/';
-    var path;
-    exports.cwd = function () { return cwd };
-    exports.chdir = function (dir) {
-        if (!path) path = __webpack_require__(/*! path */ 682);
-        cwd = path.resolve(dir, cwd);
-    };
-})();
-
-exports.exit = exports.kill = 
-exports.umask = exports.dlopen = 
-exports.uptime = exports.memoryUsage = 
-exports.uvCounters = function() {};
-exports.features = {};
-
-
-/***/ }),
-/* 682 */
-/*!***********************************************!*\
-  !*** ./node_modules/path-browserify/index.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {// .dirname, .basename, and .extname methods are extracted from Node.js v8.11.1,
-// backported and transplited with Babel, with backwards-compat fixes
-
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function (path) {
-  if (typeof path !== 'string') path = path + '';
-  if (path.length === 0) return '.';
-  var code = path.charCodeAt(0);
-  var hasRoot = code === 47 /*/*/;
-  var end = -1;
-  var matchedSlash = true;
-  for (var i = path.length - 1; i >= 1; --i) {
-    code = path.charCodeAt(i);
-    if (code === 47 /*/*/) {
-        if (!matchedSlash) {
-          end = i;
-          break;
-        }
-      } else {
-      // We saw the first non-path separator
-      matchedSlash = false;
-    }
-  }
-
-  if (end === -1) return hasRoot ? '/' : '.';
-  if (hasRoot && end === 1) {
-    // return '//';
-    // Backwards-compat fix:
-    return '/';
-  }
-  return path.slice(0, end);
-};
-
-function basename(path) {
-  if (typeof path !== 'string') path = path + '';
-
-  var start = 0;
-  var end = -1;
-  var matchedSlash = true;
-  var i;
-
-  for (i = path.length - 1; i >= 0; --i) {
-    if (path.charCodeAt(i) === 47 /*/*/) {
-        // If we reached a path separator that was not part of a set of path
-        // separators at the end of the string, stop now
-        if (!matchedSlash) {
-          start = i + 1;
-          break;
-        }
-      } else if (end === -1) {
-      // We saw the first non-path separator, mark this as the end of our
-      // path component
-      matchedSlash = false;
-      end = i + 1;
-    }
-  }
-
-  if (end === -1) return '';
-  return path.slice(start, end);
-}
-
-// Uses a mixed approach for backwards-compatibility, as ext behavior changed
-// in new Node.js versions, so only basename() above is backported here
-exports.basename = function (path, ext) {
-  var f = basename(path);
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-exports.extname = function (path) {
-  if (typeof path !== 'string') path = path + '';
-  var startDot = -1;
-  var startPart = 0;
-  var end = -1;
-  var matchedSlash = true;
-  // Track the state of characters (if any) we see before our first dot and
-  // after any path separator we find
-  var preDotState = 0;
-  for (var i = path.length - 1; i >= 0; --i) {
-    var code = path.charCodeAt(i);
-    if (code === 47 /*/*/) {
-        // If we reached a path separator that was not part of a set of path
-        // separators at the end of the string, stop now
-        if (!matchedSlash) {
-          startPart = i + 1;
-          break;
-        }
-        continue;
-      }
-    if (end === -1) {
-      // We saw the first non-path separator, mark this as the end of our
-      // extension
-      matchedSlash = false;
-      end = i + 1;
-    }
-    if (code === 46 /*.*/) {
-        // If this is our first dot, mark it as the start of our extension
-        if (startDot === -1)
-          startDot = i;
-        else if (preDotState !== 1)
-          preDotState = 1;
-    } else if (startDot !== -1) {
-      // We saw a non-dot and non-path separator before our dot, so we should
-      // have a good chance at having a non-empty extension
-      preDotState = -1;
-    }
-  }
-
-  if (startDot === -1 || end === -1 ||
-      // We saw a non-dot character immediately before the dot
-      preDotState === 0 ||
-      // The (right-most) trimmed path component is exactly '..'
-      preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
-    return '';
-  }
-  return path.slice(startDot, end);
-};
-
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 681)))
-
-/***/ }),
+/* 680 */,
+/* 681 */,
+/* 682 */,
 /* 683 */,
 /* 684 */,
 /* 685 */,
@@ -45792,7 +46207,36 @@ var substr = 'ab'.substr(-1) === 'b'
 /* 692 */,
 /* 693 */,
 /* 694 */,
-/* 695 */
+/* 695 */,
+/* 696 */,
+/* 697 */,
+/* 698 */,
+/* 699 */,
+/* 700 */,
+/* 701 */,
+/* 702 */,
+/* 703 */,
+/* 704 */,
+/* 705 */,
+/* 706 */,
+/* 707 */,
+/* 708 */,
+/* 709 */,
+/* 710 */,
+/* 711 */,
+/* 712 */,
+/* 713 */,
+/* 714 */,
+/* 715 */,
+/* 716 */,
+/* 717 */,
+/* 718 */,
+/* 719 */,
+/* 720 */,
+/* 721 */,
+/* 722 */,
+/* 723 */,
+/* 724 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-text/value.js ***!
   \*************************************************************************/
@@ -45900,14 +46344,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 696 */,
-/* 697 */,
-/* 698 */,
-/* 699 */,
-/* 700 */,
-/* 701 */,
-/* 702 */,
-/* 703 */
+/* 725 */,
+/* 726 */,
+/* 727 */,
+/* 728 */,
+/* 729 */,
+/* 730 */,
+/* 731 */,
+/* 732 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-transition/props.js ***!
   \*******************************************************************************/
@@ -45949,7 +46393,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 704 */
+/* 733 */
 /*!************************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-transition/transition.js ***!
   \************************************************************************************/
@@ -45966,7 +46410,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 28));
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 30));
-var _nvueAniMap = _interopRequireDefault(__webpack_require__(/*! ./nvue.ani-map.js */ 705));
+var _nvueAniMap = _interopRequireDefault(__webpack_require__(/*! ./nvue.ani-map.js */ 734));
 // 定义一个一定时间后自动成功的promise，让调用nextTick方法处，进入下一个then方法
 var nextTick = function nextTick() {
   return new Promise(function (resolve) {
@@ -46058,7 +46502,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 705 */
+/* 734 */
 /*!**************************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-transition/nvue.ani-map.js ***!
   \**************************************************************************************/
@@ -46251,14 +46695,14 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 706 */,
-/* 707 */,
-/* 708 */,
-/* 709 */,
-/* 710 */,
-/* 711 */,
-/* 712 */,
-/* 713 */
+/* 735 */,
+/* 736 */,
+/* 737 */,
+/* 738 */,
+/* 739 */,
+/* 740 */,
+/* 741 */,
+/* 742 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-status-bar/props.js ***!
   \*******************************************************************************/
@@ -46284,14 +46728,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 714 */,
-/* 715 */,
-/* 716 */,
-/* 717 */,
-/* 718 */,
-/* 719 */,
-/* 720 */,
-/* 721 */
+/* 743 */,
+/* 744 */,
+/* 745 */,
+/* 746 */,
+/* 747 */,
+/* 748 */,
+/* 749 */,
+/* 750 */
 /*!********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-safe-bottom/props.js ***!
   \********************************************************************************/
@@ -46311,14 +46755,14 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 722 */,
-/* 723 */,
-/* 724 */,
-/* 725 */,
-/* 726 */,
-/* 727 */,
-/* 728 */,
-/* 729 */
+/* 751 */,
+/* 752 */,
+/* 753 */,
+/* 754 */,
+/* 755 */,
+/* 756 */,
+/* 757 */,
+/* 758 */
 /*!**********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-column-notice/props.js ***!
   \**********************************************************************************/
@@ -46391,14 +46835,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 730 */,
-/* 731 */,
-/* 732 */,
-/* 733 */,
-/* 734 */,
-/* 735 */,
-/* 736 */,
-/* 737 */
+/* 759 */,
+/* 760 */,
+/* 761 */,
+/* 762 */,
+/* 763 */,
+/* 764 */,
+/* 765 */,
+/* 766 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-row-notice/props.js ***!
   \*******************************************************************************/
@@ -46455,21 +46899,21 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 738 */,
-/* 739 */,
-/* 740 */,
-/* 741 */,
-/* 742 */,
-/* 743 */,
-/* 744 */,
-/* 745 */,
-/* 746 */,
-/* 747 */,
-/* 748 */,
-/* 749 */,
-/* 750 */,
-/* 751 */,
-/* 752 */
+/* 767 */,
+/* 768 */,
+/* 769 */,
+/* 770 */,
+/* 771 */,
+/* 772 */,
+/* 773 */,
+/* 774 */,
+/* 775 */,
+/* 776 */,
+/* 777 */,
+/* 778 */,
+/* 779 */,
+/* 780 */,
+/* 781 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-picker/props.js ***!
   \***************************************************************************/
@@ -46571,28 +47015,28 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 753 */,
-/* 754 */,
-/* 755 */,
-/* 756 */,
-/* 757 */,
-/* 758 */,
-/* 759 */,
-/* 760 */,
-/* 761 */,
-/* 762 */,
-/* 763 */,
-/* 764 */,
-/* 765 */,
-/* 766 */,
-/* 767 */,
-/* 768 */,
-/* 769 */,
-/* 770 */,
-/* 771 */,
-/* 772 */,
-/* 773 */,
-/* 774 */
+/* 782 */,
+/* 783 */,
+/* 784 */,
+/* 785 */,
+/* 786 */,
+/* 787 */,
+/* 788 */,
+/* 789 */,
+/* 790 */,
+/* 791 */,
+/* 792 */,
+/* 793 */,
+/* 794 */,
+/* 795 */,
+/* 796 */,
+/* 797 */,
+/* 798 */,
+/* 799 */,
+/* 800 */,
+/* 801 */,
+/* 802 */,
+/* 803 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-link/props.js ***!
   \*************************************************************************/
@@ -46649,14 +47093,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 775 */,
-/* 776 */,
-/* 777 */,
-/* 778 */,
-/* 779 */,
-/* 780 */,
-/* 781 */,
-/* 782 */
+/* 804 */,
+/* 805 */,
+/* 806 */,
+/* 807 */,
+/* 808 */,
+/* 809 */,
+/* 810 */,
+/* 811 */
 /*!****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-toolbar/props.js ***!
   \****************************************************************************/
@@ -46706,483 +47150,6 @@ var _default = {
 };
 exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
-
-/***/ }),
-/* 783 */,
-/* 784 */,
-/* 785 */,
-/* 786 */,
-/* 787 */,
-/* 788 */,
-/* 789 */,
-/* 790 */,
-/* 791 */,
-/* 792 */,
-/* 793 */,
-/* 794 */,
-/* 795 */,
-/* 796 */,
-/* 797 */,
-/* 798 */,
-/* 799 */,
-/* 800 */,
-/* 801 */,
-/* 802 */,
-/* 803 */,
-/* 804 */,
-/* 805 */,
-/* 806 */,
-/* 807 */,
-/* 808 */,
-/* 809 */,
-/* 810 */,
-/* 811 */,
-/* 812 */,
-/* 813 */,
-/* 814 */,
-/* 815 */,
-/* 816 */,
-/* 817 */,
-/* 818 */,
-/* 819 */,
-/* 820 */,
-/* 821 */,
-/* 822 */,
-/* 823 */,
-/* 824 */,
-/* 825 */,
-/* 826 */,
-/* 827 */,
-/* 828 */,
-/* 829 */,
-/* 830 */,
-/* 831 */,
-/* 832 */,
-/* 833 */,
-/* 834 */,
-/* 835 */,
-/* 836 */,
-/* 837 */,
-/* 838 */,
-/* 839 */,
-/* 840 */,
-/* 841 */,
-/* 842 */,
-/* 843 */,
-/* 844 */,
-/* 845 */,
-/* 846 */,
-/* 847 */,
-/* 848 */,
-/* 849 */,
-/* 850 */,
-/* 851 */,
-/* 852 */,
-/* 853 */,
-/* 854 */,
-/* 855 */,
-/* 856 */,
-/* 857 */,
-/* 858 */,
-/* 859 */,
-/* 860 */,
-/* 861 */,
-/* 862 */,
-/* 863 */,
-/* 864 */,
-/* 865 */,
-/* 866 */,
-/* 867 */,
-/* 868 */,
-/* 869 */,
-/* 870 */,
-/* 871 */,
-/* 872 */,
-/* 873 */,
-/* 874 */,
-/* 875 */
-/*!**************************************!*\
-  !*** D:/banzhuandaren/common/api.js ***!
-  \**************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _request = _interopRequireDefault(__webpack_require__(/*! ./request.js */ 876));
-var _default = {
-  // 登录接口
-  login: function login(params) {
-    return (0, _request.default)('/user/login', 'POST', params);
-  },
-  // 注册接口
-  register: function register(params) {
-    return (0, _request.default)('/user/register', 'POST', params);
-  },
-  // 发送验证码
-  sendMobileCode: function sendMobileCode(mobile) {
-    return (0, _request.default)('/user/sendcode', 'POST', mobile);
-  },
-  // 获取科室列表
-  getConsultList: function getConsultList() {
-    return (0, _request.default)('/consult', 'GET');
-  },
-  // 获取距离
-  getLocation: function getLocation(params) {
-    return new Promise(function (resolve, reject) {
-      uni.request({
-        url: 'https://apis.map.qq.com/ws/distance/v1/matrix',
-        method: 'GET',
-        data: params
-      }).then(function (res) {
-        resolve(res.data);
-      });
-    });
-  },
-  // 获取需要帮助的数据
-  getHelpData: function getHelpData() {
-    return (0, _request.default)('/help/allinfo', 'GET');
-  },
-  // 获取患者信息
-  getPatients: function getPatients() {
-    return (0, _request.default)('/patient/mylist', 'GET');
-  },
-  // 添加患者
-  addPatient: function addPatient(params) {
-    return (0, _request.default)('/patient/add', 'POST', params);
-  },
-  // 删除患者
-  removePatient: function removePatient(params) {
-    return (0, _request.default)('/patient/remove', 'DELETE', params);
-  },
-  // 修改患者信息
-  modifyPatient: function modifyPatient(params) {
-    return (0, _request.default)('/patient/modify', 'PATCH', params);
-  },
-  // 生成预订单信息
-  getConsultOrderPre: function getConsultOrderPre(params) {
-    return (0, _request.default)('/patient/consult/order/pre', 'GET', params);
-  },
-  //生成订单
-  createConsultOrder: function createConsultOrder(params) {
-    return resuest('/patient/consult/order', 'POST', params);
-  },
-  // 获取支付地址  0 是微信  1 支付宝
-  getConsultOrderPayUrl: function getConsultOrderPayUrl(params) {
-    return (0, _request.default)('/patient/consult/pay', 'POST', params);
-  },
-  // 查询患者详情
-  getPatientDetail: function getPatientDetail(id) {
-    return (0, _request.default)("/patient/info/".concat(id));
-  },
-  // 获取订单详情接口
-  getConsultOrderDetail: function getConsultOrderDetail(orderId) {
-    return (0, _request.default)('/patient/consult/order/detail', 'GET', {
-      orderId: orderId
-    });
-  },
-  // 获取文章接口
-  getAllArticle: function getAllArticle() {
-    return (0, _request.default)('/article/findAllArticle', 'GET');
-  }
-};
-exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
-
-/***/ }),
-/* 876 */
-/*!******************************************!*\
-  !*** D:/banzhuandaren/common/request.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var baseUrl = "http://localhost:3000";
-var _default = function _default(url, method, params, tokens) {
-  return new Promise(function (resolve, reject) {
-    uni.showLoading({
-      title: '加载中...'
-    });
-    uni.request({
-      url: baseUrl + url,
-      method: method,
-      data: params
-      // header:{
-      // 	token:tokens
-      // }
-    }).then(function (res) {
-      // 请求成功的处理
-      resolve(res[1].data);
-      uni.hideLoading();
-    }).catch(function (err) {
-      // 请求失败的处理
-      console.log('请求失败');
-      setTimeout(function () {
-        uni.hideLoading();
-        uni.showToast({
-          title: '请求失败',
-          icon: 'error'
-        });
-      }, 2000);
-    });
-  });
-};
-exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
-
-/***/ }),
-/* 877 */,
-/* 878 */,
-/* 879 */,
-/* 880 */,
-/* 881 */,
-/* 882 */,
-/* 883 */
-/*!********************************************!*\
-  !*** D:/banzhuandaren/static/image/qq.svg ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "static/img/qq.3d828a10.svg";
-
-/***/ }),
-/* 884 */,
-/* 885 */,
-/* 886 */,
-/* 887 */
-/*!**************************************!*\
-  !*** D:/banzhuandaren/store/home.js ***!
-  \**************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _mixin = __webpack_require__(/*! uview-ui/libs/mixin/mixin */ 46);
-var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
-var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 47));
-_vue.default.use(_vuex.default);
-var state = {
-  time: {
-    startTime: '09:00',
-    endTime: '18:00',
-    startRest: '12:00',
-    endRest: '13:00',
-    salary: 10000,
-    workDay: 22
-  },
-  show: false,
-  moyuObj: {
-    lashi: 0.00,
-    waimai: 0.00,
-    hesuan: 0.00,
-    study: 0.00,
-    saunter: 0.00,
-    chat: 0.00
-  },
-  secondSalary: 0,
-  weekend: ['星期六', '星期日'],
-  restDay: 0,
-  // 距离休息日的天数
-  salaryDay: 0,
-  // 距离发工资的天数
-  birthday: 0,
-  //距离生日的天数
-  festivalDay: 0,
-  // 距离节假日剩余的天数
-  loginCode: '' // 登录后的code
-};
-
-var mutations = {
-  setTime: function setTime(state, data) {
-    state.time = data;
-    uni.setStorageSync("timeData", {
-      startTime: data.startTime,
-      endTime: data.endTime,
-      startRest: data.startRest,
-      endRest: data.endRest,
-      salary: data.salary,
-      workDay: data.workDay,
-      // timeData:data,
-      success: function success() {
-        console.log('存储成功！');
-      }
-    });
-  },
-  updateShow: function updateShow(state, data) {
-    state.show = data;
-  },
-  lashi: function lashi(state, data) {
-    state.moyuObj.lashi = data;
-  },
-  chiwaimai: function chiwaimai(state, data) {
-    state.moyuObj.waimai = data;
-  },
-  hesuan: function hesuan(state, data) {
-    state.moyuObj.hesuan = data;
-  },
-  study: function study(state, data) {
-    state.moyuObj.study = data;
-  },
-  saunter: function saunter(state, data) {
-    state.moyuObj.saunter = data;
-  },
-  chat: function chat(state, data) {
-    state.moyuObj.chat = data;
-  },
-  setSecondSalary: function setSecondSalary(state, data) {
-    state.secondSalary = data;
-  },
-  setWeekend: function setWeekend(state, data) {
-    state.weekend = data;
-    uni.setStorageSync('weekend', data);
-  },
-  setRestDay: function setRestDay(state, data) {
-    state.restDay = data;
-    uni.setStorageSync('restDay', data);
-  },
-  setSalaryDay: function setSalaryDay(state, data) {
-    state.salaryDay = data;
-    uni.setStorageSync('salaryDay', data);
-  },
-  setBirthday: function setBirthday(state, data) {
-    state.birthday = data;
-    uni.setStorageSync('birthday', data);
-  },
-  setFestivalDay: function setFestivalDay(state, data) {
-    state.festivalDay = data;
-    uni.setStorageSync('festivalDay', data);
-  },
-  getLoginCode: function getLoginCode(state, data) {
-    state.loginCode = data;
-    uni.setStorageSync('loginCode', data);
-  }
-};
-var actions = {};
-var getters = {};
-var _default = {
-  state: state,
-  mutations: mutations,
-  actions: actions,
-  getters: getters
-};
-exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
-
-/***/ }),
-/* 888 */
-/*!******************************************!*\
-  !*** D:/banzhuandaren/store/patients.js ***!
-  \******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _mixin = __webpack_require__(/*! uview-ui/libs/mixin/mixin */ 46);
-var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
-var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 47));
-var state = {
-  consult: {} // 问诊记录
-};
-
-var mutations = {
-  // 设置病情描述
-  setIllness: function setIllness(state, data) {
-    state.consult.illnessDesc = data.illnessDesc;
-    state.consult.illnessTime = data.illnessTime;
-    state.consult.consultFlag = data.consultFlag;
-    state.consult.pictures = data.pictures;
-  },
-  // 设置问诊记录类型 1.找医生 2.快速问诊 3.开药问诊
-  setType: function setType(state, data) {
-    state.consult.type = data;
-  },
-  // 设置急速问诊类型
-  setIllnessType: function setIllnessType(state, data) {
-    state.consult.illnessType = data; // 0 或 1
-  },
-  // 设置患者
-  setPatient: function setPatient(state, id) {
-    state.consult.patientId = id;
-  },
-  // 设置优惠券
-  setCoupon: function setCoupon(state, id) {
-    state.consult.couponId = id;
-  },
-  // 清空记录
-  clear: function clear(state) {
-    state.consult = {};
-  }
-};
-var actions = {};
-var getters = {};
-var _default = {
-  state: state,
-  mutations: mutations,
-  actions: actions,
-  getters: getters
-};
-exports.default = _default;
-
-/***/ }),
-/* 889 */
-/*!*****************************************!*\
-  !*** D:/banzhuandaren/store/article.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _mixin = __webpack_require__(/*! uview-ui/libs/mixin/mixin */ 46);
-var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
-var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 47));
-var state = {
-  articles: {}
-};
-var mutations = {
-  setArticles: function setArticles(state, data) {
-    state.articles = data;
-  }
-};
-var _default = {
-  state: state,
-  mutations: mutations
-};
-exports.default = _default;
 
 /***/ })
 ]]);

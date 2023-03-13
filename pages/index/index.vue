@@ -188,10 +188,10 @@
 				this.showEye = !this.showEye
 			},
 			async change(item){
-				console.log(item.name)
-				const res = await this.$api.getArticleByTag(item.name)
+				console.log(item)
+				const res = await this.$api.getArticleByTag(item.index)
 				console.log(res)
-				// this.articleData = res
+				this.articleData = res.res
 			}
 			
 		},

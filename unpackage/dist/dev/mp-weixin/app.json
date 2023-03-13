@@ -19,11 +19,12 @@
     "compoments/community/post",
     "compoments/index/about",
     "compoments/bailan/detailArticle",
+    "pages/introduce/depression",
     "compoments/person/importantNews",
     "compoments/person/about",
     "compoments/person/user-agreement",
     "compoments/person/privacy",
-    "compoments/person/update"
+    "compoments/testing/index"
   ],
   "subPackages": [],
   "window": {
