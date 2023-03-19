@@ -61,20 +61,20 @@
 										
 					<view class="cu-bar bg-white solid-bottom">
 						<view class="action text-black">
-							<text class="cuIcon-title text-red"></text>{{subject.title}}
+							<text class="cuIcon-title text-red"></text>{{subject.question}}
 						</view>
 					</view>
-					<view>
+					<view> 
 
 						<radio-group class="block"  @change="RadioboxChange" v-if="subject.type===1||subject.type===2">
-							<view class="cu-form-group" v-for="option in subject.optionList">
+							<view class="cu-form-group" v-for="(option,index) in subject.options">
 								<radio :value="option.id" :checked="subject.userAnswer.indexOf(option.id) > -1?true:false"></radio>
 								<view class="title text-black">{{option.id}}.{{option.content}}</view>
 							</view>
 						</radio-group>
 
 						<checkbox-group class="block"  @change="CheckboxChange" v-else-if="subject.type===3">
-							<view class="cu-form-group" v-for="option in subject.optionList">
+							<view class="cu-form-group" v-for="option in subject.options">
 								<checkbox :value="option.id" :class="subject.userAnswer.indexOf(option.id) > -1?'checked':''" :checked="subject.userAnswer.indexOf(option.id) > -1?true:false"></checkbox>
 								<view class="title  text-black">{{option.id}}.{{option.content}}</view>
 							</view>
@@ -131,10 +131,10 @@
 				<view class="text-gray">上一题</view>
 			</view>
 			<view class="action" @click="MoveSubject(1)">
-				<view class="cuIcon-cu-image">
-					<text class="lg text-gray cuIcon-right"></text>
+				<view class="cuIcon-cu-image" >
+					<text class="lg text-gray cuIcon-right" :class="[showSubmit?'blue':'']"></text>
 				</view>
-				<view class="text-gray">{{showSubmit?'提交':'下一题'}}</view>
+				<view class="text-gray" :class="[showSubmit?'blue':'']">{{showSubmit?'提交':'下一题'}}</view>
 			</view>
 
 			<!-- <view class="action" @click="FavorSubject">
@@ -168,26 +168,23 @@
 			return {
 				showSubmit:false,
 				userFavor:false,//是否已收藏
-				currentType: 0, //当前题型
+				currentType: 2, //当前题型
 				subjectIndex: 0,//跳转索引
+				scores:0, // 得分
 				autoShowAnswer: false,//答错是否显答案
 				autoRadioNext:true,//判断题、单项题，自动移下一题
 				swiperHeight: '800px',//
-				title: '健康测评',
+				title: '抑郁测评',
 				subjectList:[
-					{"title":"水是液体？","type":1,"optionList":[{"id":"A","content":"对"},{"id":"B","content":"错"}],"answer":"A","userAnswer":"","userFavor":false,"explain":"难到是固体不成？"},
-					{"title":"电流分有？","type":2,"optionList":[{"id":"A","content":"直流"},{"id":"B","content":"交流"},{"id":"C","content":"直流和交流"}],"answer":"C","userAnswer":"","userFavor":false,"explain":"科技学依据"},
-					{"title":"酸菜鱼的味道？","type":3,"optionList":[{"id":"A","content":"咸味"},{"id":"B","content":"辣味"},{"id":"C","content":"甜味"},{"id":"D","content":"酸味"}],"answer":"A,B,D","userAnswer":"","userFavor":false,"explain":"你怎么想都行，要的就是这个味，答案只能选A,B,D"},
-					{"title":"床前（____）光，疑是地上霜。","type":4,"optionList":[{"id":"","content":""}],"answer":"明月","userAnswer":"","userFavor":false,"explain":"问答题没有选项，无法做答，且不参与计分"},
-					{"title":"什么美国要限制华为？","type":5,"optionList":[{"id":"","content":""}],"answer":"","userAnswer":"","userFavor":false,"explain":"问答题没有选项，无法做答，且不参与计分"},			
+					// {"title":"水是液体？","type":1,"optionList":[{"id":"A","content":"对"},{"id":"B","content":"错"}],"answer":"A","userAnswer":"","userFavor":false,"explain":"难到是固体不成？"},
 				   ],
 				modalCard: null ,//显示答题卡
 				modalError:null , //纠错卡
-				errorList:['题目不完整','答案不正确','含有错别字','图片不存在','解析不完整','其他错误']
+				errorList:['题目不完整','答案不正确','含有错别字','图片不存在','解析不完整','其他错误'],
+				selectAnswers:[], // 保存用户选择的答案
 			}
 		},
 		onReady() {
-
 			var tempHeight = 800;
 			var _me = this;
 			uni.getSystemInfo({
@@ -226,17 +223,17 @@
 			});
 
 		},
-		onLoad() {
-			
-			this.currentType = this.subjectList[0].type;
+		async onLoad() {
+			const res = await this.$api.getDepressionQuestion()
+			this.subjectList = res.data
 			uni.setNavigationBarTitle({
 				title: this.title
 			});			
 			
 			//添加用户显示答案字段
-			for (var i = 0; i < this.subjectList.length; i++) {		
-				this.$set(this.subjectList[i],"showAnswer",false);				
-			}
+			// for (var i = 0; i < this.subjectList.length; i++) {		
+			// 	this.$set(this.subjectList[i],"showAnswer",false);				
+			// }
 			
 		},
 		methods: {
@@ -263,12 +260,18 @@
 				}								
 			},			
 			RadioboxChange : function(e) { //单选选中
-			
-				var items = this.subjectList[this.subjectIndex].optionList;
 				var values = e.detail.value;
+				if(values=='A') this.scores+=0
+				if(values=='B') this.scores+=1
+				if(values=='C') this.scores+=2
+				if(values=='D') this.scores+=3
+				console.log(this.scores)
 				this.subjectList[this.subjectIndex].userAnswer = values;
 				if(this.autoRadioNext && this.subjectIndex < this.subjectList.length - 1){
-					this.subjectIndex += 1;						
+					this.subjectIndex += 1;
+					if(this.subjectIndex==this.subjectList.length - 1){
+						this.showSubmit = true
+					}
 					};
 				
 			},
@@ -319,7 +322,6 @@
 			},
 			
 			MoveSubject: function(e) { //上一题、下一题
-
 				if (e === -1 && this.subjectIndex != 0) {
 					this.subjectIndex -= 1;
 				}
@@ -328,6 +330,7 @@
 				}
 				if(this.subjectIndex===this.subjectList.length-1){
 					this.showSubmit = true
+					
 				}else{
 					this.showSubmit = false
 				}
@@ -348,6 +351,9 @@
 				
 					this.modalError = null;														
 			}
+			
+		},
+		watch:{
 			
 		}
 	}
@@ -377,4 +383,7 @@
 	}
 	.action{}
 	.cu-list.menu>.cu-item-error{justify-content: flex-start;}
+	.blue{
+		color:#007aff
+	}
 </style>

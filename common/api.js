@@ -83,9 +83,15 @@ export default {
 	},
 	// 根据tag标签获取文章
 	getArticleByTag(tag){
-		console.log(`article/findtag?tag=${tag}`)
 		return request(`/article/findtag?tag=${tag}`,'GET')
+	},
+	// 获取抑郁测评试题
+	getDepressionQuestion(){
+		return request('/question/depression','GET')
+	},
+	// 提交测评获取测评结果
+	getQuesstionResult(params){
+		return request('/question/depressionresult','POST',params)
 	}
-	
 }
 	
