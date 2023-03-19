@@ -17283,12 +17283,14 @@ var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 46));
 var _home = _interopRequireDefault(__webpack_require__(/*! ./home.js */ 47));
 var _patients = _interopRequireDefault(__webpack_require__(/*! ./patients.js */ 49));
 var _article = _interopRequireDefault(__webpack_require__(/*! ./article.js */ 50));
+var _user = _interopRequireDefault(__webpack_require__(/*! ./user.js */ 899));
 _vue.default.use(_vuex.default);
 var _default = new _vuex.default.Store({
   modules: {
     Home: _home.default,
     Patients: _patients.default,
-    Articles: _article.default
+    Articles: _article.default,
+    User: _user.default
   }
 });
 exports.default = _default;
@@ -19039,10 +19041,25 @@ var _default = {
   getArticleComment: function getArticleComment(id) {
     return (0, _request.default)("/comment/getcomment?articleId=".concat(id), 'GET');
   },
+  // 文章点赞与取消
+  like: function like(id) {
+    return (0, _request.default)("/article/like?id=".concat(id), 'GET');
+  },
+  // 文章发表评论
+  addComment: function addComment(params) {
+    return (0, _request.default)('/comment/addcomment', 'POST', params);
+  },
   // 根据tag标签获取文章
   getArticleByTag: function getArticleByTag(tag) {
-    console.log("article/findtag?tag=".concat(tag));
     return (0, _request.default)("/article/findtag?tag=".concat(tag), 'GET');
+  },
+  // 获取抑郁测评试题
+  getDepressionQuestion: function getDepressionQuestion() {
+    return (0, _request.default)('/question/depression', 'GET');
+  },
+  // 提交测评获取测评结果
+  getQuesstionResult: function getQuesstionResult(params) {
+    return (0, _request.default)('/question/depressionresult', 'POST', params);
   }
 };
 exports.default = _default;
@@ -47150,6 +47167,123 @@ var _default = {
 };
 exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 812 */,
+/* 813 */,
+/* 814 */,
+/* 815 */,
+/* 816 */,
+/* 817 */,
+/* 818 */,
+/* 819 */,
+/* 820 */,
+/* 821 */,
+/* 822 */,
+/* 823 */,
+/* 824 */,
+/* 825 */,
+/* 826 */,
+/* 827 */,
+/* 828 */,
+/* 829 */,
+/* 830 */,
+/* 831 */,
+/* 832 */,
+/* 833 */,
+/* 834 */,
+/* 835 */,
+/* 836 */,
+/* 837 */,
+/* 838 */,
+/* 839 */,
+/* 840 */,
+/* 841 */,
+/* 842 */,
+/* 843 */,
+/* 844 */,
+/* 845 */,
+/* 846 */,
+/* 847 */,
+/* 848 */,
+/* 849 */,
+/* 850 */,
+/* 851 */,
+/* 852 */,
+/* 853 */,
+/* 854 */,
+/* 855 */,
+/* 856 */,
+/* 857 */,
+/* 858 */,
+/* 859 */,
+/* 860 */,
+/* 861 */,
+/* 862 */,
+/* 863 */,
+/* 864 */,
+/* 865 */,
+/* 866 */,
+/* 867 */,
+/* 868 */,
+/* 869 */,
+/* 870 */,
+/* 871 */,
+/* 872 */,
+/* 873 */,
+/* 874 */,
+/* 875 */,
+/* 876 */,
+/* 877 */,
+/* 878 */,
+/* 879 */,
+/* 880 */,
+/* 881 */,
+/* 882 */,
+/* 883 */,
+/* 884 */,
+/* 885 */,
+/* 886 */,
+/* 887 */,
+/* 888 */,
+/* 889 */,
+/* 890 */,
+/* 891 */,
+/* 892 */,
+/* 893 */,
+/* 894 */,
+/* 895 */,
+/* 896 */,
+/* 897 */,
+/* 898 */,
+/* 899 */
+/*!**************************************!*\
+  !*** D:/banzhuandaren/store/user.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _mixin = __webpack_require__(/*! uview-ui/libs/mixin/mixin */ 48);
+var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 25));
+var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 46));
+var state = {
+  userName: 'ashin',
+  avatar: "http://rongcloud-web.qiniudn.com/docs_demo_rongcloud_logo.png"
+};
+var mutations = {};
+var _default = {
+  state: state,
+  mutations: mutations
+};
+exports.default = _default;
 
 /***/ })
 ]]);

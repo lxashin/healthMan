@@ -67,7 +67,7 @@
 					<view> 
 
 						<radio-group class="block"  @change="RadioboxChange" v-if="subject.type===1||subject.type===2">
-							<view class="cu-form-group" v-for="(option,index) in subject.options">
+							<view class="cu-form-group" v-for="(option,ind) in subject.options">
 								<radio :value="option.id" :checked="subject.userAnswer.indexOf(option.id) > -1?true:false"></radio>
 								<view class="title text-black">{{option.id}}.{{option.content}}</view>
 							</view>
@@ -252,27 +252,26 @@
 			SwiperChange: function(e) { //滑动事件
 			
 				let index = e.target.current;
-				
 				if (index != undefined) {
 					this.subjectIndex = index;
 					this.currentType = this.subjectList[index].type;
 					this.userFavor = this.subjectList[index].userFavor;					
-				}								
+				}
+				if(index==14){
+					this.showSubmit = true
+				}else{
+					this.showSubmit = false
+				}
 			},			
 			RadioboxChange : function(e) { //单选选中
 				var values = e.detail.value;
-				if(values=='A') this.scores+=0
-				if(values=='B') this.scores+=1
-				if(values=='C') this.scores+=2
-				if(values=='D') this.scores+=3
-				console.log(this.scores)
 				this.subjectList[this.subjectIndex].userAnswer = values;
 				if(this.autoRadioNext && this.subjectIndex < this.subjectList.length - 1){
 					this.subjectIndex += 1;
 					if(this.subjectIndex==this.subjectList.length - 1){
 						this.showSubmit = true
 					}
-					};
+				};
 				
 			},
 			CheckboxChange: function(e) { //复选选中
@@ -321,16 +320,45 @@
 				}				
 			},
 			
-			MoveSubject: function(e) { //上一题、下一题
+			async MoveSubject(e) { //上一题、下一题
 				if (e === -1 && this.subjectIndex != 0) {
 					this.subjectIndex -= 1;
 				}
 				if (e === 1 && this.subjectIndex < this.subjectList.length - 1) {
 					this.subjectIndex += 1;
 				}
-				if(this.subjectIndex===this.subjectList.length-1){
+				if(this.subjectIndex===this.subjectList.length-1&&this.subjectList[this.subjectList.length-1].userAnswer.length){
+					// 判断是否所有题目都选了答案
 					this.showSubmit = true
-					
+					for(let item of this.subjectList){
+						if(!item.userAnswer.length){
+							return uni.showToast({
+								icon:'error',
+								title:'还有题目未回答'
+							})
+						}else{
+							
+						}
+					}
+					for(let i=0;i<this.subjectList.length;i++){
+						switch(this.subjectList[i].userAnswer){
+							case 'A':
+								this.scores+=0
+								break;
+							case 'B':
+								this.scores+=1
+								break;
+							case 'C':
+								this.scores+=2
+								break;
+							case 'D':
+								this.scores+=3
+								break;
+						}
+					}
+					console.log(this.scores)
+					const res = await this.$api.getQuesstionResult({scores:this.scores})
+					console.log(res)
 				}else{
 					this.showSubmit = false
 				}

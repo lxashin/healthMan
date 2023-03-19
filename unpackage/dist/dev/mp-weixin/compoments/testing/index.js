@@ -117,7 +117,7 @@ var render = function () {
       index - _vm.subjectIndex >= -1 &&
       index - _vm.subjectIndex <= 1 &&
       (subject.type === 1 || subject.type === 2)
-        ? _vm.__map(subject.optionList, function (option, __i1__) {
+        ? _vm.__map(subject.options, function (option, ind) {
             var $orig = _vm.__get_orig(option)
             var g1 = subject.userAnswer.indexOf(option.id)
             return {
@@ -131,7 +131,7 @@ var render = function () {
       index - _vm.subjectIndex <= 1 &&
       !(subject.type === 1 || subject.type === 2) &&
       subject.type === 3
-        ? _vm.__map(subject.optionList, function (option, __i2__) {
+        ? _vm.__map(subject.options, function (option, __i1__) {
             var $orig = _vm.__get_orig(option)
             var g2 = subject.userAnswer.indexOf(option.id)
             var g3 = subject.userAnswer.indexOf(option.id)
@@ -192,10 +192,16 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 /* WEBPACK VAR INJECTION */(function(uni) {
 
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 28));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 30));
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 //
 //
 //
@@ -366,96 +372,28 @@ var _default = {
       showSubmit: false,
       userFavor: false,
       //是否已收藏
-      currentType: 0,
+      currentType: 2,
       //当前题型
       subjectIndex: 0,
       //跳转索引
+      scores: 0,
+      // 得分
       autoShowAnswer: false,
       //答错是否显答案
       autoRadioNext: true,
       //判断题、单项题，自动移下一题
       swiperHeight: '800px',
       //
-      title: '健康测评',
-      subjectList: [{
-        "title": "水是液体？",
-        "type": 1,
-        "optionList": [{
-          "id": "A",
-          "content": "对"
-        }, {
-          "id": "B",
-          "content": "错"
-        }],
-        "answer": "A",
-        "userAnswer": "",
-        "userFavor": false,
-        "explain": "难到是固体不成？"
-      }, {
-        "title": "电流分有？",
-        "type": 2,
-        "optionList": [{
-          "id": "A",
-          "content": "直流"
-        }, {
-          "id": "B",
-          "content": "交流"
-        }, {
-          "id": "C",
-          "content": "直流和交流"
-        }],
-        "answer": "C",
-        "userAnswer": "",
-        "userFavor": false,
-        "explain": "科技学依据"
-      }, {
-        "title": "酸菜鱼的味道？",
-        "type": 3,
-        "optionList": [{
-          "id": "A",
-          "content": "咸味"
-        }, {
-          "id": "B",
-          "content": "辣味"
-        }, {
-          "id": "C",
-          "content": "甜味"
-        }, {
-          "id": "D",
-          "content": "酸味"
-        }],
-        "answer": "A,B,D",
-        "userAnswer": "",
-        "userFavor": false,
-        "explain": "你怎么想都行，要的就是这个味，答案只能选A,B,D"
-      }, {
-        "title": "床前（____）光，疑是地上霜。",
-        "type": 4,
-        "optionList": [{
-          "id": "",
-          "content": ""
-        }],
-        "answer": "明月",
-        "userAnswer": "",
-        "userFavor": false,
-        "explain": "问答题没有选项，无法做答，且不参与计分"
-      }, {
-        "title": "什么美国要限制华为？",
-        "type": 5,
-        "optionList": [{
-          "id": "",
-          "content": ""
-        }],
-        "answer": "",
-        "userAnswer": "",
-        "userFavor": false,
-        "explain": "问答题没有选项，无法做答，且不参与计分"
-      }],
+      title: '抑郁测评',
+      subjectList: [
+        // {"title":"水是液体？","type":1,"optionList":[{"id":"A","content":"对"},{"id":"B","content":"错"}],"answer":"A","userAnswer":"","userFavor":false,"explain":"难到是固体不成？"},
+      ],
       modalCard: null,
       //显示答题卡
       modalError: null,
       //纠错卡
-      errorList: ['题目不完整', '答案不正确', '含有错别字', '图片不存在', '解析不完整', '其他错误']
+      errorList: ['题目不完整', '答案不正确', '含有错别字', '图片不存在', '解析不完整', '其他错误'],
+      selectAnswers: [] // 保存用户选择的答案
     };
   },
   onReady: function onReady() {
@@ -494,15 +432,33 @@ var _default = {
     });
   },
   onLoad: function onLoad() {
-    this.currentType = this.subjectList[0].type;
-    uni.setNavigationBarTitle({
-      title: this.title
-    });
+    var _this = this;
+    return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+      var res;
+      return _regenerator.default.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return _this.$api.getDepressionQuestion();
+            case 2:
+              res = _context.sent;
+              _this.subjectList = res.data;
+              uni.setNavigationBarTitle({
+                title: _this.title
+              });
 
-    //添加用户显示答案字段
-    for (var i = 0; i < this.subjectList.length; i++) {
-      this.$set(this.subjectList[i], "showAnswer", false);
-    }
+              //添加用户显示答案字段
+              // for (var i = 0; i < this.subjectList.length; i++) {		
+              // 	this.$set(this.subjectList[i],"showAnswer",false);				
+              // }
+            case 5:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
   },
   methods: {
     showCardModal: function showCardModal(e) {
@@ -526,15 +482,21 @@ var _default = {
         this.currentType = this.subjectList[index].type;
         this.userFavor = this.subjectList[index].userFavor;
       }
+      if (index == 14) {
+        this.showSubmit = true;
+      } else {
+        this.showSubmit = false;
+      }
     },
     RadioboxChange: function RadioboxChange(e) {
       //单选选中
-
-      var items = this.subjectList[this.subjectIndex].optionList;
       var values = e.detail.value;
       this.subjectList[this.subjectIndex].userAnswer = values;
       if (this.autoRadioNext && this.subjectIndex < this.subjectList.length - 1) {
         this.subjectIndex += 1;
+        if (this.subjectIndex == this.subjectList.length - 1) {
+          this.showSubmit = true;
+        }
       }
       ;
     },
@@ -579,19 +541,103 @@ var _default = {
       }
     },
     MoveSubject: function MoveSubject(e) {
-      //上一题、下一题
-
-      if (e === -1 && this.subjectIndex != 0) {
-        this.subjectIndex -= 1;
-      }
-      if (e === 1 && this.subjectIndex < this.subjectList.length - 1) {
-        this.subjectIndex += 1;
-      }
-      if (this.subjectIndex === this.subjectList.length - 1) {
-        this.showSubmit = true;
-      } else {
-        this.showSubmit = false;
-      }
+      var _this2 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var _iterator, _step, item, i, res;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                //上一题、下一题
+                if (e === -1 && _this2.subjectIndex != 0) {
+                  _this2.subjectIndex -= 1;
+                }
+                if (e === 1 && _this2.subjectIndex < _this2.subjectList.length - 1) {
+                  _this2.subjectIndex += 1;
+                }
+                if (!(_this2.subjectIndex === _this2.subjectList.length - 1 && _this2.subjectList[_this2.subjectList.length - 1].userAnswer.length)) {
+                  _context2.next = 46;
+                  break;
+                }
+                // 判断是否所有题目都选了答案
+                _this2.showSubmit = true;
+                _iterator = _createForOfIteratorHelper(_this2.subjectList);
+                _context2.prev = 5;
+                _iterator.s();
+              case 7:
+                if ((_step = _iterator.n()).done) {
+                  _context2.next = 15;
+                  break;
+                }
+                item = _step.value;
+                if (item.userAnswer.length) {
+                  _context2.next = 13;
+                  break;
+                }
+                return _context2.abrupt("return", uni.showToast({
+                  icon: 'error',
+                  title: '还有题目未回答'
+                }));
+              case 13:
+                _context2.next = 7;
+                break;
+              case 15:
+                _context2.next = 20;
+                break;
+              case 17:
+                _context2.prev = 17;
+                _context2.t0 = _context2["catch"](5);
+                _iterator.e(_context2.t0);
+              case 20:
+                _context2.prev = 20;
+                _iterator.f();
+                return _context2.finish(20);
+              case 23:
+                i = 0;
+              case 24:
+                if (!(i < _this2.subjectList.length)) {
+                  _context2.next = 39;
+                  break;
+                }
+                _context2.t1 = _this2.subjectList[i].userAnswer;
+                _context2.next = _context2.t1 === 'A' ? 28 : _context2.t1 === 'B' ? 30 : _context2.t1 === 'C' ? 32 : _context2.t1 === 'D' ? 34 : 36;
+                break;
+              case 28:
+                _this2.scores += 0;
+                return _context2.abrupt("break", 36);
+              case 30:
+                _this2.scores += 1;
+                return _context2.abrupt("break", 36);
+              case 32:
+                _this2.scores += 2;
+                return _context2.abrupt("break", 36);
+              case 34:
+                _this2.scores += 3;
+                return _context2.abrupt("break", 36);
+              case 36:
+                i++;
+                _context2.next = 24;
+                break;
+              case 39:
+                console.log(_this2.scores);
+                _context2.next = 42;
+                return _this2.$api.getQuesstionResult({
+                  scores: _this2.scores
+                });
+              case 42:
+                res = _context2.sent;
+                console.log(res);
+                _context2.next = 47;
+                break;
+              case 46:
+                _this2.showSubmit = false;
+              case 47:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[5, 17, 20, 23]]);
+      }))();
     },
     AppointedSubject: function AppointedSubject(e) {
       //题卡指定
@@ -609,7 +655,8 @@ var _default = {
 
       this.modalError = null;
     }
-  }
+  },
+  watch: {}
 };
 exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))

@@ -53,6 +53,10 @@
   position: relative;
   left: 90%;
 }
+.article .zan text.data-v-4895bb8f {
+  display: flex;
+  align-items: center;
+}
 .article .comment_list.data-v-4895bb8f {
   display: flex;
   justify-content: space-between;

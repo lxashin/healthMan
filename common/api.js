@@ -81,6 +81,14 @@ export default {
 	getArticleComment(id){
 		return request(`/comment/getcomment?articleId=${id}`,'GET')
 	},
+	// 文章点赞与取消
+	like(id){
+		return request(`/article/like?id=${id}`,'GET')
+	},
+	// 文章发表评论
+	addComment(params){
+		return request('/comment/addcomment','POST',params)
+	},
 	// 根据tag标签获取文章
 	getArticleByTag(tag){
 		return request(`/article/findtag?tag=${tag}`,'GET')

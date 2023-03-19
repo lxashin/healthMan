@@ -354,6 +354,40 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* @import "../../colorui/animation.css"; */
 .page {
 	background-color: #FFFFFF;
@@ -373,4 +407,7 @@
 }
 .action{}
 .cu-list.menu>.cu-item-error{justify-content: flex-start;}
+.blue{
+	color:#007aff
+}
 

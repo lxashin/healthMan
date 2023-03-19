@@ -8,12 +8,14 @@
 		</view>
 		<u-line color="#ccc" />
 		<view class="content" v-html="articleData.content"></view>
-		<view class="zan">
-			<u-icon name="thumb-up" size="24"></u-icon>
+		<view class="zan" @click="getStar(articleData)">
+			<u-icon v-if="!articleData.islike" name="thumb-up" size="24"></u-icon>
+			<u-icon v-else name="thumb-up-fill" color="red" size="24"></u-icon>
 			<text>{{articleData.star}}</text>
+			
 		</view>
 		<view class="comment_list">
-			<view class="comment_title">评论列表（{{articleData.commentNum}}）</view>
+			<view class="comment_title">评论列表（{{commentData.length}}）</view>
 			<view class="write_comment" @click="show=true">
 					<u-icon name="edit-pen" size="28"></u-icon>
 					<text>写评论</text>
@@ -49,7 +51,7 @@
 	<!-- 写评论弹窗 -->
 	<u-modal :show="show" :title-style="{color: 'red'}" @confirm="confirm" @cancel="cancel" confirmText="提交" confirmColor="rgb(45,195,182)" showCancelButton cancelText="关闭">
 			<view class="content">
-				<editor class="richInputContent" id="editor" @input="getEditorContent" @ready="onEditorReady" placeholder="请输入您的评论"></editor>
+				<editor class="richInputContent" id="editor" v-model="content" placeholder="请输入您的评论"></editor>
 			</view>
 	</u-modal>
 	<!-- 回复评论 -->
@@ -69,18 +71,14 @@
 				show:false, // 写评论弹出框
 				setFocus:false, // 回复评论键盘弹起
 				setPopup:false, // 回复评论弹出
+				content:"",
 				reply:"",
 				articleData:{},
-				commentData:{},
+				commentData:[],
 			}
 		},
-		async onLoad() {
-			let id = this.$route.query.id
-			let res = await this.$api.getArticleById(id)
-			this.articleData = res.res
-			let res2 = await this.$api.getArticleComment(id)
-			this.commentData = res2.res
-			console.log('评论',this.commentData)
+			onLoad() {
+			this.getArticleData()
 		},
 		methods:{
 			confirm(){
@@ -95,6 +93,19 @@
 			close() {
 				this.setPopup = false
 			},
+			async getStar(item){
+				// 点赞
+				await this.$api.like(item.id)
+				this.getArticleData()
+			},
+			// 获取文章数据
+			async getArticleData(){
+				let id = this.$route.query.id
+				let res = await this.$api.getArticleById(id)
+				this.articleData = res.res
+				let res2 = await this.$api.getArticleComment(id)
+				this.commentData = res2.res
+			},
 			send(){
 				if(this.reply==''){
 					uni.showToast({
@@ -107,6 +118,18 @@
 					this.close()
 					this.setFocus = false
 				}
+			},
+			// 发表评论
+			async confirm() {
+				let comment = {
+					articleId:Number(this.$route.query.id),
+					userName:this.$store.state.User.userName,
+					avatar:this.$store.state.User.avatar,
+					content:this.content.detail.text,
+				}
+				await this.$api.addComment(comment)
+				this.getArticleData()
+				this.show = false
 			}
 		}
 	}
@@ -140,6 +163,10 @@
 			display: flex;
 			position: relative;
 			left: 90%;
+			text{
+				display: flex;
+				align-items: center;
+			}
 		}
 		.comment_list{
 			display: flex;

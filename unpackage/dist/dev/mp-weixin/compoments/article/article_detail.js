@@ -135,7 +135,8 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  var g0 = _vm.articleData.length
+  var g0 = _vm.commentData.length
+  var g1 = _vm.articleData.length
   if (!_vm._isMounted) {
     _vm.e0 = function ($event) {
       _vm.show = true
@@ -146,6 +147,7 @@ var render = function () {
     {
       $root: {
         g0: g0,
+        g1: g1,
       },
     }
   )
@@ -190,7 +192,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 28));
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 30));
+//
+//
 //
 //
 //
@@ -264,40 +269,16 @@ var _default = {
       // 回复评论键盘弹起
       setPopup: false,
       // 回复评论弹出
+      content: "",
       reply: "",
       articleData: {},
-      commentData: {}
+      commentData: []
     };
   },
   onLoad: function onLoad() {
-    var _this = this;
-    return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
-      var id, res, res2;
-      return _regenerator.default.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              id = _this.$route.query.id;
-              _context.next = 3;
-              return _this.$api.getArticleById(id);
-            case 3:
-              res = _context.sent;
-              _this.articleData = res.res;
-              _context.next = 7;
-              return _this.$api.getArticleComment(id);
-            case 7:
-              res2 = _context.sent;
-              _this.commentData = res2.res;
-              console.log('评论', _this.commentData);
-            case 10:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }))();
+    this.getArticleData();
   },
-  methods: {
+  methods: (0, _defineProperty2.default)({
     confirm: function confirm() {
       this.show = false;
     },
@@ -309,6 +290,53 @@ var _default = {
     },
     close: function close() {
       this.setPopup = false;
+    },
+    getStar: function getStar(item) {
+      var _this = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        return _regenerator.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return _this.$api.like(item.id);
+              case 2:
+                _this.getArticleData();
+              case 3:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
+    // 获取文章数据
+    getArticleData: function getArticleData() {
+      var _this2 = this;
+      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var id, res, res2;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                id = _this2.$route.query.id;
+                _context2.next = 3;
+                return _this2.$api.getArticleById(id);
+              case 3:
+                res = _context2.sent;
+                _this2.articleData = res.res;
+                _context2.next = 7;
+                return _this2.$api.getArticleComment(id);
+              case 7:
+                res2 = _context2.sent;
+                _this2.commentData = res2.res;
+              case 9:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
     },
     send: function send() {
       if (this.reply == '') {
@@ -323,7 +351,33 @@ var _default = {
         this.setFocus = false;
       }
     }
-  }
+  }, "confirm", function confirm() {
+    var _this3 = this;
+    return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+      var comment;
+      return _regenerator.default.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              comment = {
+                articleId: Number(_this3.$route.query.id),
+                userName: _this3.$store.state.User.userName,
+                avatar: _this3.$store.state.User.avatar,
+                content: _this3.content.detail.text
+              };
+              _context3.next = 3;
+              return _this3.$api.addComment(comment);
+            case 3:
+              _this3.getArticleData();
+              _this3.show = false;
+            case 5:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }))();
+  })
 };
 exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
