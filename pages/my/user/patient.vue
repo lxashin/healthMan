@@ -119,7 +119,7 @@
 		data(){
 			return{
 				list:[],
-				isChange:true,
+				// isChange:0,
 				patientId:'',
 				show:false,
 				showSex: false,
@@ -165,6 +165,16 @@
 		
 		onLoad() {
 			this.loadList()
+			let pages = getCurrentPages();
+			console.log(pages)
+		},
+		computed:{
+			isChange(){
+				let pages = getCurrentPages();
+				let page = pages[pages.length - 1].$page.fullPath;  //完整路由地址
+				return page.split('isChange=')[1]  //携带的type参数
+				// return this.$route.query.isChange
+			}
 		},
 		methods:{
 			back(){
@@ -290,6 +300,7 @@
 				}
 			},
 			next(){
+				this.$store.commit('setPatient',this.patientId)
 				uni.navigateTo({
 					url:'/pages/consult/consultPay'
 				})

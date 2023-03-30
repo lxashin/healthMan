@@ -7,7 +7,9 @@
 				</view>
 		</scroll-view>
 		<scroll-view scroll-y="true" class="nav_right" :scroll-into-view="scrollToRight" scroll-with-animation="" @scroll="scrolling">
+			<view v-if="allDep[id]">
 				<view class="goods_list" v-for="(val, index) in allDep[id].child" :key="val.id" @click="goIllness">{{val.name}}</view>
+			</view>
 		</scroll-view>
 	  </view>
 </template>

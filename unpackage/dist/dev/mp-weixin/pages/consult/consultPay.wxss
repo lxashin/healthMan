@@ -64,6 +64,8 @@
   justify-content: center;
 }
 .pay-schema .text.data-v-a1bf2050 {
+  padding-left: 6rpx;
+  font-size: 30rpx;
   color: #16C2A3;
 }
 .pay_bottom.data-v-a1bf2050 {

@@ -38,7 +38,8 @@
 					{
 						id:3,
 						icon:'t-icon-yisheng',
-						content:'咨询医生'
+						content:'咨询医生',
+						url:'/pages/Room/index'
 					},
 					{
 						id:4,
@@ -65,8 +66,19 @@
 		},
 		methods:{
 			select(item){
-				console.log(111)
 				let {url} = item
+				if(url=='/pages/Room/index'){
+					if(uni.getStorageSync('orderId')){
+						uni.navigateTo({
+							url
+						})
+					}else{
+						return uni.showToast({
+							icon:'error',
+							title:'请先下单'
+						})
+					}
+				}
 				uni.navigateTo({
 					url
 				})

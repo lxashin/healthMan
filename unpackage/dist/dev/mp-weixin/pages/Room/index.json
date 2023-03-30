@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "医生问诊室",
+  "navigationBarBackgroundColor": "#fad556",
+  "enablePullDownRefresh": false,
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "u-count-down": "/node-modules/uview-ui/components/u-count-down/u-count-down"
+  }
+}

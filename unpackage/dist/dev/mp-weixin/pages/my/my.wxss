@@ -65,7 +65,7 @@
   line-height: 100rpx;
   width: 100%;
   height: 100rpx;
-  background-color: #fff;
+  background-color: #f1f1f1;
   font-size: 15px;
 }
 .feedback button::after {

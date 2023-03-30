@@ -1,7 +1,7 @@
 <template>
 	  <view class="consult-pay-page">
 	    <view class="pay-info">
-	      <view class="tit">图文问诊 39 元</view>
+	      <view class="tit">图文问诊 {{payInfo.payment}} 元</view>
 	      <img class="img" src="/static/image/avatar-doctor.svg" />
 	      <view class="desc">
 	        <text>极速问诊</text>
@@ -11,9 +11,9 @@
 	
 	    <!-- 支付信息区域 -->
 	    <u-cell-group>
-	      <u-cell title="优惠券" :value="`-¥ 0`" />
-	      <u-cell title="积分抵扣" :value="`-¥0`" />
-	      <u-cell title="实付款" :value="`¥39`" class="pay-price" />
+	      <u-cell title="优惠券" :value="`-¥ ${payInfo.couponDeduction}`" />
+	      <u-cell title="积分抵扣" :value="`-¥${payInfo.pointDeduction}`" />
+	      <u-cell title="实付款" :value="`¥${payInfo.actualPayment}`" class="pay-price" />
 	    </u-cell-group>
 	    <view class="pay-space"></view>
 	
@@ -21,9 +21,9 @@
 	    <u-cell-group>
 	      <u-cell
 	        title="患者信息"
-	        :value="`ashin | 男 | 22岁`"
+	        :value="`${patient.name} | ${patient.genderValue} | ${patient.age}岁`"
 	      ></u-cell>
-	      <u-cell title="病情描述" label="ssss"></u-cell>
+	      <u-cell title="病情描述" :label="`${description}`"></u-cell>
 	    </u-cell-group>
 	    <view class="pay-schema">
 			<u-checkbox-group @change="checkBoxChange">
@@ -35,14 +35,14 @@
 		<view class="pay_bottom">
 			<view class="money">
 				<text>合计:</text>
-				<text>￥ <text class="number">39</text></text>
+				<text>￥ <text class="number">{{payInfo.actualPayment}}</text></text>
 			</view>
 			<view>
 				<u-button type="success" @click="pay" text="立即支付"></u-button>
 			</view>
 		</view>
 		<!-- 支付抽屉 -->
-		<paySheet :show="show" @close="close"></paySheet>
+		<paySheet :show="show" :payInfo="payInfo" :patient="patient" @close="close"></paySheet>
 	    
 	  </view>
 </template>
@@ -56,6 +56,8 @@
 		data(){
 			return {
 				payInfo:{}, // 预订单信息 {优惠券、积分抵扣、实付款等}
+				patient:{},
+				description:'',
 				agree:false,
 				show:false,
 				title:"请选择支付方式",
@@ -68,6 +70,9 @@
 				console.log(this.agree)
 			},
 			pay(){
+				// 下单获取订单id
+				const obj = {...this.payInfo,...this.patient}
+				// const res = await this.$api.createConsultOrder()
 				if(this.agree==true){
 					this.show = true
 				}else{
@@ -87,7 +92,19 @@
 					illnessType:1
 				})
 				this.payInfo = res.data
+				console.log('预支付信息',res.data)
+			},
+			// 获取患者信息
+			async loadPatient(){
+				const id = this.$store.state.Patients.consult.patientId
+				const res = await this.$api.getPatientDetail(id)
+				this.patient = res.data
 			}
+		},
+		mounted() {
+			this.loadData(),
+			this.loadPatient()
+			this.description = this.$store.state.Patients.consult.illnessDesc
 		}
 	}
 </script>
@@ -137,6 +154,8 @@
   align-items: center;
   justify-content: center;
   .text {
+	  padding-left: 6rpx;
+	font-size: 30rpx;
 	color: #16C2A3;
   }
 }

@@ -35,13 +35,20 @@
 }
 .main .u-page .icon.data-v-5fb47dc3 {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: 20rpx;
 }
-.main .u-page .icon .u-icon.data-v-5fb47dc3 {
+.main .u-page .icon .time.data-v-5fb47dc3 {
+  -webkit-transform: translateX(76rpx);
+          transform: translateX(76rpx);
+}
+.main .u-page .icon .operate.data-v-5fb47dc3 {
+  display: flex;
+}
+.main .u-page .icon .operate .u-icon.data-v-5fb47dc3 {
   margin-left: 20rpx;
 }
-.main .u-page .icon text.data-v-5fb47dc3 {
+.main .u-page .icon .operate text.data-v-5fb47dc3 {
   color: #8d8d8d;
   font-size: 32rpx;
   padding-left: 10rpx;

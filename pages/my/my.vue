@@ -18,6 +18,9 @@
 		
 		<!-- 单元格 -->
 		<u-cell-group>
+			<u-cell title="我的问诊" isLink url="/pages/my/user/consultItem">
+				<u-icon slot="icon" size="28" name="calendar" color='#fad556'></u-icon>
+			</u-cell>
 			<u-cell title="重要公告" isLink @click="go">
 				<u-icon slot="icon" size="28" name="chat" color='#fad556'></u-icon>
 			</u-cell>
@@ -206,7 +209,7 @@
 			line-height: 100rpx;
 			width: 100%;
 			height: 100rpx;
-			background-color: #fff;
+			background-color: rgb(241, 241, 241);
 			font-size: 15px;
 			
 		}

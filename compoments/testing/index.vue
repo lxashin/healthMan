@@ -74,7 +74,7 @@
 						</radio-group>
 
 						<checkbox-group class="block"  @change="CheckboxChange" v-else-if="subject.type===3">
-							<view class="cu-form-group" v-for="option in subject.options">
+							<view class="cu-form-group" v-for="option in subject.options" :key="option.id">
 								<checkbox :value="option.id" :class="subject.userAnswer.indexOf(option.id) > -1?'checked':''" :checked="subject.userAnswer.indexOf(option.id) > -1?true:false"></checkbox>
 								<view class="title  text-black">{{option.id}}.{{option.content}}</view>
 							</view>

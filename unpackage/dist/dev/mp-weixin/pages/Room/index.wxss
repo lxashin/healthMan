@@ -1,0 +1,184 @@
+@charset "UTF-8";
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.big_out {
+  position: fixed;
+  z-index: 999;
+  width: 100%;
+  height: 100rpx;
+  background-color: #fad556;
+}
+.back {
+  position: absolute;
+  top: 30rpx;
+  height: 50rpx;
+  width: 120rpx;
+}
+.back_img {
+  /* 用border值来控制箭头粗细 */
+  border: 3px solid black;
+  /* 上、右、下、左  四个边框的宽度 */
+  border-width: 0px 2px 2px 0px;
+  display: inline-block;
+  /* padding值控制箭头大小 */
+  padding: 5px;
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+  margin-left: 30rpx;
+}
+.back_text {
+  float: right;
+  position: relative;
+  top: -4rpx;
+}
+.room-status {
+  position: fixed;
+  left: 0;
+  top: 100rpx;
+  height: 88rpx;
+  width: 100%;
+  background-color: #fff;
+  font-size: 26rpx;
+  z-index: 1;
+}
+.room-status .wait {
+  padding: 0 30rpx;
+  background-color: #EAF8F6;
+  height: 100%;
+  line-height: 88rpx;
+  text-align: center;
+  color: #16C2A3;
+}
+.room-status .chat {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30rpx;
+}
+.room-status .chat text:first-child {
+  color: #16C2A3;
+}
+.room-status .chat text:last-child {
+  color: #3C3E42;
+  width: 260rpx;
+}
+.room-status .chat text:last-child .van-count-down {
+  display: inline;
+}
+.chat-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 20rpx;
+  overflow: scroll;
+  width: 100%;
+  position: absolute;
+  top: 200rpx;
+  bottom: 100rpx;
+}
+.chat-message {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20rpx;
+}
+.chat-message-sent {
+  justify-content: flex-end;
+}
+.chat-message-received {
+  justify-content: flex-start;
+}
+.avatar_left {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-left: 20rpx;
+}
+.avatar_right {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 20rpx;
+}
+.avatar_left image, .avatar_right image {
+  width: 100%;
+  height: 100%;
+}
+.message-content-send {
+  display: flex;
+  flex-direction: column;
+  background-color: #95ec69;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  max-width: 70%;
+}
+.message-content-received {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  max-width: 70%;
+}
+.message-content view {
+  margin: 0;
+  font-size: 28rpx;
+}
+.timestamp {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 10rpx;
+  text-align: right;
+}
+.chat-input {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 20rpx;
+  background-color: #f5f5f5;
+  border-top: 2rpx solid #ddd;
+  position: fixed;
+  bottom: 40rpx;
+}
+.chat-input input {
+  flex: 1;
+  margin-right: 20rpx;
+  border: none;
+  outline: none;
+  font-size: 32rpx;
+  color: #333;
+  background-color: transparent;
+}
+.chat-input button {
+  font-size: 32rpx;
+  color: #409EFF;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+

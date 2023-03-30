@@ -33,9 +33,13 @@ export default {
 	getHelpData(){
 		return request('/help/allinfo','GET')
 	},
-	// 获取患者信息
+	// 获取患者信息列表
 	getPatients(){
 		return request('/patient/mylist','GET')
+	},
+	// 查询患者详情
+	getPatientDetail(id){
+		return request(`/patient/info/${id}`,'GET')
 	},
 	// 添加患者
 	addPatient(params){
@@ -51,15 +55,23 @@ export default {
 	},
 	// 生成预订单信息
 	getConsultOrderPre(params){
-		return request('/patient/consult/order/pre', 'GET', params)
+		return request(`/consult/order/pre?type=${params.type}&illnessType=${params.illnessType}`, 'GET', params)
 	},
 	//生成订单
 	createConsultOrder(params){
-		return resuest('/patient/consult/order', 'POST', params)
+		return request('/consult/order', 'POST', params)
+	},
+	// 删除订单
+	removeOrder(params){
+		return request('/consult/removeorder','DELETE',params)
+	},
+	// 获取所有问诊订单
+	getOrder(){
+		return request('/consult/getAllOrder','GET')
 	},
 	// 获取支付地址  0 是微信  1 支付宝
 	getConsultOrderPayUrl(params){
-		return request('/patient/consult/pay', 'POST', params)
+		return request('/consult/pay', 'POST', params)
 	},
 	// 查询患者详情
 	getPatientDetail(id){
@@ -100,6 +112,18 @@ export default {
 	// 提交测评获取测评结果
 	getQuesstionResult(params){
 		return request('/question/depressionresult','POST',params)
+	},
+	// 获取聊天记录
+	getChat(){
+		return request('/chat/history','GET')
+	},
+	// 获取所有社区动态
+	getCommunity(){
+		return request('/community/allinfo','GET')
+	},
+	// 朋友圈点赞
+	communityLike(id){
+		return request(`/community/like?_id=${id}`,'GET')
 	}
 }
 	

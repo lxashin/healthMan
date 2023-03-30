@@ -75,6 +75,7 @@
 				reply:"",
 				articleData:{},
 				commentData:[],
+				id:null
 			}
 		},
 			onLoad() {
@@ -100,10 +101,13 @@
 			},
 			// 获取文章数据
 			async getArticleData(){
-				let id = this.$route.query.id
-				let res = await this.$api.getArticleById(id)
+				// 兼容小程序，需要获取完整路径，如果直接使用this.$router.query.id在小程序中无法获取
+				let pages = getCurrentPages()
+				let page = pages[pages.length - 1].$page.fullPath
+				this.id = page.split('id=')[1]
+				let res = await this.$api.getArticleById(this.id)
 				this.articleData = res.res
-				let res2 = await this.$api.getArticleComment(id)
+				let res2 = await this.$api.getArticleComment(this.id)
 				this.commentData = res2.res
 			},
 			send(){
@@ -122,7 +126,7 @@
 			// 发表评论
 			async confirm() {
 				let comment = {
-					articleId:Number(this.$route.query.id),
+					articleId:Number(this.id),
 					userName:this.$store.state.User.userName,
 					avatar:this.$store.state.User.avatar,
 					content:this.content.detail.text,

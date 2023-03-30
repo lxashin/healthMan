@@ -45,7 +45,7 @@
 			<view class="illness_img">
 				<!-- 上传图片 -->
 				<u-upload
-					:fileList="imgList"
+					:fileList="form.imgList"
 					@afterRead="afterRead"
 					@delete="deletePic"
 					name="1"
@@ -54,7 +54,7 @@
 					upload-text="选择图片"
 					:previewFullImage="true"
 					></u-upload>
-					<view class="tip" v-if="imgList.length==0">
+					<view class="tip" v-if="form.imgList.length==0">
 						上传内容仅医生可见,最多9张图,最大5MB
 					</view>
 			</view>
@@ -70,7 +70,8 @@
 				form:{
 					illnessDesc:'',
 					illnessTime:'',
-					consultFlag:''
+					consultFlag:'',
+					imgList: []
 				},
 				radiolist1:[
 					{
@@ -100,32 +101,32 @@
 						  disabled: false
 						},
 				],
-				imgList: [],
+				
 			}
 		},
 		methods:{
 			// 删除图片
 			deletePic(event) {
-				this.imgList.splice(event.index, 1)
-				console.log(this.imgList)
+				this.form.imgList.splice(event.index, 1)
+				console.log(this.form.imgList)
 			},
 			// 新增图片
 			async afterRead(event) {
 				// 当设置 multiple 为 true 时, file 为数组格式，否则为对象格式
 				let lists = [].concat(event.file)
-				let imgListLen = this.imgList.length
+				let imgListLen = this.form.imgList.length
 				lists.map((item) => {
-					this.imgList.push({
+					this.form.imgList.push({
 						...item,
 						status: 'uploading',
 						message: '上传中'
 					})
 				})
-				console.log('imgList',this.imgList)
 				for (let i = 0; i < lists.length; i++) {
 					const result = await this.uploadFilePromise(lists[i].url)
-					let item = this.imgList[imgListLen]
-					this.imgList.splice(imgListLen, 1, Object.assign(item, {
+					let item = this.form.imgList[imgListLen]
+					console.log('111',item)
+					this.form.imgList.splice(imgListLen, 1, Object.assign(item, {
 						status: 'success',
 						message: '',
 						url: result
@@ -157,7 +158,6 @@
 				this.form.consultFlag = n
 			},
 			next(){
-				console.log(this.form)
 				if (!this.form.illnessDesc){
 					uni.showToast({
 						title:"请输入病情描述",
@@ -174,9 +174,9 @@
 						icon:'error'
 					})
 				}else{
-					this.$store.commit('setIllness')
+					this.$store.commit('setIllness',this.form)
 					uni.navigateTo({
-						url:'/pages/my/user/patient'
+						url:'/pages/my/user/patient?isChange=1'
 					})
 				}
 				

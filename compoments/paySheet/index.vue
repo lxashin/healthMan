@@ -8,7 +8,7 @@
 		:show="show"
 		>
 		<view class="pay-type">
-		      <view class="amount">￥38</view>
+		      <view class="amount">￥{{payInfo.actualPayment}}</view>
 			  <u-line color="#ccc"></u-line>
 			  <view class="wechat" :class="[paymentMethod==0?'active':'']" @click="paymentMethod=0">
 			  	<u-icon name="weixin-fill" size="28" color="rgb(35,217,110)"></u-icon>
@@ -32,13 +32,17 @@
 		props:{
 			show:{
 				default:false
-			}
+			},
+			payInfo:Object,
+			patient:Object,
+			
 		},
 		data(){
 			return{
 				title:'选择支付方式',
 				list:[],
-				paymentMethod:-1
+				paymentMethod:-1,
+				orderId:''
 			}
 		},
 		methods:{
@@ -47,21 +51,33 @@
 				this.paymentMethod = -1
 			},
 			async pay(){
-				if(paymentMethod==-1){
+				if(this.paymentMethod==-1){
 					uni.showToast({
 						title:"请选择支付方式",
 						icon:'none'
 					})
 				}else{
+					const obj = {...this.$store.state.Patients.consult,...this.patient,...this.payInfo}
+					delete obj['_id']
+					delete obj['__v']
+					console.log('obj',obj)
+					const result = await this.$api.createConsultOrder(obj)
+					uni.setStorageSync('orderId',result.data.id)
 					uni.showLoading({
 						title:'跳转支付中'
 					})
+					uni.redirectTo({
+						url:'/pages/Room/index'
+					})
+					// uni.hideLoading()
 					// const res = await this.$api.getConsultOrderPayUrl({
-					// 	orderId:orderId,
+					// 	orderId:this.orderId,
 					// 	paymentMethod: this.paymentMethod,
 					// 	payCallback:"http://consult-patients.itheima.net"+this.payCallback
 					// })
 					// window.location.href = res.data.payUrl
+					// 支付成功跳转到问诊页面
+					
 				}
 			}
 		}

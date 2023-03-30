@@ -23,108 +23,48 @@
 			    </u-tabs>
 		</view>
 		<view class="main" v-if="flag===0">
-			<view class="u-page">
+			<view class="u-page" v-for="item in CommunityData" :key="item.id">
 			    <view class="u-demo-block">
 			      <view class="u-demo-block__content">
 			        <view class="album">
 			          <view class="album__avatar">
 			            <image
-			              src="/static/uview/common/logo.png"
-			              mode=""
+			              :src="item.avatar"
+			              mode="heightFix"
 			              style="width: 32px;height: 32px;"
 			            ></image>
 			          </view>
 			          <view class="album__content">
 			            <u--text
-			              text="ashin"
+			              :text="item.userName"
 			              type="primary"
 			              bold
 			              size="17"
 			            ></u--text>
 			            <u--text
 			              margin="0 0 8px 0"
-			              text="全面的组件和便捷的工具会让您信手拈来，如鱼得水"
+			              :text="item.content"
 			            ></u--text>
-			            <u-album :urls="urls"></u-album>
+			            <u-album :urls="item.imgList"></u-album>
 			          </view>
 			        </view>
 			      </view>
+				  
 				  <view class="icon">
-				  	<u-icon name="chat" color="#8d8d8d" size="22"></u-icon>
-					<text> 1 </text>
-				  	<u-icon name="heart" color="#8d8d8d" size="22"></u-icon>
-					<text> 5 </text>
+					  <view class="time">
+					  	{{formatTimestamp(item.time)}}
+					  </view>
+					  <view class="operate">
+					  	<u-icon name="chat" color="#8d8d8d" size="22"></u-icon>
+					  	<text> {{item.commentNum}} </text>
+					  	<u-icon name="heart" color="#8d8d8d" size="22" v-show="!item.isLike" @click="like(item._id)"></u-icon>
+					  	<u-icon name="heart-fill" color="red" size="22" v-show="item.isLike" @click="like(item._id)"></u-icon>
+					  </view>
+				  	
 				  </view>
 			    </view>
 			  </view>
-			<view class="u-page">
-			    <view class="u-demo-block">
-			      <view class="u-demo-block__content">
-			        <view class="album">
-			          <view class="album__avatar">
-			            <image
-			              src="/static/uview/common/logo.png"
-			              mode=""
-			              style="width: 32px;height: 32px;"
-			            ></image>
-			          </view>
-			          <view class="album__content">
-			            <u--text
-			              text="tony"
-			              type="primary"
-			              bold
-			              size="17"
-			            ></u--text>
-			            <u--text
-			              margin="0 0 8px 0"
-			              text="全面的组件和便捷的工具会让您信手拈来，如鱼得水"
-			            ></u--text>
-			            <u-album :urls="urls"></u-album>
-			          </view>
-			        </view>
-			      </view>
-				  <view class="icon">
-				  	<u-icon name="chat" color="#8d8d8d" size="22"></u-icon>
-					<text> 1 </text>
-				  	<u-icon name="heart" color="#8d8d8d" size="22"></u-icon>
-					<text> 5 </text>
-				  </view>
-			    </view>
-			  </view>
-			<view class="u-page">
-			    <view class="u-demo-block">
-			      <view class="u-demo-block__content">
-			        <view class="album">
-			          <view class="album__avatar">
-			            <image
-			              src="/static/uview/common/logo.png"
-			              mode=""
-			              style="width: 32px;height: 32px;"
-			            ></image>
-			          </view>
-			          <view class="album__content">
-			            <u--text
-			              text="jack"
-			              type="primary"
-			              bold
-			              size="17"
-			            ></u--text>
-			            <u--text
-			              margin="0 0 8px 0"
-			              text="全面的组件和便捷的工具会让您信手拈来，如鱼得水"
-			            ></u--text>
-			            <u-album :urls="urls"></u-album>
-			          </view>
-			        </view>
-			      </view>
-				  <view class="icon">
-				  	<u-icon name="chat" color="#8d8d8d" size="22"></u-icon>
-					<text> 1 </text>
-				  	<u-icon name="heart" color="#8d8d8d" size="22"></u-icon>
-					<text> 5 </text>
-				  </view>
-			    </view>
-			  </view>
+			
 		</view>
 		<view class="main2" v-if="flag===1">
 			<view class="question_item">
@@ -197,6 +137,7 @@
 </template>
 
 <script>
+	import moment from 'moment'
 	export default{
 		data(){
 			return {
@@ -205,23 +146,27 @@
 					{name:'动态'},
 					{name:'问答'}
 				],
-				urls: [
-				        'https://cdn.uviewui.com/uview/album/1.jpg',
-				        'https://cdn.uviewui.com/uview/album/2.jpg',
-				        'https://cdn.uviewui.com/uview/album/3.jpg',
-				        'https://cdn.uviewui.com/uview/album/4.jpg',
-				        'https://cdn.uviewui.com/uview/album/5.jpg',
-				        'https://cdn.uviewui.com/uview/album/6.jpg',
-				        'https://cdn.uviewui.com/uview/album/7.jpg',
-				        'https://cdn.uviewui.com/uview/album/8.jpg',
-				        'https://cdn.uviewui.com/uview/album/9.jpg',
-				        'https://cdn.uviewui.com/uview/album/10.jpg',
-				            ],
 				flag:0, // 0:动态，1:问答
 				show:false,
+				CommunityData:[]
 			}
 		},
+		onLoad() {
+			this.getCommunityData()
+			const time = this.formatTimestamp('2023-03-30 17:12:20')
+		},
+		filters:{
+			
+		},
 		methods:{
+			async getCommunityData(){
+				const res = await this.$api.getCommunity()
+				this.CommunityData = res.data
+			},
+			async like(id){
+				await this.$api.communityLike(id)
+				this.getCommunityData()
+			},
 			select(item){
 				this.flag = item.index
 			},
@@ -229,7 +174,13 @@
 				uni.navigateTo({
 					url:'/compoments/community/post'
 				})
-			}
+			},
+			// 处理时间戳
+			formatTimestamp(timestamp) {
+				const date = moment(timestamp, 'YYYY-MM-DD HH:mm:ss');
+				const humanReadableDate = date.fromNow();
+				return humanReadableDate
+			  }
 		}
 	}
 </script>
@@ -244,16 +195,23 @@
 			margin-bottom: 60rpx;
 			.icon{
 				display: flex;
-				justify-content: flex-end;
+				justify-content: space-between;
 				padding: 20rpx;
-				.u-icon{
-					margin-left: 20rpx;
+				.time{
+					transform: translateX(76rpx);
 				}
-				text{
-					color: #8d8d8d;
-					font-size: 32rpx;
-					padding-left: 10rpx
+				.operate{
+					display: flex;
+					.u-icon{
+						margin-left: 20rpx;
+					}
+					text{
+						color: #8d8d8d;
+						font-size: 32rpx;
+						padding-left: 10rpx
+					}
 				}
+				
 			}
 		}
 	}

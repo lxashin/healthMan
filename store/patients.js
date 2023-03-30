@@ -12,7 +12,7 @@ const mutations = {
 		state.consult.illnessDesc = data.illnessDesc
 		state.consult.illnessTime = data.illnessTime
 		state.consult.consultFlag = data.consultFlag
-		state.consult.pictures = data.pictures
+		state.consult.imgList = data.imgList
 	},
 	// 设置问诊记录类型 1.找医生 2.快速问诊 3.开药问诊
 	setType(state,data){
