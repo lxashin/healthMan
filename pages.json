@@ -210,6 +210,16 @@
 		    
 		},
 		{
+		    "path" : "compoments/testing/result",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "抑郁症风险测评",
+		        "navigationBarBackgroundColor":"#fad556",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		},
+		{
 		    "path" : "pages/Room/index",
 		    "style" :                                                                                    
 		    {

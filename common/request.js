@@ -1,4 +1,4 @@
-const baseUrl = "http://localhost:3000"
+const baseUrl = "http://192.168.0.136:3000"
 
 export default (url,method,params,tokens)=>{
 	return new Promise((resolve,reject)=>{

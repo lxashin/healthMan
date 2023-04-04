@@ -19,7 +19,7 @@
 		</view>
 	
 	<view class="chat-wrapper">
-		<view v-for="item in messages">
+		<view v-for="(item,index) in messages" :key="index">
 			<view class="chat-message " :class="[item.id===currentUserId?'chat-message-sent':'chat-message-received']">
 				<view class="avatar_right" v-if="item.id!==currentUserId">
 					<image src="../../static/image/avatar.jpg" mode=""></image>

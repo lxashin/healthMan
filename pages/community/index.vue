@@ -57,8 +57,8 @@
 					  <view class="operate">
 					  	<u-icon name="chat" color="#8d8d8d" size="22"></u-icon>
 					  	<text> {{item.commentNum}} </text>
-					  	<u-icon name="heart" color="#8d8d8d" size="22" v-show="!item.isLike" @click="like(item._id)"></u-icon>
-					  	<u-icon name="heart-fill" color="red" size="22" v-show="item.isLike" @click="like(item._id)"></u-icon>
+					  	<u-icon name="heart" color="#8d8d8d" size="22" v-if="!item.isLike" @click="like(item._id)"></u-icon>
+					  	<u-icon name="heart-fill" color="red" size="22" v-if="item.isLike" @click="like(item._id)"></u-icon>
 					  </view>
 				  	
 				  </view>
@@ -154,9 +154,6 @@
 		onLoad() {
 			this.getCommunityData()
 			const time = this.formatTimestamp('2023-03-30 17:12:20')
-		},
-		filters:{
-			
 		},
 		methods:{
 			async getCommunityData(){

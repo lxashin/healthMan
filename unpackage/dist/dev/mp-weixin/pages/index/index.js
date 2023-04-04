@@ -102,16 +102,16 @@ var components
 try {
   components = {
     uCountDown: function () {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-count-down/u-count-down */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-count-down/u-count-down")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-count-down/u-count-down.vue */ 524))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-count-down/u-count-down */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-count-down/u-count-down")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-count-down/u-count-down.vue */ 533))
     },
     uIcon: function () {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-icon/u-icon */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-icon/u-icon")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-icon/u-icon.vue */ 533))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-icon/u-icon */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-icon/u-icon")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-icon/u-icon.vue */ 542))
     },
     uButton: function () {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-button/u-button */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-button/u-button")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-button/u-button.vue */ 542))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-button/u-button */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-button/u-button")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-button/u-button.vue */ 551))
     },
     uTabs: function () {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-tabs/u-tabs */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-tabs/u-tabs")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-tabs/u-tabs.vue */ 552))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-tabs/u-tabs */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-tabs/u-tabs")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-tabs/u-tabs.vue */ 561))
     },
   }
 } catch (e) {
@@ -180,22 +180,22 @@ var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/r
 var _about = _interopRequireDefault(__webpack_require__(/*! ../../compoments/index/about.vue */ 319));
 var Project = function Project() {
   Promise.all(/*! require.ensure | compoments/index/project */[__webpack_require__.e("common/vendor"), __webpack_require__.e("compoments/index/project")]).then((function () {
-    return resolve(__webpack_require__(/*! ../../compoments/index/project.vue */ 560));
+    return resolve(__webpack_require__(/*! ../../compoments/index/project.vue */ 569));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var Holiday = function Holiday() {
   __webpack_require__.e(/*! require.ensure | compoments/index/holiday */ "compoments/index/holiday").then((function () {
-    return resolve(__webpack_require__(/*! ../../compoments/index/holiday.vue */ 567));
+    return resolve(__webpack_require__(/*! ../../compoments/index/holiday.vue */ 576));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var Health = function Health() {
   __webpack_require__.e(/*! require.ensure | compoments/index/healthy */ "compoments/index/healthy").then((function () {
-    return resolve(__webpack_require__(/*! ../../compoments/index/healthy.vue */ 574));
+    return resolve(__webpack_require__(/*! ../../compoments/index/healthy.vue */ 583));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var Article = function Article() {
   __webpack_require__.e(/*! require.ensure | compoments/article/article */ "compoments/article/article").then((function () {
-    return resolve(__webpack_require__(/*! ../../compoments/article/article.vue */ 581));
+    return resolve(__webpack_require__(/*! ../../compoments/article/article.vue */ 590));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var _default = {
@@ -468,7 +468,7 @@ var components
 try {
   components = {
     uLine: function () {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-line/u-line */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-line/u-line")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-line/u-line.vue */ 588))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-line/u-line */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-line/u-line")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-line/u-line.vue */ 597))
     },
   }
 } catch (e) {

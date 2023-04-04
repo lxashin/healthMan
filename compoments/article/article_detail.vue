@@ -51,7 +51,7 @@
 	<!-- 写评论弹窗 -->
 	<u-modal :show="show" :title-style="{color: 'red'}" @confirm="confirm" @cancel="cancel" confirmText="提交" confirmColor="rgb(45,195,182)" showCancelButton cancelText="关闭">
 			<view class="content">
-				<editor class="richInputContent" id="editor" v-model="content" placeholder="请输入您的评论"></editor>
+				<u--textarea class="richInputContent" confirmType="done" placeholder="请输入您的评论" v-model="content"></u--textarea>
 			</view>
 	</u-modal>
 	<!-- 回复评论 -->
@@ -71,7 +71,7 @@
 				show:false, // 写评论弹出框
 				setFocus:false, // 回复评论键盘弹起
 				setPopup:false, // 回复评论弹出
-				content:"",
+				content:'',
 				reply:"",
 				articleData:{},
 				commentData:[],
@@ -129,7 +129,7 @@
 					articleId:Number(this.id),
 					userName:this.$store.state.User.userName,
 					avatar:this.$store.state.User.avatar,
-					content:this.content.detail.text,
+					content:this.content,
 				}
 				await this.$api.addComment(comment)
 				this.getArticleData()

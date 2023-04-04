@@ -80,7 +80,7 @@ var components
 try {
   components = {
     uLine: function () {
-      return Promise.all(/*! import() | node-modules/uview-ui/components/u-line/u-line */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-line/u-line")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-line/u-line.vue */ 588))
+      return Promise.all(/*! import() | node-modules/uview-ui/components/u-line/u-line */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/uview-ui/components/u-line/u-line")]).then(__webpack_require__.bind(null, /*! uview-ui/components/u-line/u-line.vue */ 597))
     },
   }
 } catch (e) {
@@ -184,7 +184,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ 459:
+/***/ 468:
 /*!**********************************************************************!*\
   !*** D:/banzhuandaren/main.js?{"page":"compoments%2Findex%2Fabout"} ***!
   \**********************************************************************/
@@ -206,5 +206,5 @@ createPage(_about.default);
 
 /***/ })
 
-},[[459,"common/runtime","common/vendor"]]]);
+},[[468,"common/runtime","common/vendor"]]]);
 //# sourceMappingURL=../../../.sourcemap/mp-weixin/compoments/index/about.js.map

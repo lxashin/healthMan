@@ -17040,6 +17040,13 @@ var _default = {
       "enablePullDownRefresh": false
     }
   }, {
+    "path": "compoments/testing/result",
+    "style": {
+      "navigationBarTitleText": "抑郁症风险测评",
+      "navigationBarBackgroundColor": "#fad556",
+      "enablePullDownRefresh": false
+    }
+  }, {
     "path": "pages/Room/index",
     "style": {
       "navigationBarTitleText": "医生问诊室",
@@ -19124,7 +19131,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var baseUrl = "http://localhost:3000";
+var baseUrl = "http://192.168.0.136:3000";
 var _default = function _default(url, method, params, tokens) {
   return new Promise(function (resolve, reject) {
     uni.showLoading({
@@ -48517,7 +48524,16 @@ module.exports = "/static/image/consult-fast.png";
 /* 412 */,
 /* 413 */,
 /* 414 */,
-/* 415 */,
+/* 415 */
+/*!*******************************************************!*\
+  !*** D:/banzhuandaren/static/image/avatar-doctor.svg ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "static/img/avatar-doctor.1f6b3622.svg";
+
+/***/ }),
 /* 416 */,
 /* 417 */,
 /* 418 */,
@@ -48631,7 +48647,16 @@ module.exports = "/static/image/consult-fast.png";
 /* 526 */,
 /* 527 */,
 /* 528 */,
-/* 529 */
+/* 529 */,
+/* 530 */,
+/* 531 */,
+/* 532 */,
+/* 533 */,
+/* 534 */,
+/* 535 */,
+/* 536 */,
+/* 537 */,
+/* 538 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-count-down/props.js ***!
   \*******************************************************************************/
@@ -48673,7 +48698,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 530 */
+/* 539 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-count-down/utils.js ***!
   \*******************************************************************************/
@@ -48752,14 +48777,14 @@ function isSameSecond(time1, time2) {
 }
 
 /***/ }),
-/* 531 */,
-/* 532 */,
-/* 533 */,
-/* 534 */,
-/* 535 */,
-/* 536 */,
-/* 537 */,
-/* 538 */
+/* 540 */,
+/* 541 */,
+/* 542 */,
+/* 543 */,
+/* 544 */,
+/* 545 */,
+/* 546 */,
+/* 547 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-icon/icons.js ***!
   \*************************************************************************/
@@ -48990,7 +49015,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 539 */
+/* 548 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-icon/props.js ***!
   \*************************************************************************/
@@ -49097,14 +49122,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 540 */,
-/* 541 */,
-/* 542 */,
-/* 543 */,
-/* 544 */,
-/* 545 */,
-/* 546 */,
-/* 547 */
+/* 549 */,
+/* 550 */,
+/* 551 */,
+/* 552 */,
+/* 553 */,
+/* 554 */,
+/* 555 */,
+/* 556 */
 /*!*******************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/mixin/button.js ***!
   \*******************************************************************/
@@ -49134,7 +49159,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 548 */
+/* 557 */
 /*!*********************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/mixin/openType.js ***!
   \*********************************************************************/
@@ -49176,7 +49201,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 549 */
+/* 558 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-button/props.js ***!
   \***************************************************************************/
@@ -49355,14 +49380,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 550 */,
-/* 551 */,
-/* 552 */,
-/* 553 */,
-/* 554 */,
-/* 555 */,
-/* 556 */,
-/* 557 */
+/* 559 */,
+/* 560 */,
+/* 561 */,
+/* 562 */,
+/* 563 */,
+/* 564 */,
+/* 565 */,
+/* 566 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-tabs/props.js ***!
   \*************************************************************************/
@@ -49444,15 +49469,6 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 558 */,
-/* 559 */,
-/* 560 */,
-/* 561 */,
-/* 562 */,
-/* 563 */,
-/* 564 */,
-/* 565 */,
-/* 566 */,
 /* 567 */,
 /* 568 */,
 /* 569 */,
@@ -49479,7 +49495,16 @@ exports.default = _default;
 /* 590 */,
 /* 591 */,
 /* 592 */,
-/* 593 */
+/* 593 */,
+/* 594 */,
+/* 595 */,
+/* 596 */,
+/* 597 */,
+/* 598 */,
+/* 599 */,
+/* 600 */,
+/* 601 */,
+/* 602 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-line/props.js ***!
   \*************************************************************************/
@@ -49530,14 +49555,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 594 */,
-/* 595 */,
-/* 596 */,
-/* 597 */,
-/* 598 */,
-/* 599 */,
-/* 600 */,
-/* 601 */
+/* 603 */,
+/* 604 */,
+/* 605 */,
+/* 606 */,
+/* 607 */,
+/* 608 */,
+/* 609 */,
+/* 610 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-form/props.js ***!
   \*************************************************************************/
@@ -49600,7 +49625,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 602 */
+/* 611 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/util/async-validator.js ***!
   \***************************************************************************/
@@ -50781,10 +50806,10 @@ Schema.warning = warning;
 Schema.messages = messages;
 var _default = Schema; // # sourceMappingURL=index.js.map
 exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/node-libs-browser/mock/process.js */ 603)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/node-libs-browser/mock/process.js */ 612)))
 
 /***/ }),
-/* 603 */
+/* 612 */
 /*!********************************************************!*\
   !*** ./node_modules/node-libs-browser/mock/process.js ***!
   \********************************************************/
@@ -50815,7 +50840,7 @@ exports.binding = function (name) {
     var path;
     exports.cwd = function () { return cwd };
     exports.chdir = function (dir) {
-        if (!path) path = __webpack_require__(/*! path */ 604);
+        if (!path) path = __webpack_require__(/*! path */ 613);
         cwd = path.resolve(dir, cwd);
     };
 })();
@@ -50828,7 +50853,7 @@ exports.features = {};
 
 
 /***/ }),
-/* 604 */
+/* 613 */
 /*!***********************************************!*\
   !*** ./node_modules/path-browserify/index.js ***!
   \***********************************************/
@@ -51138,15 +51163,15 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 603)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 612)))
 
 /***/ }),
-/* 605 */,
-/* 606 */,
-/* 607 */,
-/* 608 */,
-/* 609 */,
-/* 610 */
+/* 614 */,
+/* 615 */,
+/* 616 */,
+/* 617 */,
+/* 618 */,
+/* 619 */
 /*!******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-form-item/props.js ***!
   \******************************************************************************/
@@ -51207,14 +51232,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 611 */,
-/* 612 */,
-/* 613 */,
-/* 614 */,
-/* 615 */,
-/* 616 */,
-/* 617 */,
-/* 618 */
+/* 620 */,
+/* 621 */,
+/* 622 */,
+/* 623 */,
+/* 624 */,
+/* 625 */,
+/* 626 */,
+/* 627 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-input/props.js ***!
   \**************************************************************************/
@@ -51414,12 +51439,12 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 619 */,
-/* 620 */,
-/* 621 */,
-/* 622 */,
-/* 623 */,
-/* 624 */
+/* 628 */,
+/* 629 */,
+/* 630 */,
+/* 631 */,
+/* 632 */,
+/* 633 */
 /*!***********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-checkbox-group/props.js ***!
   \***********************************************************************************/
@@ -51516,14 +51541,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 625 */,
-/* 626 */,
-/* 627 */,
-/* 628 */,
-/* 629 */,
-/* 630 */,
-/* 631 */,
-/* 632 */
+/* 634 */,
+/* 635 */,
+/* 636 */,
+/* 637 */,
+/* 638 */,
+/* 639 */,
+/* 640 */,
+/* 641 */
 /*!*****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-checkbox/props.js ***!
   \*****************************************************************************/
@@ -51610,19 +51635,19 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 633 */,
-/* 634 */,
-/* 635 */,
-/* 636 */,
-/* 637 */,
-/* 638 */,
-/* 639 */,
-/* 640 */,
-/* 641 */,
 /* 642 */,
 /* 643 */,
 /* 644 */,
-/* 645 */
+/* 645 */,
+/* 646 */,
+/* 647 */,
+/* 648 */,
+/* 649 */,
+/* 650 */,
+/* 651 */,
+/* 652 */,
+/* 653 */,
+/* 654 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-switch/props.js ***!
   \***************************************************************************/
@@ -51694,14 +51719,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 646 */,
-/* 647 */,
-/* 648 */,
-/* 649 */,
-/* 650 */,
-/* 651 */,
-/* 652 */,
-/* 653 */
+/* 655 */,
+/* 656 */,
+/* 657 */,
+/* 658 */,
+/* 659 */,
+/* 660 */,
+/* 661 */,
+/* 662 */
 /*!*********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-action-sheet/props.js ***!
   \*********************************************************************************/
@@ -51773,14 +51798,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 654 */,
-/* 655 */,
-/* 656 */,
-/* 657 */,
-/* 658 */,
-/* 659 */,
-/* 660 */,
-/* 661 */
+/* 663 */,
+/* 664 */,
+/* 665 */,
+/* 666 */,
+/* 667 */,
+/* 668 */,
+/* 669 */,
+/* 670 */
 /*!******************************************************************!*\
   !*** D:/banzhuandaren/compoments/wangding-pickerAddress/data.js ***!
   \******************************************************************/
@@ -62060,12 +62085,12 @@ var _default = [{
 exports.default = _default;
 
 /***/ }),
-/* 662 */,
-/* 663 */,
-/* 664 */,
-/* 665 */,
-/* 666 */,
-/* 667 */
+/* 671 */,
+/* 672 */,
+/* 673 */,
+/* 674 */,
+/* 675 */,
+/* 676 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-search/props.js ***!
   \***************************************************************************/
@@ -62201,14 +62226,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 668 */,
-/* 669 */,
-/* 670 */,
-/* 671 */,
-/* 672 */,
-/* 673 */,
-/* 674 */,
-/* 675 */
+/* 677 */,
+/* 678 */,
+/* 679 */,
+/* 680 */,
+/* 681 */,
+/* 682 */,
+/* 683 */,
+/* 684 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-modal/props.js ***!
   \**************************************************************************/
@@ -62310,14 +62335,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 676 */,
-/* 677 */,
-/* 678 */,
-/* 679 */,
-/* 680 */,
-/* 681 */,
-/* 682 */,
-/* 683 */
+/* 685 */,
+/* 686 */,
+/* 687 */,
+/* 688 */,
+/* 689 */,
+/* 690 */,
+/* 691 */,
+/* 692 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-avatar/props.js ***!
   \***************************************************************************/
@@ -62413,14 +62438,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 684 */,
-/* 685 */,
-/* 686 */,
-/* 687 */,
-/* 688 */,
-/* 689 */,
-/* 690 */,
-/* 691 */
+/* 693 */,
+/* 694 */,
+/* 695 */,
+/* 696 */,
+/* 697 */,
+/* 698 */,
+/* 699 */,
+/* 700 */
 /*!************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-gap/props.js ***!
   \************************************************************************/
@@ -62462,14 +62487,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 692 */,
-/* 693 */,
-/* 694 */,
-/* 695 */,
-/* 696 */,
-/* 697 */,
-/* 698 */,
-/* 699 */
+/* 701 */,
+/* 702 */,
+/* 703 */,
+/* 704 */,
+/* 705 */,
+/* 706 */,
+/* 707 */,
+/* 708 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-cell-group/props.js ***!
   \*******************************************************************************/
@@ -62501,14 +62526,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 700 */,
-/* 701 */,
-/* 702 */,
-/* 703 */,
-/* 704 */,
-/* 705 */,
-/* 706 */,
-/* 707 */
+/* 709 */,
+/* 710 */,
+/* 711 */,
+/* 712 */,
+/* 713 */,
+/* 714 */,
+/* 715 */,
+/* 716 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-cell/props.js ***!
   \*************************************************************************/
@@ -62636,14 +62661,14 @@ exports.default = _default2;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 708 */,
-/* 709 */,
-/* 710 */,
-/* 711 */,
-/* 712 */,
-/* 713 */,
-/* 714 */,
-/* 715 */
+/* 717 */,
+/* 718 */,
+/* 719 */,
+/* 720 */,
+/* 721 */,
+/* 722 */,
+/* 723 */,
+/* 724 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-text/props.js ***!
   \*************************************************************************/
@@ -62771,12 +62796,12 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 716 */,
-/* 717 */,
-/* 718 */,
-/* 719 */,
-/* 720 */,
-/* 721 */
+/* 725 */,
+/* 726 */,
+/* 727 */,
+/* 728 */,
+/* 729 */,
+/* 730 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-album/props.js ***!
   \**************************************************************************/
@@ -62853,14 +62878,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 722 */,
-/* 723 */,
-/* 724 */,
-/* 725 */,
-/* 726 */,
-/* 727 */,
-/* 728 */,
-/* 729 */
+/* 731 */,
+/* 732 */,
+/* 733 */,
+/* 734 */,
+/* 735 */,
+/* 736 */,
+/* 737 */,
+/* 738 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-popup/props.js ***!
   \**************************************************************************/
@@ -62957,14 +62982,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 730 */,
-/* 731 */,
-/* 732 */,
-/* 733 */,
-/* 734 */,
-/* 735 */,
-/* 736 */,
-/* 737 */
+/* 739 */,
+/* 740 */,
+/* 741 */,
+/* 742 */,
+/* 743 */,
+/* 744 */,
+/* 745 */,
+/* 746 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-notice-bar/props.js ***!
   \*******************************************************************************/
@@ -63052,14 +63077,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 738 */,
-/* 739 */,
-/* 740 */,
-/* 741 */,
-/* 742 */,
-/* 743 */,
-/* 744 */,
-/* 745 */
+/* 747 */,
+/* 748 */,
+/* 749 */,
+/* 750 */,
+/* 751 */,
+/* 752 */,
+/* 753 */,
+/* 754 */
 /*!****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-overlay/props.js ***!
   \****************************************************************************/
@@ -63101,21 +63126,21 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 746 */,
-/* 747 */,
-/* 748 */,
-/* 749 */,
-/* 750 */,
-/* 751 */,
-/* 752 */,
-/* 753 */,
-/* 754 */,
 /* 755 */,
 /* 756 */,
 /* 757 */,
 /* 758 */,
 /* 759 */,
-/* 760 */
+/* 760 */,
+/* 761 */,
+/* 762 */,
+/* 763 */,
+/* 764 */,
+/* 765 */,
+/* 766 */,
+/* 767 */,
+/* 768 */,
+/* 769 */
 /*!*****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-textarea/props.js ***!
   \*****************************************************************************/
@@ -63247,12 +63272,12 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 761 */,
-/* 762 */,
-/* 763 */,
-/* 764 */,
-/* 765 */,
-/* 766 */
+/* 770 */,
+/* 771 */,
+/* 772 */,
+/* 773 */,
+/* 774 */,
+/* 775 */
 /*!********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-radio-group/props.js ***!
   \********************************************************************************/
@@ -63354,14 +63379,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 767 */,
-/* 768 */,
-/* 769 */,
-/* 770 */,
-/* 771 */,
-/* 772 */,
-/* 773 */,
-/* 774 */
+/* 776 */,
+/* 777 */,
+/* 778 */,
+/* 779 */,
+/* 780 */,
+/* 781 */,
+/* 782 */,
+/* 783 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-radio/props.js ***!
   \**************************************************************************/
@@ -63443,14 +63468,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 775 */,
-/* 776 */,
-/* 777 */,
-/* 778 */,
-/* 779 */,
-/* 780 */,
-/* 781 */,
-/* 782 */
+/* 784 */,
+/* 785 */,
+/* 786 */,
+/* 787 */,
+/* 788 */,
+/* 789 */,
+/* 790 */,
+/* 791 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-upload/utils.js ***!
   \***************************************************************************/
@@ -63594,7 +63619,7 @@ function chooseFile(_ref) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/wx.js */ 1)["default"]))
 
 /***/ }),
-/* 783 */
+/* 792 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-upload/mixin.js ***!
   \***************************************************************************/
@@ -63621,7 +63646,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 784 */
+/* 793 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-upload/props.js ***!
   \***************************************************************************/
@@ -63763,21 +63788,105 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 785 */,
-/* 786 */,
-/* 787 */,
-/* 788 */,
-/* 789 */,
-/* 790 */,
-/* 791 */,
-/* 792 */,
-/* 793 */,
 /* 794 */,
 /* 795 */,
 /* 796 */,
 /* 797 */,
 /* 798 */,
-/* 799 */
+/* 799 */,
+/* 800 */,
+/* 801 */
+/*!**************************************************************************!*\
+  !*** D:/banzhuandaren/node_modules/uview-ui/components/u-empty/props.js ***!
+  \**************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  props: {
+    // 内置图标名称，或图片路径，建议绝对路径
+    icon: {
+      type: String,
+      default: uni.$u.props.empty.icon
+    },
+    // 提示文字
+    text: {
+      type: String,
+      default: uni.$u.props.empty.text
+    },
+    // 文字颜色
+    textColor: {
+      type: String,
+      default: uni.$u.props.empty.textColor
+    },
+    // 文字大小
+    textSize: {
+      type: [String, Number],
+      default: uni.$u.props.empty.textSize
+    },
+    // 图标的颜色
+    iconColor: {
+      type: String,
+      default: uni.$u.props.empty.iconColor
+    },
+    // 图标的大小
+    iconSize: {
+      type: [String, Number],
+      default: uni.$u.props.empty.iconSize
+    },
+    // 选择预置的图标类型
+    mode: {
+      type: String,
+      default: uni.$u.props.empty.mode
+    },
+    //  图标宽度，单位px
+    width: {
+      type: [String, Number],
+      default: uni.$u.props.empty.width
+    },
+    // 图标高度，单位px
+    height: {
+      type: [String, Number],
+      default: uni.$u.props.empty.height
+    },
+    // 是否显示组件
+    show: {
+      type: Boolean,
+      default: uni.$u.props.empty.show
+    },
+    // 组件距离上一个元素之间的距离，默认px单位
+    marginTop: {
+      type: [String, Number],
+      default: uni.$u.props.empty.marginTop
+    }
+  }
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+/* 802 */,
+/* 803 */,
+/* 804 */,
+/* 805 */,
+/* 806 */,
+/* 807 */,
+/* 808 */,
+/* 809 */,
+/* 810 */,
+/* 811 */,
+/* 812 */,
+/* 813 */,
+/* 814 */,
+/* 815 */,
+/* 816 */
 /*!************************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-datetime-picker/props.js ***!
   \************************************************************************************/
@@ -63911,7 +64020,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 800 */
+/* 817 */
 /*!*****************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/libs/util/dayjs.js ***!
   \*****************************************************************/
@@ -64223,14 +64332,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = 
 });
 
 /***/ }),
-/* 801 */,
-/* 802 */,
-/* 803 */,
-/* 804 */,
-/* 805 */,
-/* 806 */,
-/* 807 */,
-/* 808 */
+/* 818 */,
+/* 819 */,
+/* 820 */,
+/* 821 */,
+/* 822 */,
+/* 823 */,
+/* 824 */,
+/* 825 */
 /*!**************************************************************************************!*\
   !*** D:/banzhuandaren/compoments/uni-calendar_1.4.5/components/uni-calendar/util.js ***!
   \**************************************************************************************/
@@ -64248,7 +64357,7 @@ exports.default = void 0;
 var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 13));
 var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ 23));
 var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/createClass */ 24));
-var _calendar = _interopRequireDefault(__webpack_require__(/*! ./calendar.js */ 809));
+var _calendar = _interopRequireDefault(__webpack_require__(/*! ./calendar.js */ 826));
 var Calendar = /*#__PURE__*/function () {
   function Calendar() {
     var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
@@ -64640,7 +64749,7 @@ var _default = Calendar;
 exports.default = _default;
 
 /***/ }),
-/* 809 */
+/* 826 */
 /*!******************************************************************************************!*\
   !*** D:/banzhuandaren/compoments/uni-calendar_1.4.5/components/uni-calendar/calendar.js ***!
   \******************************************************************************************/
@@ -65157,7 +65266,7 @@ var _default = calendar;
 exports.default = _default;
 
 /***/ }),
-/* 810 */
+/* 827 */
 /*!********************************************************************************************!*\
   !*** D:/banzhuandaren/compoments/uni-calendar_1.4.5/components/uni-calendar/i18n/index.js ***!
   \********************************************************************************************/
@@ -65172,9 +65281,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 811));
-var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 812));
-var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 813));
+var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 828));
+var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 829));
+var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 830));
 var _default = {
   en: _en.default,
   'zh-Hans': _zhHans.default,
@@ -65183,7 +65292,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 811 */
+/* 828 */
 /*!*******************************************************************************************!*\
   !*** D:/banzhuandaren/compoments/uni-calendar_1.4.5/components/uni-calendar/i18n/en.json ***!
   \*******************************************************************************************/
@@ -65193,7 +65302,7 @@ exports.default = _default;
 module.exports = JSON.parse("{\"uni-calender.ok\":\"ok\",\"uni-calender.cancel\":\"cancel\",\"uni-calender.today\":\"today\",\"uni-calender.MON\":\"MON\",\"uni-calender.TUE\":\"TUE\",\"uni-calender.WED\":\"WED\",\"uni-calender.THU\":\"THU\",\"uni-calender.FRI\":\"FRI\",\"uni-calender.SAT\":\"SAT\",\"uni-calender.SUN\":\"SUN\"}");
 
 /***/ }),
-/* 812 */
+/* 829 */
 /*!************************************************************************************************!*\
   !*** D:/banzhuandaren/compoments/uni-calendar_1.4.5/components/uni-calendar/i18n/zh-Hans.json ***!
   \************************************************************************************************/
@@ -65203,7 +65312,7 @@ module.exports = JSON.parse("{\"uni-calender.ok\":\"ok\",\"uni-calender.cancel\"
 module.exports = JSON.parse("{\"uni-calender.ok\":\"确定\",\"uni-calender.cancel\":\"取消\",\"uni-calender.today\":\"今日\",\"uni-calender.SUN\":\"日\",\"uni-calender.MON\":\"一\",\"uni-calender.TUE\":\"二\",\"uni-calender.WED\":\"三\",\"uni-calender.THU\":\"四\",\"uni-calender.FRI\":\"五\",\"uni-calender.SAT\":\"六\"}");
 
 /***/ }),
-/* 813 */
+/* 830 */
 /*!************************************************************************************************!*\
   !*** D:/banzhuandaren/compoments/uni-calendar_1.4.5/components/uni-calendar/i18n/zh-Hant.json ***!
   \************************************************************************************************/
@@ -65213,14 +65322,14 @@ module.exports = JSON.parse("{\"uni-calender.ok\":\"确定\",\"uni-calender.canc
 module.exports = JSON.parse("{\"uni-calender.ok\":\"確定\",\"uni-calender.cancel\":\"取消\",\"uni-calender.today\":\"今日\",\"uni-calender.SUN\":\"日\",\"uni-calender.MON\":\"一\",\"uni-calender.TUE\":\"二\",\"uni-calender.WED\":\"三\",\"uni-calender.THU\":\"四\",\"uni-calender.FRI\":\"五\",\"uni-calender.SAT\":\"六\"}");
 
 /***/ }),
-/* 814 */,
-/* 815 */,
-/* 816 */,
-/* 817 */,
-/* 818 */,
-/* 819 */,
-/* 820 */,
-/* 821 */
+/* 831 */,
+/* 832 */,
+/* 833 */,
+/* 834 */,
+/* 835 */,
+/* 836 */,
+/* 837 */,
+/* 838 */
 /*!*********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-loading-icon/props.js ***!
   \*********************************************************************************/
@@ -65297,14 +65406,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 822 */,
-/* 823 */,
-/* 824 */,
-/* 825 */,
-/* 826 */,
-/* 827 */,
-/* 828 */,
-/* 829 */
+/* 839 */,
+/* 840 */,
+/* 841 */,
+/* 842 */,
+/* 843 */,
+/* 844 */,
+/* 845 */,
+/* 846 */
 /*!**************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-badge/props.js ***!
   \**************************************************************************/
@@ -65394,23 +65503,6 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 830 */,
-/* 831 */,
-/* 832 */,
-/* 833 */,
-/* 834 */,
-/* 835 */,
-/* 836 */,
-/* 837 */,
-/* 838 */,
-/* 839 */,
-/* 840 */,
-/* 841 */,
-/* 842 */,
-/* 843 */,
-/* 844 */,
-/* 845 */,
-/* 846 */,
 /* 847 */,
 /* 848 */,
 /* 849 */,
@@ -65443,7 +65535,24 @@ exports.default = _default;
 /* 876 */,
 /* 877 */,
 /* 878 */,
-/* 879 */
+/* 879 */,
+/* 880 */,
+/* 881 */,
+/* 882 */,
+/* 883 */,
+/* 884 */,
+/* 885 */,
+/* 886 */,
+/* 887 */,
+/* 888 */,
+/* 889 */,
+/* 890 */,
+/* 891 */,
+/* 892 */,
+/* 893 */,
+/* 894 */,
+/* 895 */,
+/* 896 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-text/value.js ***!
   \*************************************************************************/
@@ -65551,14 +65660,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 880 */,
-/* 881 */,
-/* 882 */,
-/* 883 */,
-/* 884 */,
-/* 885 */,
-/* 886 */,
-/* 887 */
+/* 897 */,
+/* 898 */,
+/* 899 */,
+/* 900 */,
+/* 901 */,
+/* 902 */,
+/* 903 */,
+/* 904 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-transition/props.js ***!
   \*******************************************************************************/
@@ -65600,7 +65709,7 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 888 */
+/* 905 */
 /*!************************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-transition/transition.js ***!
   \************************************************************************************/
@@ -65617,7 +65726,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 28));
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 30));
-var _nvueAniMap = _interopRequireDefault(__webpack_require__(/*! ./nvue.ani-map.js */ 889));
+var _nvueAniMap = _interopRequireDefault(__webpack_require__(/*! ./nvue.ani-map.js */ 906));
 // 定义一个一定时间后自动成功的promise，让调用nextTick方法处，进入下一个then方法
 var nextTick = function nextTick() {
   return new Promise(function (resolve) {
@@ -65709,7 +65818,7 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 889 */
+/* 906 */
 /*!**************************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-transition/nvue.ani-map.js ***!
   \**************************************************************************************/
@@ -65902,14 +66011,14 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 890 */,
-/* 891 */,
-/* 892 */,
-/* 893 */,
-/* 894 */,
-/* 895 */,
-/* 896 */,
-/* 897 */
+/* 907 */,
+/* 908 */,
+/* 909 */,
+/* 910 */,
+/* 911 */,
+/* 912 */,
+/* 913 */,
+/* 914 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-status-bar/props.js ***!
   \*******************************************************************************/
@@ -65935,14 +66044,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 898 */,
-/* 899 */,
-/* 900 */,
-/* 901 */,
-/* 902 */,
-/* 903 */,
-/* 904 */,
-/* 905 */
+/* 915 */,
+/* 916 */,
+/* 917 */,
+/* 918 */,
+/* 919 */,
+/* 920 */,
+/* 921 */,
+/* 922 */
 /*!********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-safe-bottom/props.js ***!
   \********************************************************************************/
@@ -65962,14 +66071,14 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 906 */,
-/* 907 */,
-/* 908 */,
-/* 909 */,
-/* 910 */,
-/* 911 */,
-/* 912 */,
-/* 913 */
+/* 923 */,
+/* 924 */,
+/* 925 */,
+/* 926 */,
+/* 927 */,
+/* 928 */,
+/* 929 */,
+/* 930 */
 /*!**********************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-column-notice/props.js ***!
   \**********************************************************************************/
@@ -66042,14 +66151,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 914 */,
-/* 915 */,
-/* 916 */,
-/* 917 */,
-/* 918 */,
-/* 919 */,
-/* 920 */,
-/* 921 */
+/* 931 */,
+/* 932 */,
+/* 933 */,
+/* 934 */,
+/* 935 */,
+/* 936 */,
+/* 937 */,
+/* 938 */
 /*!*******************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-row-notice/props.js ***!
   \*******************************************************************************/
@@ -66106,21 +66215,21 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 922 */,
-/* 923 */,
-/* 924 */,
-/* 925 */,
-/* 926 */,
-/* 927 */,
-/* 928 */,
-/* 929 */,
-/* 930 */,
-/* 931 */,
-/* 932 */,
-/* 933 */,
-/* 934 */,
-/* 935 */,
-/* 936 */
+/* 939 */,
+/* 940 */,
+/* 941 */,
+/* 942 */,
+/* 943 */,
+/* 944 */,
+/* 945 */,
+/* 946 */,
+/* 947 */,
+/* 948 */,
+/* 949 */,
+/* 950 */,
+/* 951 */,
+/* 952 */,
+/* 953 */
 /*!***************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-picker/props.js ***!
   \***************************************************************************/
@@ -66222,28 +66331,28 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 937 */,
-/* 938 */,
-/* 939 */,
-/* 940 */,
-/* 941 */,
-/* 942 */,
-/* 943 */,
-/* 944 */,
-/* 945 */,
-/* 946 */,
-/* 947 */,
-/* 948 */,
-/* 949 */,
-/* 950 */,
-/* 951 */,
-/* 952 */,
-/* 953 */,
 /* 954 */,
 /* 955 */,
 /* 956 */,
 /* 957 */,
-/* 958 */
+/* 958 */,
+/* 959 */,
+/* 960 */,
+/* 961 */,
+/* 962 */,
+/* 963 */,
+/* 964 */,
+/* 965 */,
+/* 966 */,
+/* 967 */,
+/* 968 */,
+/* 969 */,
+/* 970 */,
+/* 971 */,
+/* 972 */,
+/* 973 */,
+/* 974 */,
+/* 975 */
 /*!*************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-link/props.js ***!
   \*************************************************************************/
@@ -66300,14 +66409,14 @@ exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
-/* 959 */,
-/* 960 */,
-/* 961 */,
-/* 962 */,
-/* 963 */,
-/* 964 */,
-/* 965 */,
-/* 966 */
+/* 976 */,
+/* 977 */,
+/* 978 */,
+/* 979 */,
+/* 980 */,
+/* 981 */,
+/* 982 */,
+/* 983 */
 /*!****************************************************************************!*\
   !*** D:/banzhuandaren/node_modules/uview-ui/components/u-toolbar/props.js ***!
   \****************************************************************************/
@@ -66352,187 +66461,6 @@ var _default = {
     title: {
       type: String,
       default: uni.$u.props.toolbar.title
-    }
-  }
-};
-exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
-
-/***/ }),
-/* 967 */,
-/* 968 */,
-/* 969 */,
-/* 970 */,
-/* 971 */,
-/* 972 */,
-/* 973 */,
-/* 974 */,
-/* 975 */,
-/* 976 */,
-/* 977 */,
-/* 978 */,
-/* 979 */,
-/* 980 */,
-/* 981 */,
-/* 982 */,
-/* 983 */,
-/* 984 */,
-/* 985 */,
-/* 986 */,
-/* 987 */,
-/* 988 */,
-/* 989 */,
-/* 990 */,
-/* 991 */,
-/* 992 */,
-/* 993 */,
-/* 994 */,
-/* 995 */,
-/* 996 */,
-/* 997 */,
-/* 998 */,
-/* 999 */,
-/* 1000 */,
-/* 1001 */,
-/* 1002 */,
-/* 1003 */,
-/* 1004 */,
-/* 1005 */,
-/* 1006 */,
-/* 1007 */,
-/* 1008 */,
-/* 1009 */,
-/* 1010 */,
-/* 1011 */,
-/* 1012 */,
-/* 1013 */,
-/* 1014 */,
-/* 1015 */,
-/* 1016 */,
-/* 1017 */,
-/* 1018 */,
-/* 1019 */,
-/* 1020 */,
-/* 1021 */,
-/* 1022 */,
-/* 1023 */,
-/* 1024 */,
-/* 1025 */,
-/* 1026 */,
-/* 1027 */,
-/* 1028 */,
-/* 1029 */,
-/* 1030 */,
-/* 1031 */,
-/* 1032 */,
-/* 1033 */,
-/* 1034 */,
-/* 1035 */,
-/* 1036 */,
-/* 1037 */,
-/* 1038 */,
-/* 1039 */,
-/* 1040 */,
-/* 1041 */,
-/* 1042 */,
-/* 1043 */,
-/* 1044 */,
-/* 1045 */,
-/* 1046 */,
-/* 1047 */,
-/* 1048 */,
-/* 1049 */,
-/* 1050 */,
-/* 1051 */
-/*!*******************************************************!*\
-  !*** D:/banzhuandaren/static/image/avatar-doctor.svg ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "static/img/avatar-doctor.1f6b3622.svg";
-
-/***/ }),
-/* 1052 */,
-/* 1053 */,
-/* 1054 */,
-/* 1055 */,
-/* 1056 */,
-/* 1057 */,
-/* 1058 */,
-/* 1059 */,
-/* 1060 */,
-/* 1061 */,
-/* 1062 */
-/*!**************************************************************************!*\
-  !*** D:/banzhuandaren/node_modules/uview-ui/components/u-empty/props.js ***!
-  \**************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _default = {
-  props: {
-    // 内置图标名称，或图片路径，建议绝对路径
-    icon: {
-      type: String,
-      default: uni.$u.props.empty.icon
-    },
-    // 提示文字
-    text: {
-      type: String,
-      default: uni.$u.props.empty.text
-    },
-    // 文字颜色
-    textColor: {
-      type: String,
-      default: uni.$u.props.empty.textColor
-    },
-    // 文字大小
-    textSize: {
-      type: [String, Number],
-      default: uni.$u.props.empty.textSize
-    },
-    // 图标的颜色
-    iconColor: {
-      type: String,
-      default: uni.$u.props.empty.iconColor
-    },
-    // 图标的大小
-    iconSize: {
-      type: [String, Number],
-      default: uni.$u.props.empty.iconSize
-    },
-    // 选择预置的图标类型
-    mode: {
-      type: String,
-      default: uni.$u.props.empty.mode
-    },
-    //  图标宽度，单位px
-    width: {
-      type: [String, Number],
-      default: uni.$u.props.empty.width
-    },
-    // 图标高度，单位px
-    height: {
-      type: [String, Number],
-      default: uni.$u.props.empty.height
-    },
-    // 是否显示组件
-    show: {
-      type: Boolean,
-      default: uni.$u.props.empty.show
-    },
-    // 组件距离上一个元素之间的距离，默认px单位
-    marginTop: {
-      type: [String, Number],
-      default: uni.$u.props.empty.marginTop
     }
   }
 };

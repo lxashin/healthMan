@@ -357,8 +357,10 @@
 						}
 					}
 					console.log(this.scores)
-					const res = await this.$api.getQuesstionResult({scores:this.scores})
-					console.log(res)
+					uni.redirectTo({
+						url:`/compoments/testing/result?scores=${this.scores}`
+					})
+					
 				}else{
 					this.showSubmit = false
 				}

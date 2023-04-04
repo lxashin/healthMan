@@ -543,7 +543,7 @@ var _default = {
     MoveSubject: function MoveSubject(e) {
       var _this2 = this;
       return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
-        var _iterator, _step, item, i, res;
+        var _iterator, _step, item, i;
         return _regenerator.default.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -556,7 +556,7 @@ var _default = {
                   _this2.subjectIndex += 1;
                 }
                 if (!(_this2.subjectIndex === _this2.subjectList.length - 1 && _this2.subjectList[_this2.subjectList.length - 1].userAnswer.length)) {
-                  _context2.next = 46;
+                  _context2.next = 43;
                   break;
                 }
                 // 判断是否所有题目都选了答案
@@ -620,18 +620,14 @@ var _default = {
                 break;
               case 39:
                 console.log(_this2.scores);
-                _context2.next = 42;
-                return _this2.$api.getQuesstionResult({
-                  scores: _this2.scores
+                uni.redirectTo({
+                  url: "/compoments/testing/result?scores=".concat(_this2.scores)
                 });
-              case 42:
-                res = _context2.sent;
-                console.log(res);
-                _context2.next = 47;
+                _context2.next = 44;
                 break;
-              case 46:
+              case 43:
                 _this2.showSubmit = false;
-              case 47:
+              case 44:
               case "end":
                 return _context2.stop();
             }

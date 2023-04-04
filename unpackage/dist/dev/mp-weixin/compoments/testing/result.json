@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "抑郁症风险测评",
+  "navigationBarBackgroundColor": "#fad556",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-button": "/node-modules/uview-ui/components/u-button/u-button"
+  }
+}
